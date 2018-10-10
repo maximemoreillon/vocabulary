@@ -1,6 +1,8 @@
-<?php include(dirname(__FILE__).'/includes/pre_main.php'); ?>
+<?php include 'includes/pre_main.php'; ?>
 
 <div class="result">
+
+  
 <?php
 
 // Read the request
@@ -16,6 +18,8 @@ else {
 }
 
 ?>
+
+
 </div>
 
 <div class="controls">
@@ -24,4 +28,4 @@ else {
   </form>
 </div>
 
-<?php include(dirname(__FILE__).'/includes/post_main.php'); ?>
+<?php include 'includes/post_main.php'; ?>

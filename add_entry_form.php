@@ -1,6 +1,6 @@
-<?php include(dirname(__FILE__).'/includes/pre_main.php'); ?>
+<?php include 'includes/pre_main.php'; ?>
 
-<form action="show_all.php" method="post">
+<form action="add_entry.php" method="post">
   <input type="text" name="expression" placeholder="Expression"><br>
   <input type="text" name="reading" placeholder="Reading"><br>
   <input type="text" name="meaning" placeholder="Meaning"><br>
@@ -13,4 +13,4 @@
   </form>
 </div>
 
-<?php include(dirname(__FILE__).'/includes/post_main.php'); ?>
+<?php include 'includes/post_main.php'; ?>
