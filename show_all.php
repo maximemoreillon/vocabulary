@@ -39,7 +39,7 @@
       echo "<td>";
       echo "<form method='post' action='delete_entry.php'> ";
       echo "<input type='hidden' name='id' value='".$row["id"]."'>";
-      echo "<input type='submit' name='delete' value='X'>";
+      echo "<input type='image' src='images/icons/delete.svg'>";
       echo "</form>";
       echo "</td>";
       echo "</tr>";

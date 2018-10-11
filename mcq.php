@@ -2,52 +2,123 @@
 
 <?php include 'includes/pre_main.php'; ?>
 
-<form action="check.php" method="post">
-  <?php
 
-  $candidate_count = 5; // Excluding correct answer
+<?php
 
-  include 'includes/MySQL_connect.php';
-  $username = mysqli_real_escape_string($MySQL_connection, $_SESSION['username']);
+$candidate_count = 4; // Excluding correct answer
 
-  // Pick one word selected based on its score
-  // TODO: Pick by score and not randomly
-
-  $sql = "SELECT expression, reading, meaning FROM vocabulary WHERE user_id=(SELECT id FROM users WHERE username ='$username') ORDER BY RAND() LIMIT 1 ";
-  $result = $MySQL_connection->query($sql);
-  if ($result->num_rows > 0) {
-    $row = $result->fetch_assoc();
-    
-    $meaning = $row["meaning"];
-    $expression =$row["expression"];
-    $reading= $row["reading"];
+// Set mode according to GET request
+$mode = "find_meaning";
+if (isset($_REQUEST['mode'])) {
+  if($_REQUEST['mode'] === "find_expression"){
+    $mode = $_REQUEST['mode'];
   }
+}
 
 
-  // Pick candidates
+include 'includes/MySQL_connect.php';
+$username = mysqli_real_escape_string($MySQL_connection, $_SESSION['username']);
 
-  $sql = "SELECT expression, reading, meaning FROM vocabulary WHERE user_id=(SELECT id FROM users WHERE username ='$username') ORDER BY RAND() LIMIT $candidate_count ";
-  $result = $MySQL_connection->query($sql);
+$candidates = [];
 
 
-  if ($result->num_rows > 0) {
+// Pick one word selected based on its score
+// TODO: Pick by score and not randomly
 
-    while($row = $result->fetch_assoc()) {
+$sql = "SELECT id, expression, reading, meaning FROM vocabulary
+WHERE user_id=(SELECT id FROM users WHERE username ='$username')
+ORDER BY RAND() LIMIT 1 ";
 
-      $meaning = $row["meaning"];
-      $expression =$row["expression"];
-      $reading= $row["reading"];
+$result = $MySQL_connection->query($sql);
+if ($result->num_rows > 0) {
+  $row = $result->fetch_assoc();
+
+  $target = new StdClass;
+  $target->meaning = $row["meaning"];
+  $target->expression =$row["expression"];
+  $target->reading= $row["reading"];
+  $target->id= $row["id"];
+
+  array_push($candidates,$target);
+
+}
+
+
+// Pick candidates randomly
+$sql = "SELECT expression, reading, meaning FROM vocabulary
+  WHERE user_id=(SELECT id FROM users WHERE username ='$username')
+  AND NOT id='$target->id'
+  ORDER BY RAND() LIMIT $candidate_count ";
+
+$result = $MySQL_connection->query($sql);
+
+if ($result->num_rows > 0) {
+
+  while($row = $result->fetch_assoc()) {
+
+    $candidate = new StdClass;
+    $candidate->meaning = $row["meaning"];
+    $candidate->expression = $row["expression"];
+    $candidate->reading = $row["reading"];
+
+    array_push($candidates,$candidate);
+
+  }
+}
+
+$MySQL_connection->close();
+
+// Shuffle array of candidates
+shuffle($candidates);
+
+
+?>
+
+<form class="mcq_form" action="check.php" method="post">
+
+  <div class="target_wrapper">
+    <?php
+    if($mode === "find_expression"){
+      echo ($target -> meaning);
+      echo "<input type='hidden' name='target' value='".$target -> expression."'>";
 
     }
-  }
+    else {
+      echo ($target -> expression);
+      echo "<input type='hidden' name='target' value='".$target -> meaning."'>";
+    }
 
-  $MySQL_connection->close();
+    echo "<input type='hidden' name='mode' value='$mode'>";
+    echo "<input type='hidden' name='id' value='".$target -> id."'>";
 
-  // Shuffle array of candidates
-  //shuffle($candidates);
+    ?>
+  </div>
 
+  <div class="target_reading_wrapper">
+    <?php
+    if($mode === "find_meaning"){
+      echo ($target -> reading);
+    }
+    ?>
+  </div>
 
-  ?>
+  <div class="candidates_wrapper">
+    <?php
+
+    foreach ($candidates as $candidate) {
+
+      if($mode === "find_expression"){
+        echo "<input class='candidate' type='submit' name='candidate' value='".$candidate -> expression."'>";
+      }
+      else {
+        echo "<input class='candidate' type='submit' name='candidate' value='".$candidate -> meaning."'>";
+      }
+      echo '<br>';
+    }
+    ?>
+
+  </div>
+
 
 </form>
 

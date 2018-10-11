@@ -1,16 +1,9 @@
 <?php
 
-// Checks if user logged in
-session_start();
-
-if (!isset($_SESSION['email'])) {
-
-  // If not logged in, redirect to login screen
-	header('location: login_form.php');
-}
+require 'includes/check_session.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  if(isset($_POST['delete']) && isset($_POST['id'])) {
+  if(isset($_POST['id'])) {
 
     // Connect to MySQL
     include 'includes/MySQL_connect.php';
