@@ -2,9 +2,7 @@
 <?php
 
 require 'includes/check_session.php';
-
-// Checks if user logged in
-session_start();
+require 'includes/config.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if(isset($_POST['add_entry']) && isset($_POST['expression']) && isset($_POST['meaning']) ) {
@@ -20,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = mysqli_real_escape_string($MySQL_connection, $_SESSION['username']);
 
     // Construct the query
-    $sql = "INSERT INTO vocabulary (user_id, expression, reading, meaning, score)
+    $sql = "INSERT INTO `".$MySQL_table_name."` (user_id, expression, reading, meaning, score)
       VALUES ( (SELECT id FROM users WHERE username ='$username'), '$expression', '$reading', '$meaning', 0 )";
 
     // Sendthe query

@@ -1,2 +1,8 @@
-Maxime MOREILLON<br>
-<a href="http://maximemoreillon.com">maximemoreillon.com</a>
+
+<div>
+  <img class="logo" src="images/logo/logo.svg">
+</div>
+<div>
+Vocabulary practice<br>
+Maxime MOREILLON
+</div>

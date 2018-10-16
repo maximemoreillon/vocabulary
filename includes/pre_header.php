@@ -5,7 +5,4 @@
 <body>
 
   <div class="wrapper">
-    <header>
-      <?php include 'header.php'; ?>
-    </header>
-    <main>
+    

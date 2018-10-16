@@ -1,3 +1,11 @@
+:root {
+    --text_color: #222222;
+}
+
+* {
+    box-sizing: border-box;
+}
+
 body {
 	font-family: Verdana, Geneva, sans-serif;
 
@@ -43,52 +51,73 @@ body {
 
 
 header {
+
+  /* flex */
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 
-	padding: 25px;
+	padding: 20px;
 
+  /* visuals */
+	color: white;
 	background: #222222;
 	box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 }
 
-.logo_wrapper {
-  width: 75px;
-  height: 75px;
-
-  /* Center */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-}
-.logo {
-	max-height:100%;
-	animation: rotating 50s linear infinite;
+header div{
+  /* header divided into 3 divs */
+  width: 30%;
+  font-size: 32px;
 }
 
-@keyframes rotating {
-	from { transform: rotate(0deg);}
-	to { transform: rotate(360deg);}
+header .top_left{
+  text-align: left;
 }
 
-.title {
+header .top_right{
+  text-align: right;
+}
+
+header .top_center{
+  text-align: center;
+}
+
+header div a{
+  color: white;
+  text-decoration: none;
+}
+
+header .title{
+	margin-left: 20px;
 	font-size: 200%;
+}
+
+header .login_status{
+	text-align: center;
+  font-size: 16px;
+}
+header .login_status a{
 	color: white;
 }
 
 
-
 main {
 	padding: 30px;
+
+	/* take all available space */
+	flex-grow: 1;
+
+	/* flex to align content*/
   display: flex;
   flex-direction: column;
   align-items: center;
 
-	flex-grow: 1;
+	/* visuals */
+	color: var(--text_color);
 }
 
+/* Related to MCQ */
 .mcq_form {
 	width: 100%;
 }
@@ -104,10 +133,6 @@ main {
 	text-align: center;
 }
 
-.result {
-	text-align: center;
-}
-
 .candidates_wrapper {
 	margin-top: 15px;
 	text-align: center;
@@ -120,10 +145,32 @@ main {
 	width: 80%;
 }
 
+.result {
+	text-align: center;
+}
+
+
+/* Forms */
+main form{
+	text-align: center;
+}
+
+main form input{
+
+}
+
+
+
 .controls {
 	margin-top: 25px;
 	text-align: center;
 	width: 100%;
+}
+
+.controls .fas{
+	text-decoration: none;
+	font-size: 32px;
+	color: var(--text_color);
 }
 
 .control {
@@ -131,28 +178,74 @@ main {
 	width: 50%;
 }
 
-.expressions_list{
-	width: 100%;
-	text-align: center;
+.index {
+  width: 100%;
+	flex-grow: 1;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+  align-items: center;
 }
 
-input[type='submit']{
+.index a{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  padding: 10px;
+  width: 40%;
+  height: 100px;
+  color: var(--text_color);
+  border: 2px solid var(--text_color);
+}
+
+/* Show all */
+.expressions_table{
+	width: 100%;
+	text-align: center;
+	color: var(--text_color);
+}
+
+
+/* General button settings */
+input[type='submit'], input[type='button'] {
 	border: 2px solid #222222;
 	background: white;
 }
 
-input[type='submit']:hover{
+input[type='submit']:hover , input[type='button']:hover{
 	background: lightGrey;
 }
 
+
+/* footer */
 footer {
-	text-align: center;
-	padding: 10px;
+	height: 75px;
 	background: #666666;
 	color: white;
+
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+
 }
 
 footer a{
 	text-decoration: none;
 	color: white;
+}
+
+footer img{
+	height: 35px;
+	margin-right: 10px;
+	animation: rotating 50s linear infinite;
+}
+@keyframes rotating {
+	from { transform: rotate(0deg);}
+	to { transform: rotate(360deg);}
+}
+
+.fas{
+	cursor: pointer;
 }

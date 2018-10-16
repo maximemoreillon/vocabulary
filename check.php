@@ -1,3 +1,8 @@
+<?php
+require 'includes/check_session.php';
+require 'includes/config.php';
+?>
+
 <?php include 'includes/pre_main.php'; ?>
 
 <div class="result">
@@ -11,28 +16,32 @@ $candidate = $_REQUEST['candidate'];
 $target = $_REQUEST['target'];
 $id = $_REQUEST['id'];
 $mode = $_REQUEST['mode'];
+$score = $_REQUEST['score'];
 
 if($candidate === $target) {
  echo "Correct!";
-
- // Increment score in DB
- $sql = "UPDATE vocabulary SET score = score + 1 WHERE id=$id";
-
+ $new_score = $score+1;
 }
 else {
  echo "Wrong<br>";
  echo "The answer was: ". $target;
-
- // Decrement score in DB
- $sql = "UPDATE vocabulary SET score = score - 1 WHERE id=$id";
+ $new_score = $score-1;
 }
 
-// Sendthe query
+// score saturation
+if($new_score>$max_score){
+  $new_score = $max_score;
+}
+else if($new_score<$min_score){
+  $new_score = $min_score;
+}
+
+$sql = "UPDATE `".$MySQL_table_name."` SET score=$new_score WHERE id=$id";
 if ($MySQL_connection->query($sql) === TRUE) {
-
-} else {
-
+  // Success
 }
+
+
 
 ?>
 
