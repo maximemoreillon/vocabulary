@@ -1,6 +1,19 @@
 <?php require 'register.php'; ?>
 
-<?php include 'includes/pre_main.php'; ?>
+<?php include 'includes/pre_header.php'; ?>
+
+<header>
+	<div class="top_left">
+    <a href="login_form.php" class="fas fa-arrow-left"></a>
+	</div>
+  <div class="top_center">
+
+	</div>
+	<div class="top_right">
+	</div>
+</header>
+
+<main>
 
 <div class="error_message">
   <?php
