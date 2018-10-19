@@ -1,5 +1,8 @@
 <?php
+
 session_start();
+
+$errors = array();
 
 if (isset($_POST['login'])) {
 
@@ -9,8 +12,6 @@ if (isset($_POST['login'])) {
   // Escape input
   $username = mysqli_real_escape_string($MySQL_connection, $_POST['username']);
   $password = mysqli_real_escape_string($MySQL_connection, $_POST['password']);
-
-
 
   if (empty($username)) {
   	array_push($errors, "Username is required");

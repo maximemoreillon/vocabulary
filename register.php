@@ -2,8 +2,6 @@
 
 session_start();
 
-// initializing variables
-$username    = "";
 $errors = array();
 
 // connect to the database
@@ -11,6 +9,7 @@ require 'includes/MySQL_connect.php';
 
 // REGISTER USER
 if (isset($_POST['register'])) {
+
   // receive all input values from the form
   $username = mysqli_real_escape_string($MySQL_connection, $_POST['username']);
   $password_1 = mysqli_real_escape_string($MySQL_connection, $_POST['password_1']);
@@ -52,6 +51,8 @@ if (isset($_POST['register'])) {
 
     // Set session
   	$_SESSION['username'] = $username;
+
+    // Redirect
   	header('location: index.php');
   }
 }

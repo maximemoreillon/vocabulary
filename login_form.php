@@ -1,6 +1,17 @@
+<?php require 'login.php'; ?>
+
 <?php include 'includes/pre_main.php'; ?>
 
-<form action="login.php" method="post">
+<div class="error_message">
+  <?php
+  foreach ($errors as $error){
+    echo $error;
+    echo "<br>";
+  }
+  ?>
+</div>
+
+<form action=<?php echo $_SERVER['PHP_SELF']; ?> method="post">
   <input type="text" name="username" placeholder="Username"><br>
   <input type="password" name="password" placeholder="Password"><br>
   <input type="submit" name="login" value="Login">

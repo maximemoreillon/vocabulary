@@ -125,6 +125,11 @@ main {
 	color: var(--text_color);
 }
 
+.error_message {
+  color: #cc0000;
+  text-align: center;
+}
+
 /* Related to MCQ */
 .mcq_form {
 	width: 100%;
