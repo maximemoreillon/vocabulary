@@ -7,7 +7,8 @@ include 'includes/config.php';
 
 <header>
 	<div class="top_left">
-    <a href="index.php" class="fas fa-arrow-left"></a></div>
+    <a href="index.php" class="fas fa-arrow-left"></a>
+	</div>
 	<div class="top_center">
 		<a class="fas fa-list-ul" href="show_all.php"></a>
 	</div>

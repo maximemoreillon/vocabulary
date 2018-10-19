@@ -7,10 +7,12 @@
 }
 
 body {
-	font-family: Verdana, Geneva, sans-serif;
+
+  outline: 1px solid red;
 
 	margin: 0px;
 	padding: 0px;
+  min-height: 100%;
 
 	/* Flex */
 	display: flex;
@@ -19,6 +21,7 @@ body {
 	align-items: stretch;
 
 	/* Visuals */
+  font-family: Verdana, Geneva, sans-serif;
 	background: #cccccc;
 }
 
@@ -52,12 +55,12 @@ body {
 
 header {
 
+  padding: 20px;
+
   /* flex */
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-
-	padding: 20px;
 
   /* visuals */
 	color: white;
@@ -84,6 +87,7 @@ header .top_center{
 }
 
 header div a{
+  /* Used for nav buttons */
   color: white;
   text-decoration: none;
 }
@@ -99,13 +103,17 @@ header .login_status{
 }
 header .login_status a{
 	color: white;
+  text-decoration: underline;
 }
 
+.fas{
+	cursor: pointer;
+}
 
 main {
 	padding: 30px;
 
-	/* take all available space */
+	/* take all available vertical space */
 	flex-grow: 1;
 
 	/* flex to align content*/
@@ -153,9 +161,19 @@ main {
 /* Forms */
 main form{
 	text-align: center;
+  width: 100%;
 }
 
-main form input{
+main input{
+	margin-top: 10px;
+  width: 70%;
+  height: 50px;
+}
+
+main form input[type='text'], main form input[type='password']{
+
+  padding: 5px;
+
 
 }
 
@@ -167,16 +185,7 @@ main form input{
 	width: 100%;
 }
 
-.controls .fas{
-	text-decoration: none;
-	font-size: 32px;
-	color: var(--text_color);
-}
 
-.control {
-	height: 50px;
-	width: 50%;
-}
 
 .index {
   width: 100%;
@@ -244,8 +253,4 @@ footer img{
 @keyframes rotating {
 	from { transform: rotate(0deg);}
 	to { transform: rotate(360deg);}
-}
-
-.fas{
-	cursor: pointer;
 }

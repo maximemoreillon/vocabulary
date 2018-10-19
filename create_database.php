@@ -11,7 +11,7 @@ if ($MySQL_connection->connect_error) {
 }
 
 // Create database
-$sql = "CREATE DATABASE vocabulary";
+$sql = "CREATE DATABASE vocabulary DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;";
 if ($MySQL_connection->query($sql) === TRUE) {
     echo "Database created successfully";
 } else {

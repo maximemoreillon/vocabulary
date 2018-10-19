@@ -2,7 +2,6 @@
 <?php
 require 'includes/check_session.php';
 require 'includes/config.php';
-
 ?>
 
 <?php include 'includes/pre_header.php'; ?>
@@ -82,5 +81,7 @@ require 'includes/config.php';
   ?>
 
 </table>
+
+
 
 <?php include 'includes/post_main.php'; ?>
