@@ -53,7 +53,7 @@ if (isset($_POST['register'])) {
   	$_SESSION['username'] = $username;
 
     // Redirect
-  	header('location: index.php');
+  	header('location: show_all.php');
   }
 }
 

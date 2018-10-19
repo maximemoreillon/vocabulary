@@ -20,20 +20,6 @@ require 'includes/config.php';
 </header>
 <main>
 
-
-
-<table class="expressions_table">
-
-  <tr>
-    <th>Expression</th>
-    <th>Reading</th>
-    <th><a href="<?php echo $_SERVER['PHP_SELF']."?sort=meaning"; ?>">Meaning</th>
-    <th><a href="<?php echo $_SERVER['PHP_SELF']."?sort=score"; ?>">Score</th>
-    <th>Delete</th>
-  </tr>
-
-
-  <!-- filling the table using PHP -->
   <?php
 
   include 'includes/MySQL_connect.php';
@@ -43,7 +29,7 @@ require 'includes/config.php';
 
   // SQL query
   $sql = "SELECT id, expression, reading, meaning, score
-  FROM `".$MySQL_table_name."`
+  FROM `$MySQL_table_name`
   WHERE user_id=(SELECT id FROM users WHERE username ='$username')";
 
   if(isset($_REQUEST['sort'])) {
@@ -60,6 +46,20 @@ require 'includes/config.php';
 
   // Treat result
   if ($result->num_rows > 0) {
+
+		echo "<table class='expressions_table'>";
+
+		// Headers
+		
+		echo "<tr>";
+	  echo "<th>Expression</th>";
+	  echo "<th>Reading</th>";
+	  echo "<th><a href='".$_SERVER['PHP_SELF']."?sort=meaning'>Meaning</th>";
+	  echo "<th><a href='".$_SERVER['PHP_SELF']."?sort=score'>Score</th>";
+	  echo "<th>Delete</th>";
+	  echo "</tr>";
+
+
     while($row = $result->fetch_assoc()) {
       echo "<tr>";
       echo "<td>" .$row["expression"]. "</td>";
@@ -74,13 +74,18 @@ require 'includes/config.php';
       echo "</td>";
       echo "</tr>";
     }
+
+		echo "</table>";
   }
+	else{
+		echo "No entry yet";
+	}
 
   $MySQL_connection->close();
 
   ?>
 
-</table>
+
 
 
 

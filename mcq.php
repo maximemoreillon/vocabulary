@@ -40,6 +40,7 @@ $candidates = [];
 // Pick one word selected based on its score
 //TODO that's quite a rubbish way to select by score
 $target_selected = False;
+$no_entry = False;
 while(!$target_selected){
 
   $sql = "SELECT id, expression, reading, meaning, score FROM `".$MySQL_table_name."`
@@ -47,13 +48,18 @@ while(!$target_selected){
   ORDER BY RAND() LIMIT 1 ";
 
   $result = $MySQL_connection->query($sql);
-  $row = $result->fetch_assoc();
-  $score = $row["score"];
-  $random_number = mt_rand($min_score,$max_score);
+	if ($result->num_rows > 0) {
+		$row = $result->fetch_assoc();
+	  $score = $row["score"];
+	  $random_number = mt_rand($min_score,$max_score);
 
-  if($random_number >= $score){
-    $target_selected = True;
-  }
+	  if($random_number >= $score){
+	    $target_selected = True;
+	  }
+	}
+	else {
+		break;
+	}
 }
 
 
