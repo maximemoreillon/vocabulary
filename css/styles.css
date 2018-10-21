@@ -202,13 +202,21 @@ main form input[type='text'], main form input[type='password']{
 }
 
 .index a{
+  /* flex */
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  padding: 10px;
+
+  /* sizing */
   width: 40%;
   height: 100px;
+  padding: 10px;
+
+  text-align: center;
+
+  /* visuals */
   color: var(--text_color);
   border: 2px solid var(--text_color);
 }
