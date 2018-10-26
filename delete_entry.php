@@ -3,8 +3,11 @@
 require 'includes/check_session.php';
 require 'includes/config.php';
 
+
+// WARNING: SOMEONE COULD DELETE SOMEONE ELSE'S ENTRIES USING THIS
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  if(isset($_POST['id'])) {
+  if(isset($_REQUEST['id'])) {
 
     // Connect to MySQL
     include 'includes/MySQL_connect.php';

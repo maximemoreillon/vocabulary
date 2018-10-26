@@ -3,13 +3,8 @@
 <?php include 'includes/pre_header.php'; ?>
 
 <header>
-	<div class="top_left">
-    <a href="login_form.php" class="fas fa-arrow-left"></a>
-	</div>
-  <div class="top_center">
-
-	</div>
-	<div class="top_right">
+	<div class="title">
+    Vocabulary
 	</div>
 </header>
 
@@ -30,5 +25,9 @@
   <input type="password" name="password_2" placeholder="Confirm password"><br>
   <input type="submit" name="register" value="Register">
 </form>
+
+<div>
+	Already registered? Login <a href="login_form.php">here</a>
+</div>
 
 <?php include 'includes/post_main.php'; ?>

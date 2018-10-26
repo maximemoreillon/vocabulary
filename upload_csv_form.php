@@ -14,20 +14,14 @@ require 'includes/config.php';
 
 <main>
 
-	<form action="add_entry.php" method="post">
-	  <input type="text" name="expression" placeholder="Expression"><br>
-	  <input type="text" name="reading" placeholder="Reading / Pronounciation (optional)"><br>
-	  <input type="text" name="meaning" placeholder="Meaning"><br>
-	  <input type="submit" name="add_entry" value="Submit">
-	</form>
 
-	<!--
 	<form action="upload_csv.php" method="post" enctype="multipart/form-data">
 		Upload CSV file: <br>
 		<input type="file" name="file">
+    
 	  <input type="submit" name="upload" value="Upload CSV">
 	</form>
-	-->
+
 
 	<!-- Return button -->
 	<div class="add_entry_button_wrapper">

@@ -1,5 +1,10 @@
 :root {
     --text_color: #222222;
+    --accent_color: #ce0000;
+    --hover_color: #ceaaaa;
+    --neutral_color: #666666;
+    --light_color: #dddddd;
+
 }
 
 * {
@@ -45,7 +50,6 @@ body {
 
 }
 
-/* On screens that are 600px or less, set the background color to olive */
 @media screen and (max-width: 600px) {
   .wrapper {
     margin: 0;
@@ -55,60 +59,59 @@ body {
 
 header {
 
-  padding: 20px;
+  height: 90px;
 
   /* flex */
 	display: flex;
 	justify-content: space-between;
-	align-items: center;
+	align-items: stretch;
 
   /* visuals */
 	color: white;
-	background: #222222;
+	background: var(--text_color);
 	box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 }
 
-header div{
-  /* header divided into 3 divs */
-  width: 30%;
-  font-size: 32px;
-}
+header a{
+  /* flex */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
-header .top_left{
-  text-align: left;
-}
+  width: 100px;
 
-header .top_right{
-  text-align: right;
-}
-
-header .top_center{
-  text-align: center;
-}
-
-header div a{
-  /* Used for nav buttons */
   color: white;
   text-decoration: none;
 }
 
+header a:hover:not(.nav_active){
+  color: var(--hover_color);
+}
+
+header .nav_active{
+  color: var(--accent_color);
+}
+
+header .nav_icon{
+  font-size: 32px;
+}
+
+header .nav_icon_caption{
+  margin-top: 5px;
+  font-size: 12px;
+}
+
 header .title{
-	margin-left: 20px;
-	font-size: 200%;
+  font-size: 32px;
+
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
 }
 
-header .login_status{
-	text-align: center;
-  font-size: 16px;
-}
-header .login_status a{
-	color: white;
-  text-decoration: underline;
-}
-
-.fas{
-	cursor: pointer;
-}
 
 main {
 	padding: 30px;
@@ -123,10 +126,16 @@ main {
 
 	/* visuals */
 	color: var(--text_color);
+
+  overflow: hidden;
+
 }
 
+.account_info{
+  text-align: center;
+}
 .error_message {
-  color: #cc0000;
+  color: var(--accent_color);
   text-align: center;
 }
 
@@ -160,6 +169,16 @@ main {
 
 .result {
 	text-align: center;
+}
+
+
+.add_entry_button_wrapper{
+  margin-top: 25px;
+  font-size: 32px;
+}
+.add_entry_button_wrapper a{
+  text-decoration: none;
+  color: var(--text_color);
 }
 
 
@@ -225,8 +244,45 @@ main form input[type='text'], main form input[type='password']{
 .expressions_table{
 	width: 100%;
 	text-align: center;
+  border-collapse: collapse;
 	color: var(--text_color);
 }
+
+tr:first-child{
+  /* the row with headers */
+  color: white;
+  background-color: var(--neutral_color);
+  height: 50px;
+}
+
+tr:first-child a{
+  color: white;
+}
+
+
+
+tr:nth-child(even) {
+  /* alternate row colors */
+  background-color: var(--light_color);
+}
+
+tr:not(:first-child){
+  cursor: pointer;
+}
+
+tr:not(:first-child):hover{
+  background-color: var(--hover_color);
+}
+
+.table_reading{
+  margin-top: 2px;
+  font-size: 65%;
+}
+
+td{
+  padding: 5px;
+}
+
 
 
 /* General button settings */
@@ -242,8 +298,8 @@ input[type='submit']:hover , input[type='button']:hover{
 
 /* footer */
 footer {
-	height: 75px;
-	background: #666666;
+	height: 70px;
+	background: var(--neutral_color);
 	color: white;
 
 	display: flex;

@@ -7,16 +7,10 @@ require 'includes/config.php';
 <?php include 'includes/pre_header.php'; ?>
 
 <header>
-	<div class="top_left">
-    <a href="index.php" class="fas fa-arrow-left"></a>
-  </div>
-	<div class="top_center">
-    <a href="add_entry_form.php" class="fas fa-plus"></a>
-	</div>
-
-	<div class="login_status top_right">
-	  	<?php include 'includes/login_status.php'; ?>
-	</div>
+	<?php
+	$active_nav = "vocabulary";
+	include 'includes/header.php';
+	?>
 </header>
 <main>
 
@@ -50,28 +44,26 @@ require 'includes/config.php';
 		echo "<table class='expressions_table'>";
 
 		// Headers
-		
+
 		echo "<tr>";
 	  echo "<th>Expression</th>";
-	  echo "<th>Reading</th>";
 	  echo "<th><a href='".$_SERVER['PHP_SELF']."?sort=meaning'>Meaning</th>";
 	  echo "<th><a href='".$_SERVER['PHP_SELF']."?sort=score'>Score</th>";
-	  echo "<th>Delete</th>";
+	  //echo "<th>Delete</th>";
 	  echo "</tr>";
 
 
     while($row = $result->fetch_assoc()) {
-      echo "<tr>";
-      echo "<td>" .$row["expression"]. "</td>";
-      echo "<td>" .$row["reading"]. "</td>";
+      echo "<tr onclick='show_one(".$row["id"].")'>";
+      echo "<td>";
+			echo "<div class='table_expression'>".$row["expression"]."</div>";
+			if($row["reading"] != ''){
+				echo "<div class='table_reading'>(".$row["reading"].")</div>";
+			}
+			echo "</td>";
       echo "<td>" .$row["meaning"]. "</td>";
       echo "<td>" .$row["score"]. "/10</td>";
-      echo "<td>";
-      echo "<form method='post' action='delete_entry.php'> ";
-      echo "<input type='hidden' name='id' value='".$row["id"]."'>";
-      echo '<i class="fas fa-trash-alt" onclick="this.parentNode.submit()"></i>';
-      echo "</form>";
-      echo "</td>";
+
       echo "</tr>";
     }
 
@@ -85,8 +77,42 @@ require 'includes/config.php';
 
   ?>
 
+	<!-- Add button here -->
+	<div class="add_entry_button_wrapper">
+		<i id="modal_open_button" style="display:none;" class="fas fa-plus-circle" ></i>
+		<a href="add_entry_form.php" class="fas fa-plus"></a>
+	</div>
 
+</main>
+<footer>
+	<?php include 'includes/footer.php'; ?>
+</footer>
+</div>
 
+<!-- Modal -->
+<div id="add_expression_modal" class="modal">
 
+  <!-- Modal content -->
+  <div class="modal_content">
+    <div class="close">&times;</div>
+		<form action="add_entry.php" method="post">
+		  <input type="text" name="expression" placeholder="Expression"><br>
+		  <input type="text" name="reading" placeholder="Reading"><br>
+		  <input type="text" name="meaning" placeholder="Meaning"><br>
+		  <input type="submit" name="add_entry" value="Submit">
+		</form>
+  </div>
 
-<?php include 'includes/post_main.php'; ?>
+</div>
+
+<script src="js/modal.js"></script>
+<script>
+function show_one(id){
+	var url = "show_one.php?id=" + id;
+	window.location.href = url;
+}
+
+</script>
+
+</body>
+</html>

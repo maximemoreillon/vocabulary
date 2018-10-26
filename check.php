@@ -43,15 +43,12 @@ if ($MySQL_connection->query($sql) === TRUE) {
 
 <?php include 'includes/pre_header.php'; ?>
 
+
 <header>
-	<div class="top_left">
-	</div>
-  <div class="top_center">
-		<a class="fas fa-list-ul" href="show_all.php"></a>
-	</div>
-	<div class="login_status top_right">
-  	<?php include 'includes/login_status.php'; ?>
-	</div>
+	<?php
+	$active_nav = "practice";
+	include 'includes/header.php';
+	?>
 </header>
 
 <main>

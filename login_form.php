@@ -3,12 +3,8 @@
 <?php include 'includes/pre_header.php'; ?>
 
 <header>
-	<div class="top_left">
-	</div>
-	<div class="top_center">
+	<div class="title">
     Vocabulary
-	</div>
-	<div class="top_right">
 	</div>
 </header>
 <main>
