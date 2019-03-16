@@ -1,12 +1,3 @@
-:root {
-    --text_color: #222222;
-    --accent_color: #ce0000;
-    --hover_color: #ceaaaa;
-    --neutral_color: #666666;
-    --light_color: #dddddd;
-
-}
-
 * {
     box-sizing: border-box;
 }
@@ -68,7 +59,7 @@ header {
 
   /* visuals */
 	color: white;
-	background: var(--text_color);
+	background: #222222;
 	box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 }
 
@@ -86,11 +77,11 @@ header a{
 }
 
 header a:hover:not(.nav_active){
-  color: var(--hover_color);
+  color: #ceaaaa;
 }
 
 header .nav_active{
-  color: var(--accent_color);
+  color: #ce0000;
 }
 
 header .nav_icon{
@@ -114,6 +105,9 @@ header .title{
 
 
 main {
+  /* IE11 compatibility */
+  display: block;
+  
 	padding: 30px;
 
 	/* take all available vertical space */
@@ -125,7 +119,7 @@ main {
   align-items: center;
 
 	/* visuals */
-	color: var(--text_color);
+	color: #222222;
 
   overflow: hidden;
 
@@ -135,7 +129,7 @@ main {
   text-align: center;
 }
 .error_message {
-  color: var(--accent_color);
+  color: #ce0000;
   text-align: center;
 }
 
@@ -178,7 +172,7 @@ main {
 }
 .add_entry_button_wrapper a{
   text-decoration: none;
-  color: var(--text_color);
+  color: #222222;
 }
 
 
@@ -236,8 +230,8 @@ main form input[type='text'], main form input[type='password']{
   text-align: center;
 
   /* visuals */
-  color: var(--text_color);
-  border: 2px solid var(--text_color);
+  color: #222222;
+  border: 2px solid #222222;
 }
 
 /* Show all */
@@ -245,13 +239,13 @@ main form input[type='text'], main form input[type='password']{
 	width: 100%;
 	text-align: center;
   border-collapse: collapse;
-	color: var(--text_color);
+	color: #222222;
 }
 
 tr:first-child{
   /* the row with headers */
   color: white;
-  background-color: var(--neutral_color);
+  background-color: #666666;
   height: 50px;
 }
 
@@ -263,7 +257,7 @@ tr:first-child a{
 
 tr:nth-child(even) {
   /* alternate row colors */
-  background-color: var(--light_color);
+  background-color: #dddddd;
 }
 
 tr:not(:first-child){
@@ -271,7 +265,7 @@ tr:not(:first-child){
 }
 
 tr:not(:first-child):hover{
-  background-color: var(--hover_color);
+  background-color: #ceaaaa;
 }
 
 .table_reading{
@@ -299,7 +293,7 @@ input[type='submit']:hover , input[type='button']:hover{
 /* footer */
 footer {
 	height: 70px;
-	background: var(--neutral_color);
+	background: #666666;
 	color: white;
 
 	display: flex;
