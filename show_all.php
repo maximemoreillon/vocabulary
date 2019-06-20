@@ -26,6 +26,7 @@ require 'includes/config.php';
   FROM `$MySQL_table_name`
   WHERE user_id=(SELECT id FROM users WHERE username ='$username')";
 
+	// Check if data needs to be sorted in a certain way
   if(isset($_REQUEST['sort'])) {
     if($_REQUEST['sort'] === "score"){
       $sql .= "ORDER BY score";
@@ -35,7 +36,7 @@ require 'includes/config.php';
     }
   }
 
-
+	// Perform query
   $result = $MySQL_connection->query($sql);
 
   // Treat result

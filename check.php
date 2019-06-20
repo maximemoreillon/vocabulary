@@ -34,6 +34,7 @@ else if($new_score<$min_score){
   $new_score = $min_score;
 }
 
+// Update score
 $sql = "UPDATE `$MySQL_table_name` SET score=$new_score WHERE id=$id";
 if ($MySQL_connection->query($sql) === TRUE) {
   // Success

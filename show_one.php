@@ -59,16 +59,31 @@ require 'includes/config.php';
 
   ?>
 
-  <!-- delete button -->
-  <form method='post' action='delete_entry.php'>
-  <input type='hidden' name='id' value='<?php echo $id;?>'>
-  <i class="fas fa-trash-alt" onclick="this.parentNode.submit()"></i>
-  </form>
 
-	<!-- Return button -->
-	<div class="add_entry_button_wrapper">
-		<a href="show_all.php" class="fas fa-arrow-left"></a>
+	<div class="buttons_wrapper">
+		
+		<!-- Return button -->
+		<div class="button_container">
+			<a href="show_all.php" class="button fas fa-arrow-left"></a>
+		</div>
+
+		<!-- delete button -->
+		<form method='post' action='delete_entry.php' class="button_container">
+		  <input type='hidden' name='id' value='<?php echo $id;?>'>
+		  <i class="button fas fa-trash-alt" onclick="submitAfterConfirm(this.parentNode)"></i>
+	  </form>
+
+
+
 	</div>
+
+	<script type="text/javascript">
+		function submitAfterConfirm(form){
+			if(confirm("Really?")) form.submit();
+		}
+
+	</script>
+
 
 
 	<?php include 'includes/post_main.php'; ?>

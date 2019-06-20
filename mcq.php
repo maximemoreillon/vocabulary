@@ -81,7 +81,7 @@ if(!$no_entry){
 	$sql = "SELECT expression, reading, meaning FROM `$MySQL_table_name`
 	  WHERE user_id=(SELECT id FROM users WHERE username ='$username')
 	  AND NOT id='$target->id'
-	  ORDER BY RAND() LIMIT $candidate_count ";
+	  ORDER BY RAND() LIMIT $candidate_count";
 
 	$result = $MySQL_connection->query($sql);
 
@@ -117,7 +117,7 @@ $MySQL_connection->close();
 	<!-- Show normal operations if enough entries -->
 	<form class="mcq_form" action="check.php" method="post">
 
-	  <div class="target_wrapper">
+	  <div class="target_wrapper" onclick="toggle_reading_visibility()">
 	    <?php
 	    echo "<input type='hidden' name='mode' value='$mode'>";
 	    echo "<input type='hidden' name='id' value='".$target->id."'>";
@@ -136,7 +136,7 @@ $MySQL_connection->close();
 	  </div>
 
 		<!-- reading / pronounciation -->
-	  <div class="target_reading_wrapper">
+	  <div class="target_reading_wrapper" id="reading" style="visibility: hidden;">
 	    <?php
 	    if($mode === "find_meaning" && $show_reading){
 
@@ -161,6 +161,8 @@ $MySQL_connection->close();
 	    ?>
 	  </div>
 	</form>
+
+	<script type="text/javascript" src="js/mcq.js"></script>
 <?php endif; ?>
 
 <?php include 'includes/post_main.php'; ?>
