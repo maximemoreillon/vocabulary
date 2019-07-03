@@ -14,11 +14,30 @@ require 'includes/config.php';
 </header>
 <main>
 
+
+
   <?php
 
   include 'includes/MySQL_connect.php';
 
+	// get username from query
   $username = mysqli_real_escape_string($MySQL_connection, $_SESSION['username']);
+
+	?>
+
+
+	<!-- Select containing list -->
+	<?php include 'includes/list_selector.php'; ?>
+
+
+	<!-- Add button -->
+  <div class="add_entry_button_wrapper">
+      <a href="add_entry_form.php" class="fas fa-plus"></a>
+  </div>
+
+
+	<?php
+	// Deal with vocabulary table
 
 
   // SQL query
@@ -26,7 +45,16 @@ require 'includes/config.php';
   FROM `$MySQL_table_name`
   WHERE user_id=(SELECT id FROM users WHERE username ='$username')";
 
+	// filter lists if specified
+	if(isset($_REQUEST['list'])) {
+		if($_REQUEST['list'] !== 'all'){
+			$list = $_REQUEST["list"];
+			$sql.= "AND list='$list'";
+		}
+	}
+
 	// Check if data needs to be sorted in a certain way
+	// UNUSED AT THE MOMENT
   if(isset($_REQUEST['sort'])) {
     if($_REQUEST['sort'] === "score"){
       $sql .= "ORDER BY score";
@@ -48,9 +76,8 @@ require 'includes/config.php';
 
 		echo "<tr>";
 	  echo "<th>Expression</th>";
-	  echo "<th><a href='".$_SERVER['PHP_SELF']."?sort=meaning'>Meaning</th>";
-	  echo "<th><a href='".$_SERVER['PHP_SELF']."?sort=score'>Score</th>";
-	  //echo "<th>Delete</th>";
+	  echo "<th>Meaning</th>";
+	  echo "<th>Score</th>";
 	  echo "</tr>";
 
 
@@ -78,11 +105,7 @@ require 'includes/config.php';
 
   ?>
 
-	<!-- Add button here -->
-	<div class="add_entry_button_wrapper">
-		<i id="modal_open_button" style="display:none;" class="fas fa-plus-circle" ></i>
-		<a href="add_entry_form.php" class="fas fa-plus"></a>
-	</div>
+
 
 </main>
 <footer>
@@ -90,29 +113,11 @@ require 'includes/config.php';
 </footer>
 </div>
 
-<!-- Modal -->
-<div id="add_expression_modal" class="modal">
-
-  <!-- Modal content -->
-  <div class="modal_content">
-    <div class="close">&times;</div>
-		<form action="add_entry.php" method="post">
-		  <input type="text" name="expression" placeholder="Expression"><br>
-		  <input type="text" name="reading" placeholder="Reading"><br>
-		  <input type="text" name="meaning" placeholder="Meaning"><br>
-		  <input type="submit" name="add_entry" value="Submit">
-		</form>
-  </div>
-
-</div>
-
-<script src="js/modal.js"></script>
 <script>
 function show_one(id){
 	var url = "show_one.php?id=" + id;
 	window.location.href = url;
 }
-
 </script>
 
 </body>

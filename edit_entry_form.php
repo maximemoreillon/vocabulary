@@ -16,14 +16,18 @@ require 'includes/config.php';
 
   <?php
 
-  include 'includes/MySQL_connect.php';
+	include 'includes/MySQL_connect.php';
 
+	// Get session info for username
   $username = mysqli_real_escape_string($MySQL_connection, $_SESSION['username']);
+
+	// Get ID of the expression from the request
   $id = mysqli_real_escape_string($MySQL_connection, $_REQUEST['id']);
 
 
+
   // SQL query
-  $sql = "SELECT expression, reading, meaning, score
+  $sql = "SELECT expression, reading, meaning, score, list
   FROM `$MySQL_table_name`
   WHERE id=$id";
 
@@ -36,6 +40,7 @@ require 'includes/config.php';
 		$meaning = $row["meaning"];
 		$expression =$row["expression"];
 		$reading= $row["reading"];
+		$list= $row["list"];
 
   }
 
@@ -43,25 +48,29 @@ require 'includes/config.php';
 
   ?>
 
-	<form action="edit_entry.php" method="post">
-		<input type="hidden" name="id" value="<?php echo $id;?>">
-	  <input type="text" name="expression" value="<?php echo $expression;?>"><br>
-	  <input type="text" name="reading" value="<?php echo $reading;?>"><br>
-	  <input type="text" name="meaning" value="<?php echo $meaning;?>"><br>
-	  <input type="submit" name="add_entry" value="Submit">
+	<form action="edit_entry.php" class="entry_form" method="post">
+		<?php include 'includes/entry_form_fields.php'; ?>
 	</form>
 
-  <!-- delete button -->
-  <form method='post' action='delete_entry.php'>
-  <input type='hidden' name='id' value='<?php echo $id;?>'>
-  <i class="fas fa-trash-alt" onclick="this.parentNode.submit()"></i>
-  </form>
 
-	<!-- Return button -->
-	<form method='post' action='show_one.php'>
-  <input type='hidden' name='id' value='<?php echo $id;?>'>
-  <i class="fas fa-arrow-left" onclick="this.parentNode.submit()"></i>
-  </form>
+
+
+	<!-- show navigation buttons -->
+	<div class="buttons_wrapper">
+
+		<!-- return button -->
+		<form method='get' action='show_one.php' class="button_container">
+		  <input type='hidden' name='id' value='<?php echo $id;?>'>
+		  <i class="button fas fa-arrow-left" onclick="this.parentNode.submit()"></i>
+	  </form>
+
+		<!-- delete button -->
+		<form method='post' action='delete_entry.php' class="button_container">
+		  <input type='hidden' name='id' value='<?php echo $id;?>'>
+		  <i class="button fas fa-trash-alt" onclick="if(confirm('Really?')) this.parentNode.submit();"></i>
+	  </form>
+
+	</div>
 
 
 	<?php include 'includes/post_main.php'; ?>

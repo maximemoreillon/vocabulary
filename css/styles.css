@@ -170,8 +170,12 @@ main {
   justify-content: center;
 }
 
-.add_entry_button_wrapper a, .buttons_wrapper .button{
+.button {
   cursor: pointer;
+}
+
+.add_entry_button_wrapper a, .buttons_wrapper .button{
+
   margin: 25px;
   font-size: 32px;
   text-decoration: none;
@@ -245,29 +249,29 @@ main form input[type='text'], main form input[type='password']{
 	color: #222222;
 }
 
-tr:first-child{
+.expressions_table tr:first-child{
   /* the row with headers */
   color: white;
   background-color: #666666;
   height: 50px;
 }
 
-tr:first-child a{
+.expressions_table tr:first-child a{
   color: white;
 }
 
 
 
-tr:nth-child(even) {
+.expressions_table tr:nth-child(even) {
   /* alternate row colors */
   background-color: #dddddd;
 }
 
-tr:not(:first-child){
+.expressions_table tr:not(:first-child){
   cursor: pointer;
 }
 
-tr:not(:first-child):hover{
+.expressions_table tr:not(:first-child):hover{
   background-color: #ceaaaa;
 }
 
@@ -276,8 +280,13 @@ tr:not(:first-child):hover{
   font-size: 65%;
 }
 
-td{
+.expressions_table td{
   padding: 5px;
+}
+
+.entry_form table {
+  margin: auto;
+  width: 100%;
 }
 
 

@@ -23,7 +23,7 @@ require 'includes/config.php';
 
 
   // SQL query
-  $sql = "SELECT expression, reading, meaning, score
+  $sql = "SELECT expression, reading, meaning, score, list
   FROM `$MySQL_table_name`
   WHERE id=$id";
 
@@ -38,20 +38,24 @@ require 'includes/config.php';
 
 
     echo '<div class="target_wrapper">';
-    echo $row["expression"]. "<br>";
+    echo $row["expression"];
     echo '</div>';
 
 		if($row["reading"] != ''){
 			echo '<div class="target_reading_wrapper">';
-	    echo "(".$row["reading"]. ")<br>";
+	    echo "(".$row["reading"]. ")";
 	    echo '</div>';
 		}
 
-
     echo '<div class="target_reading_wrapper">';
-    echo $row["meaning"]. "<br>";
+    echo $row["meaning"];
     echo '</div>';
-    echo "Score: ". $row["score"]. "/10<br>";
+
+		// Show score
+    echo "Score: ". $row["score"]. "/10<br><br>";
+
+		// Show list
+    echo "List: ". $row["list"]. "<br>";
 
   }
 
@@ -59,30 +63,22 @@ require 'includes/config.php';
 
   ?>
 
-
+	<!-- show navigation buttons -->
 	<div class="buttons_wrapper">
-		
+
 		<!-- Return button -->
 		<div class="button_container">
 			<a href="show_all.php" class="button fas fa-arrow-left"></a>
 		</div>
 
-		<!-- delete button -->
-		<form method='post' action='delete_entry.php' class="button_container">
+		<!-- edit button -->
+		<form method='get' action='edit_entry_form.php' class="button_container">
 		  <input type='hidden' name='id' value='<?php echo $id;?>'>
-		  <i class="button fas fa-trash-alt" onclick="submitAfterConfirm(this.parentNode)"></i>
+		  <i class="button fas fa-edit" onclick="this.parentNode.submit()"></i>
 	  </form>
-
-
 
 	</div>
 
-	<script type="text/javascript">
-		function submitAfterConfirm(form){
-			if(confirm("Really?")) form.submit();
-		}
-
-	</script>
 
 
 

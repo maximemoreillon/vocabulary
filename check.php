@@ -14,6 +14,10 @@ $target = $_REQUEST['target'];
 $id = $_REQUEST['id'];
 $mode = $_REQUEST['mode'];
 $score = $_REQUEST['score'];
+$list = "all";
+if(isset($_REQUEST['list'])) {
+  $list = $_REQUEST["list"];
+}
 
 $message = "";
 
@@ -60,6 +64,7 @@ if ($MySQL_connection->query($sql) === TRUE) {
 <div class="controls">
   <form action="mcq.php" method="get">
     <input type="hidden" name="mode" value="<?php echo $mode; ?>">
+    <input type="hidden" name="list" value="<?php echo $list; ?>">
     <input class="control" type="submit" value="Next">
   </form>
 </div>

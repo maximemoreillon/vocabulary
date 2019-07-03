@@ -25,18 +25,21 @@ if (isset($_REQUEST['mode'])) {
   }
 }
 
-$show_reading = True;
-if (!isset($_REQUEST['show_reading'] )) {
-	if($_REQUEST['show_reading'] === "no"){
-		$show_reading = False;
-	}
-}
+
+
 
 
 include 'includes/MySQL_connect.php';
 $username = mysqli_real_escape_string($MySQL_connection, $_SESSION['username']);
 
-$candidates = [];
+?>
+
+<!-- Select containing list -->
+<?php include 'includes/list_selector.php'; ?>
+
+<?php
+
+
 
 // Pick one word selected based on its score
 //TODO that's quite a rubbish way to select by score
@@ -45,8 +48,17 @@ $no_entry = False;
 while(!$target_selected && !$no_entry){
 
   $sql = "SELECT id, expression, reading, meaning, score FROM `$MySQL_table_name`
-  WHERE user_id=(SELECT id FROM users WHERE username ='$username')
-  ORDER BY RAND() LIMIT 1 ";
+  WHERE user_id=(SELECT id FROM users WHERE username ='$username')";
+
+	// filter lists if specified
+	if(isset($_REQUEST['list'])) {
+		if($_REQUEST['list'] !== 'all'){
+			$list = $_REQUEST["list"];
+			$sql.= "AND list='$list'";
+		}
+	}
+
+	$sql.= "ORDER BY RAND() LIMIT 1 ";
 
   $result = $MySQL_connection->query($sql);
 	if ($result->num_rows > 0) {
@@ -74,13 +86,24 @@ if(!$no_entry){
 	$target->id= $row["id"];
 	$target->score = $row["score"];
 
+	$candidates = [];
+
 	// The target must appear among the candidates
 	array_push($candidates,$target);
 
 	// Pick candidates randomly
 	$sql = "SELECT expression, reading, meaning FROM `$MySQL_table_name`
-	  WHERE user_id=(SELECT id FROM users WHERE username ='$username')
-	  AND NOT id='$target->id'
+	  WHERE user_id=(SELECT id FROM users WHERE username ='$username')";
+
+	// filter lists if specified
+	if(isset($_REQUEST['list'])) {
+		if($_REQUEST['list'] !== 'all'){
+			$list = $_REQUEST["list"];
+			$sql.= "AND list='$list'";
+		}
+	}
+
+	$sql .= "AND NOT id='$target->id'
 	  ORDER BY RAND() LIMIT $candidate_count";
 
 	$result = $MySQL_connection->query($sql);
@@ -123,6 +146,13 @@ $MySQL_connection->close();
 	    echo "<input type='hidden' name='id' value='".$target->id."'>";
 	    echo "<input type='hidden' name='score' value='".$target->score."'>";
 
+			if(isset($_REQUEST['list'])) {
+				$list = $_REQUEST["list"];
+				echo "<input type='hidden' name='list' value='$list'>";
+			}
+
+
+
 	    if($mode === "find_expression"){
 	      echo ($target->meaning);
 	      echo "<input type='hidden' name='target' value='".$target->expression."'>";
@@ -138,8 +168,7 @@ $MySQL_connection->close();
 		<!-- reading / pronounciation -->
 	  <div class="target_reading_wrapper" id="reading" style="visibility: hidden;">
 	    <?php
-	    if($mode === "find_meaning" && $show_reading){
-
+	    if($mode === "find_meaning"){
 	      echo ($target->reading);
 	    }
 	    ?>
