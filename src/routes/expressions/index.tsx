@@ -1,11 +1,15 @@
 import { Title } from "@solidjs/meta"
 import { For, Show } from "solid-js"
-import { createAsync } from "@solidjs/router"
-import { readExpressionsCache } from "~/api"
+import { createAsync, cache } from "@solidjs/router"
 import { readExpressions } from "~/api/expressions"
 
+const getExpressions = cache(async () => {
+  "use server"
+  return readExpressions()
+}, "expressions")
+
 export default function Home() {
-  const expressions = createAsync(async () => readExpressions(), {
+  const expressions = createAsync(() => getExpressions(), {
     deferStream: true,
   })
 

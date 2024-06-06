@@ -1,14 +1,26 @@
 import { Title } from "@solidjs/meta"
 import { Show } from "solid-js"
-import { useSubmission } from "@solidjs/router"
-import { createExpressionAction } from "~/api"
+import { action, redirect, useSubmission } from "@solidjs/router"
+import { createExpression } from "~/api/expressions"
+
+const createExpressionAction = action(async (formData: FormData) => {
+  const reading = String(formData.get("reading"))
+  const writing = String(formData.get("writing"))
+  const meaning = String(formData.get("meaning"))
+  const newExpression = await createExpression({ reading, meaning, writing })
+  return redirect(`/expressions/${newExpression.id}`)
+}, "createExpression")
 
 export default function NewExpression() {
-  const submission = useSubmission(createExpressionAction)
+  const submitting = useSubmission(createExpressionAction)
 
   return (
     <>
       <Title>New expression</Title>
+
+      <p>
+        <a href="/expressions"></a>
+      </p>
 
       <form action={createExpressionAction} method="post">
         <div>
@@ -24,12 +36,9 @@ export default function NewExpression() {
           <input name="meaning"></input>
         </div>
         <button type="submit">Submit</button>
-
-        <Show when={submission.result}>
-          {/* <Navigate href={`/expressions/2`} /> */}
-          Registration complete!
-        </Show>
       </form>
+
+      {/* TODO: error handling */}
     </>
   )
 }

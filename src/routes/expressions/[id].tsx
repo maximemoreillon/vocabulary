@@ -1,18 +1,33 @@
 import { Title } from "@solidjs/meta"
-import { For, Show } from "solid-js"
-import { createAsync, useParams } from "@solidjs/router"
-import { readExpressionsCache } from "~/api"
+import { Show } from "solid-js"
+import {
+  createAsync,
+  useParams,
+  cache,
+  action,
+  useAction,
+  useSubmission,
+  redirect,
+} from "@solidjs/router"
 import { deleteExpression, readExpression } from "~/api/expressions"
+
+const getExpression = cache(async (id: number) => {
+  "use server"
+  return readExpression(id)
+}, "expression")
+
+const deleteExpressionAction = action(async (id: number) => {
+  "use server"
+  await deleteExpression(id)
+  return redirect("expressions")
+})
 
 export default function Home() {
   const params = useParams()
+  const expression = createAsync(async () => getExpression(Number(params.id)))
 
-  const expression = createAsync(
-    async () => readExpression(Number(params.id)),
-    {
-      deferStream: true,
-    }
-  )
+  const useDeleteExpression = useAction(deleteExpressionAction)
+  const deleting = useSubmission(deleteExpressionAction)
 
   return (
     <main>
@@ -28,13 +43,15 @@ export default function Home() {
         <div>
           <button
             onclick={() => {
-              deleteExpression(Number(params.id))
+              useDeleteExpression(Number(params.id))
             }}
           >
             Delete Expression
           </button>
         </div>
       </Show>
+
+      <p>{deleting.result}</p>
     </main>
   )
 }
