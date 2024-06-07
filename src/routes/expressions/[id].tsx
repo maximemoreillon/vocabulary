@@ -10,6 +10,7 @@ import {
   redirect,
 } from "@solidjs/router"
 import { deleteExpression, readExpression } from "~/api/expressions"
+import Button from "~/components/Button"
 
 const getExpression = cache(async (id: number) => {
   "use server"
@@ -31,23 +32,24 @@ export default function Home() {
 
   return (
     <main>
-      <Title>My vocabulary list</Title>
-      <p>
-        <a href="/expressions">Back to my expressions</a>
-      </p>
+      <Title>{expression()?.writing}</Title>
+      <h1 class="text-3xl my-4">{expression()?.writing}</h1>
+      <div class="my-4">
+        <Button href="/expressions">Back to my expressions</Button>
+      </div>
       <Show when={expression()}>
         <div>Writing: {expression()?.writing}</div>
         <div>Reading: {expression()?.reading}</div>
         <div>Meaning: {expression()?.meaning}</div>
 
-        <div>
-          <button
+        <div class="my-4">
+          <Button
             onclick={() => {
               useDeleteExpression(Number(params.id))
             }}
           >
             Delete Expression
-          </button>
+          </Button>
         </div>
       </Show>
 

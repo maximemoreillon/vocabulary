@@ -1,7 +1,8 @@
-import { Title } from "@solidjs/meta"
+import { MetaProvider, Title } from "@solidjs/meta"
 import { For, Show } from "solid-js"
 import { createAsync, cache } from "@solidjs/router"
 import { readExpressions } from "~/api/expressions"
+import Button from "~/components/Button"
 
 const getExpressions = cache(async () => {
   "use server"
@@ -14,13 +15,14 @@ export default function Home() {
   })
 
   return (
-    <>
+    <MetaProvider>
       <Title>My vocabulary list</Title>
-      <p>
-        <a href="/expressions/new">New expression</a>
-      </p>
+      <h2 class="text-3xl my-4">My vocabulary list</h2>
+      <div class="my-4">
+        <Button href="/expressions/new">New expression</Button>
+      </div>
       <Show when={expressions()}>
-        <table>
+        <table class="w-full text-center">
           <thead>
             <tr>
               <th>Writing</th>
@@ -36,8 +38,8 @@ export default function Home() {
                   <td>{writing}</td>
                   <td>{reading}</td>
                   <td>{meaning}</td>
-                  <td>
-                    <a href={`/expressions/${id}`}>Details</a>
+                  <td class="p-2">
+                    <Button href={`/expressions/${id}`}>Details</Button>
                   </td>
                 </tr>
               )}
@@ -45,6 +47,6 @@ export default function Home() {
           </tbody>
         </table>
       </Show>
-    </>
+    </MetaProvider>
   )
 }

@@ -3,7 +3,7 @@
 import { redirect } from "@solidjs/router"
 import { db } from "./db"
 import { expressions } from "~/api/schema"
-import { eq } from "drizzle-orm"
+import { eq, sql } from "drizzle-orm"
 export type NewExpression = {
   writing: string
   reading: string
@@ -29,6 +29,14 @@ export async function readExpression(id: number) {
     .from(expressions)
     .where(eq(expressions.id, id))
   return expression
+}
+
+export async function readRandomExpressions(count: number = 4) {
+  return await db
+    .select()
+    .from(expressions)
+    .orderBy(sql`RANDOM()`)
+    .limit(count)
 }
 
 export async function deleteExpression(id: number) {
