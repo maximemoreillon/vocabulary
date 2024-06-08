@@ -4,6 +4,7 @@ import { redirect } from "@solidjs/router"
 import { db } from "./db"
 import { expressions } from "~/api/schema"
 import { eq, sql } from "drizzle-orm"
+
 export type NewExpression = {
   writing: string
   reading: string
@@ -28,6 +29,15 @@ export async function readExpression(id: number) {
     .select()
     .from(expressions)
     .where(eq(expressions.id, id))
+  return expression
+}
+
+export async function updateExpression(id: number, properties: any) {
+  const [expression] = await db
+    .update(expressions)
+    .set(properties)
+    .where(eq(expressions.id, id))
+    .returning()
   return expression
 }
 
