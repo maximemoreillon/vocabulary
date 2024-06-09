@@ -49,6 +49,16 @@ export default function Home() {
     refetch()
   }
 
+  function getEach() {
+    const expressions = randomExpressions()
+    if (!expressions) return []
+
+    return expressions
+      .map((value) => ({ value, sort: Math.random() }))
+      .sort((a, b) => a.sort - b.sort)
+      .map(({ value }) => value)
+  }
+
   return (
     <>
       <MetaProvider>
@@ -62,12 +72,7 @@ export default function Home() {
           <div>Score: {randomExpressions()?.at(0)?.score} </div>
 
           <div class="flex flex-col gap-4">
-            <For
-              each={randomExpressions()
-                .map((value) => ({ value, sort: Math.random() }))
-                .sort((a, b) => a.sort - b.sort)
-                .map(({ value }) => value)}
-            >
+            <For each={getEach()}>
               {(expression) => (
                 <Button onclick={() => handleButtonClicked(expression)}>
                   {expression.meaning}
