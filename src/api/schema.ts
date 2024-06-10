@@ -1,8 +1,15 @@
-// import { sql } from "drizzle-orm";
-import { text, integer, sqliteTable } from "drizzle-orm/sqlite-core"
+import {
+  integer,
+  text,
+  pgEnum,
+  pgTable,
+  serial,
+  uniqueIndex,
+  varchar,
+} from "drizzle-orm/pg-core"
 
-export const expressions = sqliteTable("expressions", {
-  id: integer("id").primaryKey().unique().notNull(),
+export const expressions = pgTable("expressions", {
+  id: serial("id").primaryKey(),
   writing: text("writing"),
   reading: text("reading"),
   meaning: text("meaning"),

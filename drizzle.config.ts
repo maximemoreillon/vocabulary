@@ -1,10 +1,11 @@
 import { defineConfig } from "drizzle-kit"
+import { DB_URL } from "~/api/db"
 
 export default defineConfig({
   schema: "./src/api/schema.ts",
   out: "./drizzle",
-  dialect: "sqlite",
+  dialect: "postgresql",
   dbCredentials: {
-    url: "./drizzle/sqlite.db",
+    url: DB_URL,
   },
 })
