@@ -4,11 +4,13 @@ import { action, redirect, useSubmission } from "@solidjs/router"
 import { login } from "~/api/auth"
 
 const loginAction = action(async (formData: FormData) => {
+  "use server"
+  console.log("Login action")
   const username = String(formData.get("username"))
   const password = String(formData.get("password"))
   await login({ username, password })
   return redirect("/expressions")
-})
+}, "login")
 
 export default function Home() {
   return (
