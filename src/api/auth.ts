@@ -1,5 +1,5 @@
 import { redirect } from "@solidjs/router"
-import { getSession } from "~/lib/session"
+import { getSession, type UserSession } from "~/lib/session"
 
 type Credentials = {
   username: string
@@ -16,7 +16,18 @@ export async function login(credentials: Credentials) {
     throw "Invalid credentials"
 
   const session = await getSession()
-  await session.update((d) => (d.username = username))
+  await session.update((d: UserSession) => (d.username = username))
 
   throw redirect("/")
+}
+
+export async function getUser() {
+  const session = await getSession()
+  const username = session.data.username
+  if (!username) {
+    console.log(`Session not found`)
+    throw redirect("/login")
+  }
+  console.log(`Found username ${username} in session`)
+  return { username }
 }

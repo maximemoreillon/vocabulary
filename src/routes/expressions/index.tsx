@@ -1,18 +1,34 @@
 import { MetaProvider, Title } from "@solidjs/meta"
 import { For, Show } from "solid-js"
-import { createAsync, cache } from "@solidjs/router"
+import { createAsync, cache, RouteDefinition } from "@solidjs/router"
 import { readExpressions } from "~/api/expressions"
 import Button from "~/components/Button"
+import { getUser } from "~/api/auth"
 
-const getExpressions = cache(async () => {
+const getUserCache = cache(async () => {
+  return getUser()
+}, "getUser")
+
+const getExpressionsCache = cache(async () => {
   "use server"
   return readExpressions()
 }, "expressions")
 
+// Not sure what this does
+export const route = {
+  load: () => getUserCache(),
+} satisfies RouteDefinition
+
 export default function Home() {
-  const expressions = createAsync(() => getExpressions(), {
-    deferStream: true,
-  })
+  const expressions = createAsync(
+    async () => {
+      await getUserCache()
+      return getExpressionsCache()
+    },
+    {
+      deferStream: true,
+    }
+  )
 
   return (
     <MetaProvider>
