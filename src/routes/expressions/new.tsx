@@ -1,9 +1,10 @@
 import { Title } from "@solidjs/meta"
-import { action, redirect, useSubmission } from "@solidjs/router"
+import { action, redirect, useSubmission, createAsync } from "@solidjs/router"
 import { createExpression } from "~/api/expressions"
 import Input from "~/components/Input"
 import Button from "~/components/Button"
-
+import { Show } from "solid-js"
+import { getUserCache } from "~/api"
 const createExpressionAction = action(async (formData: FormData) => {
   const reading = String(formData.get("reading"))
   const writing = String(formData.get("writing"))
@@ -13,7 +14,8 @@ const createExpressionAction = action(async (formData: FormData) => {
 }, "createExpression")
 
 export default function NewExpression() {
-  const submitting = useSubmission(createExpressionAction)
+  const user = createAsync(async () => getUserCache())
+  const submission = useSubmission(createExpressionAction)
 
   return (
     <>
@@ -37,7 +39,7 @@ export default function NewExpression() {
         <Button type="submit">Submit</Button>
       </form>
 
-      {/* TODO: error handling */}
+      <Show when={submission.error}>{submission.error}</Show>
     </>
   )
 }

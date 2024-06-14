@@ -11,7 +11,7 @@ import {
 } from "@solidjs/router"
 import { deleteExpression, readExpression } from "~/api/expressions"
 import Button from "~/components/Button"
-
+import { getUserCache } from "~/api"
 const getExpression = cache(async (id: number) => {
   "use server"
   return readExpression(id)
@@ -25,6 +25,7 @@ const deleteExpressionAction = action(async (id: number) => {
 
 export default function Home() {
   const params = useParams()
+  const user = createAsync(async () => getUserCache())
   const expression = createAsync(async () => getExpression(Number(params.id)))
 
   const useDeleteExpression = useAction(deleteExpressionAction)

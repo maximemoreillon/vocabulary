@@ -1,7 +1,5 @@
+import { Navigate } from "@solidjs/router"
+
 export default function Home() {
-  return (
-    <>
-      <h1>Vocabulary app</h1>
-    </>
-  )
+  return <Navigate href="/expressions" />
 }

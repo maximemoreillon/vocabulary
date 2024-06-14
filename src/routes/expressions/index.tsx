@@ -3,11 +3,7 @@ import { For, Show } from "solid-js"
 import { createAsync, cache, RouteDefinition } from "@solidjs/router"
 import { readExpressions } from "~/api/expressions"
 import Button from "~/components/Button"
-import { getUser } from "~/api/auth"
-
-const getUserCache = cache(async () => {
-  return getUser()
-}, "getUser")
+import { getUserCache } from "~/api"
 
 const getExpressionsCache = cache(async () => {
   "use server"
@@ -20,15 +16,10 @@ const getExpressionsCache = cache(async () => {
 // } satisfies RouteDefinition
 
 export default function Home() {
-  const expressions = createAsync(
-    async () => {
-      await getUserCache()
-      return getExpressionsCache()
-    },
-    {
-      deferStream: true,
-    }
-  )
+  const user = createAsync(async () => getUserCache())
+  const expressions = createAsync(async () => getExpressionsCache(), {
+    deferStream: true,
+  })
 
   return (
     <MetaProvider>

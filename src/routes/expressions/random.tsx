@@ -13,6 +13,7 @@ import {
 } from "@solidjs/router"
 import { readRandomExpressions, updateExpression } from "~/api/expressions"
 import Button from "~/components/Button"
+import { getUserCache } from "~/api"
 
 const getExpressions = cache(async () => {
   "use server"
@@ -25,6 +26,7 @@ const updateExpressionAction = action(async (id: number, newScore: number) => {
 }, "updateExpression")
 
 export default function Home() {
+  const user = createAsync(async () => getUserCache())
   const [getAnswer, setAnswer] = createSignal(null)
   const [randomExpressions, { refetch }] = createResource(
     async () => await readRandomExpressions()
