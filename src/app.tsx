@@ -17,6 +17,7 @@ export default function App() {
               <a href="/expressions/random">Random</a>
               <a href="/about">About</a>
               <a href="/login">Login</a>
+              <a href="/logout">Logout</a>
             </nav>
           </header>
           <main class="max-w-5xl mx-auto">

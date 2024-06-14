@@ -15,9 +15,9 @@ const getExpressionsCache = cache(async () => {
 }, "expressions")
 
 // Not sure what this does
-export const route = {
-  load: () => getUserCache(),
-} satisfies RouteDefinition
+// export const route = {
+//   load: () => getUserCache(),
+// } satisfies RouteDefinition
 
 export default function Home() {
   const expressions = createAsync(

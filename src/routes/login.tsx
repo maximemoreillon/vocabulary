@@ -2,10 +2,9 @@ import Button from "~/components/Button"
 import Input from "~/components/Input"
 import { action, redirect, useSubmission } from "@solidjs/router"
 import { login } from "~/api/auth"
+import { Show } from "solid-js"
 
 const loginAction = action(async (formData: FormData) => {
-  "use server"
-  console.log("Login action")
   const username = String(formData.get("username"))
   const password = String(formData.get("password"))
   await login({ username, password })
@@ -13,6 +12,8 @@ const loginAction = action(async (formData: FormData) => {
 }, "login")
 
 export default function Home() {
+  const submission = useSubmission(loginAction)
+
   return (
     <>
       <h1>Login</h1>
@@ -23,6 +24,9 @@ export default function Home() {
 
         <Button type="submit">Login</Button>
       </form>
+
+      <Show when={submission.result}>{submission.result}</Show>
+      <Show when={submission.error}>{submission.error}</Show>
     </>
   )
 }
