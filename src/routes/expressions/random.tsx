@@ -27,6 +27,7 @@ const updateExpressionAction = action(async (id: number, newScore: number) => {
 
 export default function Home() {
   const user = createAsync(async () => getUserCache())
+  const [getReadingShown, setReadingShown] = createSignal(false)
   const [getAnswer, setAnswer] = createSignal(null)
   const [randomExpressions, { refetch }] = createResource(
     async () => await readRandomExpressions()
@@ -61,6 +62,11 @@ export default function Home() {
       .map(({ value }) => value)
   }
 
+  function getNextExpression() {
+    setReadingShown(false)
+    refresh()
+  }
+
   return (
     <>
       <MetaProvider>
@@ -71,7 +77,17 @@ export default function Home() {
             {randomExpressions()?.at(0)?.writing}
           </div>
 
+          <Show when={getReadingShown()}>
+            <div class="text-center">{randomExpressions()?.at(0)?.reading}</div>
+          </Show>
+
           <div>Score: {randomExpressions()?.at(0)?.score} </div>
+
+          <div>
+            <Button onclick={() => setReadingShown(!getReadingShown())}>
+              Show / hide reading
+            </Button>
+          </div>
 
           <div class="flex flex-col gap-4">
             <For each={getEach()}>
@@ -86,7 +102,7 @@ export default function Home() {
         <Show when={getAnswer()}>
           <div>Answer was: {randomExpressions()?.at(0)?.meaning}</div>
           <div class="my-4">
-            <Button onclick={refresh}>Next expression</Button>
+            <Button onclick={getNextExpression}>Next expression</Button>
           </div>
         </Show>
       </MetaProvider>

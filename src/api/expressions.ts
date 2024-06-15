@@ -1,6 +1,5 @@
 "use server"
 
-import { redirect } from "@solidjs/router"
 import { db } from "./db"
 import { expressions } from "~/api/schema"
 import { eq, sql } from "drizzle-orm"
