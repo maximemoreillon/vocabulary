@@ -15,22 +15,20 @@ import { readRandomExpressions, updateExpression } from "~/api/expressions"
 import Button from "~/components/Button"
 import { getUserCache } from "~/api"
 
-const getExpressions = cache(async () => {
-  "use server"
-  return readRandomExpressions()
+const getRandomExpressionsCache = cache(async () => {
+  return await readRandomExpressions()
 }, "expression")
 
 const updateExpressionAction = action(async (id: number, newScore: number) => {
-  "use server"
   await updateExpression(id, { score: newScore })
 }, "updateExpression")
 
 export default function Home() {
-  const user = createAsync(async () => getUserCache())
+  createAsync(async () => getUserCache())
   const [getReadingShown, setReadingShown] = createSignal(false)
   const [getAnswer, setAnswer] = createSignal(null)
   const [randomExpressions, { refetch }] = createResource(
-    async () => await readRandomExpressions()
+    async () => await getRandomExpressionsCache()
   )
 
   async function handleButtonClicked(selectedExpression: any) {
