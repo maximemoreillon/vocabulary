@@ -5,17 +5,18 @@ import Input from "~/components/Input"
 import Button from "~/components/Button"
 import { Show } from "solid-js"
 import { getUserCache } from "~/api"
-const createExpressionAction = action(async (formData: FormData) => {
+
+const postExpressionAction = action(async (formData: FormData) => {
   const reading = String(formData.get("reading"))
   const writing = String(formData.get("writing"))
   const meaning = String(formData.get("meaning"))
   const newExpression = await createExpression({ reading, meaning, writing })
   return redirect(`/expressions/${newExpression.id}`)
-}, "createExpression")
+}, "postExpression")
 
 export default function NewExpression() {
   const user = createAsync(async () => getUserCache())
-  const submission = useSubmission(createExpressionAction)
+  const submission = useSubmission(postExpressionAction)
 
   return (
     <>
@@ -28,7 +29,7 @@ export default function NewExpression() {
       </div>
 
       <form
-        action={createExpressionAction}
+        action={postExpressionAction}
         method="post"
         class="my-8 flex flex-col gap-8"
       >

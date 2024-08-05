@@ -12,16 +12,17 @@ import {
 import { deleteExpression, readExpression } from "~/api/expressions"
 import Button from "~/components/Button"
 import { getUserCache } from "~/api"
+
 const getExpression = cache(async (id: number) => {
   "use server"
   return readExpression(id)
-}, "expression")
+}, "getExpression")
 
 const deleteExpressionAction = action(async (id: number) => {
   "use server"
   await deleteExpression(id)
   return redirect("expressions")
-})
+}, "deleteExpression")
 
 export default function Home() {
   const params = useParams()

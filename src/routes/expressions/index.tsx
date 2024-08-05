@@ -8,12 +8,7 @@ import { getUserCache } from "~/api"
 const getExpressionsCache = cache(async () => {
   "use server"
   return readExpressions()
-}, "expressions")
-
-// Not sure what this does
-// export const route = {
-//   load: () => getUserCache(),
-// } satisfies RouteDefinition
+}, "getExpressions")
 
 export default function Home() {
   const user = createAsync(async () => getUserCache())
