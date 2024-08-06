@@ -1,5 +1,5 @@
-"use server"
 // NOTE: "use server is important here!"
+"use server"
 
 import { redirect } from "@solidjs/router"
 import { SessionConfig, useSession } from "vinxi/http"
@@ -30,7 +30,7 @@ export async function getSession() {
 export async function getUser() {
   const session = await getSession()
   const { username } = session.data
-  if (!username) throw redirect("/login")
+  // if (!username) throw redirect("/login")
   return { username }
 }
 

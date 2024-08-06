@@ -17,7 +17,7 @@ export default function Home() {
   return (
     <MetaProvider>
       <Title>My vocabulary list</Title>
-      <h2 class="text-3xl my-4">My vocabulary list</h2>
+      <h2 class="text-4xl">Vocabulary list</h2>
       <div class="my-4">
         <Button href="/expressions/new">New expression</Button>
       </div>

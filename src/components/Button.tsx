@@ -7,8 +7,8 @@ type Props = {
   type?: "submit" | "reset" | "button" | undefined
 }
 
+const className = "rounded px-4 py-2 bg-primary text-light shadow"
 export default function Button(props: Props) {
-  const className = "rounded border-2 px-4 py-2"
   return (
     <>
       <Show when={props.href}>

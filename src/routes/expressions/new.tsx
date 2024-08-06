@@ -1,5 +1,11 @@
 import { Title } from "@solidjs/meta"
-import { action, redirect, useSubmission, createAsync } from "@solidjs/router"
+import {
+  action,
+  redirect,
+  useSubmission,
+  createAsync,
+  A,
+} from "@solidjs/router"
 import { createExpression } from "~/api/expressions"
 import Input from "~/components/Input"
 import Button from "~/components/Button"
@@ -25,7 +31,9 @@ export default function NewExpression() {
       <h2 class="text-3xl my-4">New expression</h2>
 
       <div>
-        <Button href="/expressions">Return to my expressions</Button>
+        <A href="/expressions" class="text-primary underline">
+          Return to my expressions
+        </A>
       </div>
 
       <form
