@@ -16,10 +16,12 @@ import Button from "~/components/Button"
 import { getUserCache } from "~/api"
 
 const getRandomExpressionsCache = cache(async () => {
+  "use server"
   return await readRandomExpressions()
 }, "expression")
 
 const updateExpressionAction = action(async (id: number, newScore: number) => {
+  "use server"
   await updateExpression(id, { score: newScore })
 }, "updateExpression")
 

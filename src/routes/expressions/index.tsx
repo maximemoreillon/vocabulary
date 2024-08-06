@@ -7,14 +7,12 @@ import { getUserCache } from "~/api"
 
 const getExpressionsCache = cache(async () => {
   "use server"
-  return readExpressions()
+  return await readExpressions()
 }, "getExpressions")
 
 export default function Home() {
   const user = createAsync(async () => getUserCache())
-  const expressions = createAsync(async () => getExpressionsCache(), {
-    deferStream: true,
-  })
+  const expressions = createAsync(async () => getExpressionsCache())
 
   return (
     <MetaProvider>

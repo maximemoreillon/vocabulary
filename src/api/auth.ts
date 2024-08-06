@@ -2,7 +2,7 @@
 // NOTE: "use server is important here!"
 
 import { redirect } from "@solidjs/router"
-import { useSession } from "vinxi/http"
+import { SessionConfig, useSession } from "vinxi/http"
 
 type Credentials = {
   username: string
@@ -17,13 +17,14 @@ const {
   SESSION_SECRET = "areallylongsecretthatyoushouldreplace",
   APP_USERNAME = "user",
   APP_PASSWORD = "password",
+  NODE_ENV,
 } = process.env
 
 export async function getSession() {
-  const session = await useSession({
-    password: SESSION_SECRET,
-  })
-  return session
+  const config: SessionConfig = { password: SESSION_SECRET }
+  if (NODE_ENV === "development") config.cookie = { secure: false }
+
+  return useSession(config)
 }
 
 export async function getUser() {
