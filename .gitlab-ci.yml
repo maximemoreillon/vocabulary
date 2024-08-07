@@ -2,12 +2,35 @@ stages:
   - build
   - deploy
 
-build-job:
-  stage: build
-  script:
-    - echo "build"
+variables:
+  APPLICATION_NAME: vocabulary
+  CONTAINER_IMAGE: ${DOCKER_HUB_USERNAME}/${APPLICATION_NAME}
+  CONTAINER_IMAGE_TAGGED: ${CONTAINER_IMAGE}:${CI_COMMIT_SHORT_SHA}
+  K8S_INGRESS_HOST: vocabulary.home.maximemoreillon.com
 
-deploy-job:
-  stage: deploy
+image: moreillon/ci-dind
+services:
+  - name: docker:24.0.7-dind
+
+build:
+  stage: build
+  tags:
+    - dind
+  before_script:
+    - echo "${DOCKER_HUB_PASSWORD}" | docker login --username ${DOCKER_HUB_USERNAME} --password-stdin
   script:
-    - echo "deploy"
+    - docker build -t ${CONTAINER_IMAGE} .
+    - docker tag ${CONTAINER_IMAGE} ${CONTAINER_IMAGE_TAGGED}
+    - docker push ${CONTAINER_IMAGE}
+    - docker push ${CONTAINER_IMAGE_TAGGED}
+
+deploy:
+  only:
+    - master
+  stage: deploy
+  tags:
+    - dind
+  before_script:
+    - kubectl config use-context moreillon_ci/moreillon_k8s_home/kubernetes-agent:home
+  script:
+    - envsubst < kubernetes_manifest.yml | kubectl apply -n ${KUBERNETES_NAMESPACE} -f -
