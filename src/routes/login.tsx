@@ -15,18 +15,22 @@ export default function Home() {
   const submission = useSubmission(loginAction)
 
   return (
-    <>
-      <h1>Login</h1>
+    <form
+      action={loginAction}
+      method="post"
+      class="my-8 flex flex-col gap-8 mx-auto max-w-sm"
+    >
+      <h1 class="text-6xl">Login</h1>
 
-      <form action={loginAction} method="post" class="my-8 flex flex-col gap-8">
-        <Input label="Username" name="username" />
-        <Input label="Password" name="password" type="password" />
+      <Input label="Username" name="username" />
+      <Input label="Password" name="password" type="password" />
 
+      <div class="text-center">
         <Button type="submit">Login</Button>
-      </form>
+      </div>
 
       <Show when={submission.result}>{submission.result}</Show>
       <Show when={submission.error}>{submission.error}</Show>
-    </>
+    </form>
   )
 }

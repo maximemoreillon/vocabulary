@@ -27,10 +27,10 @@ export async function getSession() {
   return useSession(config)
 }
 
-export async function getUser() {
+export async function getUser(redirectToLogin: boolean) {
   const session = await getSession()
   const { username } = session.data
-  // if (!username) throw redirect("/login")
+  if (!username && redirectToLogin) throw redirect("/login")
   return { username }
 }
 

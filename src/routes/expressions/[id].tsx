@@ -33,7 +33,7 @@ export default function Home() {
   const deleting = useSubmission(deleteExpressionAction)
 
   return (
-    <main>
+    <>
       <Title>{expression()?.writing}</Title>
       <h1 class="text-3xl my-4">{expression()?.writing}</h1>
       <div class="my-4">
@@ -56,6 +56,6 @@ export default function Home() {
       </Show>
 
       <p>{deleting.result}</p>
-    </main>
+    </>
   )
 }

@@ -21,7 +21,7 @@ const postExpressionAction = action(async (formData: FormData) => {
 }, "postExpression")
 
 export default function NewExpression() {
-  const user = createAsync(async () => getUserCache())
+  const user = createAsync(async () => getUserCache(true))
   const submission = useSubmission(postExpressionAction)
 
   return (

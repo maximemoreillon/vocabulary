@@ -12,12 +12,12 @@ export default function App() {
     <Router
       root={(props) => (
         <MetaProvider>
-          <Title>SolidStart - Basic</Title>
-          <Header />
+          <Title>Vocabulary</Title>
+          <Suspense>
+            <Header />
 
-          <main class="max-w-5xl mx-auto p-5">
-            <Suspense>{props.children}</Suspense>
-          </main>
+            <main class="max-w-5xl mx-auto p-4">{props.children}</main>
+          </Suspense>
         </MetaProvider>
       )}
     >
