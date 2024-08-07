@@ -8,7 +8,7 @@ export default function Header() {
   return (
     <>
       {user()?.username ? (
-        <header class="bg-primary text-light flex justify-between items-center px-4 py-4 shadow">
+        <header class="bg-dark-200 text-light flex justify-between items-center px-4 py-4 shadow">
           <h1 class="text-xl">Vocabulary</h1>
 
           {/*  <nav class="flex gap-4">

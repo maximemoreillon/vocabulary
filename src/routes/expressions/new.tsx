@@ -45,7 +45,9 @@ export default function NewExpression() {
         <Input label="Reading" name="reading" />
         <Input label="Meaning" name="meaning" />
 
-        <Button type="submit">Submit</Button>
+        <div class="text-center">
+          <Button type="submit">Submit</Button>
+        </div>
       </form>
 
       <Show when={submission.error}>{submission.error}</Show>
