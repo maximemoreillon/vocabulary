@@ -8,7 +8,7 @@ import { getUserCache } from "~/api"
 const getExpressionsCache = cache(async () => {
   "use server"
 
-  if (process.env.DB_URL) return await readExpressions()
+  if (process.env.VOCABULARY_DB_URL) return await readExpressions()
   else return []
 }, "getExpressions")
 
