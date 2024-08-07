@@ -8,6 +8,7 @@ import {
   useAction,
   useSubmission,
   redirect,
+  A,
 } from "@solidjs/router"
 import { deleteExpression, readExpression } from "~/api/expressions"
 import Button from "~/components/Button"
@@ -37,7 +38,9 @@ export default function Home() {
       <Title>{expression()?.writing}</Title>
       <h1 class="text-3xl my-4">{expression()?.writing}</h1>
       <div class="my-4">
-        <Button href="/expressions">Back to my expressions</Button>
+        <A href="/expressions" class="text-primary-300">
+          Back to my expressions
+        </A>
       </div>
       <Show when={expression()}>
         <div>Writing: {expression()?.writing}</div>

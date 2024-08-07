@@ -10,6 +10,7 @@ import {
   redirect,
   Navigate,
   useNavigate,
+  A,
 } from "@solidjs/router"
 import { readRandomExpressions, updateExpression } from "~/api/expressions"
 import Button from "~/components/Button"
@@ -33,6 +34,7 @@ export default function Home() {
     async () => await getRandomExpressionsCache()
   )
 
+  // TODO: use actions properly
   async function handleButtonClicked(selectedExpression: any) {
     const expression = randomExpressions()?.at(0)
     if (!expression) return
@@ -71,6 +73,12 @@ export default function Home() {
     <>
       <MetaProvider>
         <Title>Random expression</Title>
+
+        <div>
+          <A href="/expressions" class="text-primary-500 underline">
+            Return to my expressions
+          </A>
+        </div>
 
         <Show when={randomExpressions()}>
           <div class="text-5xl my-4 text-center">

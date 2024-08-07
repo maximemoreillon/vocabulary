@@ -31,7 +31,7 @@ export default function NewExpression() {
       <h2 class="text-3xl my-4">New expression</h2>
 
       <div>
-        <A href="/expressions" class="text-primary underline">
+        <A href="/expressions" class="text-primary-500 underline">
           Return to my expressions
         </A>
       </div>

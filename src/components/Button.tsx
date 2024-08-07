@@ -7,7 +7,7 @@ type Props = {
   type?: "submit" | "reset" | "button" | undefined
 }
 
-const className = "rounded px-4 py-2 bg-primary text-light shadow"
+const className = "rounded px-4 py-2 bg-primary-500 text-light shadow"
 export default function Button(props: Props) {
   return (
     <>

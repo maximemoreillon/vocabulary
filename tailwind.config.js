@@ -7,6 +7,10 @@ export default {
       primary: "#c00000",
       "primary-100": "#c00000",
       "primary-200": "#cc371e",
+      "primary-300": "#d75538",
+      "primary-400": "#e16f52",
+      "primary-500": "#e9886d",
+      "primary-600": "#f1a089",
 
       light: "#F9FAFB",
       dark: "#121212",
