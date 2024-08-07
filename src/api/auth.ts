@@ -14,14 +14,14 @@ type UserSession = {
 }
 
 const {
-  SESSION_SECRET = "areallylongsecretthatyoushouldreplace",
-  APP_USERNAME = "user",
-  APP_PASSWORD = "password",
+  VOCABULARY_SESSION_SECRET = "areallylongsecretthatyoushouldreplace",
+  VOCABULARY_USERNAME = "user",
+  VOCABULARY_PASSWORD = "password",
   NODE_ENV,
 } = process.env
 
 export async function getSession() {
-  const config: SessionConfig = { password: SESSION_SECRET }
+  const config: SessionConfig = { password: VOCABULARY_SESSION_SECRET }
   if (NODE_ENV === "development") config.cookie = { secure: false }
 
   try {
@@ -41,7 +41,7 @@ export async function getUser(redirectToLogin: boolean) {
 export async function login(credentials: Credentials) {
   const { username, password } = credentials
 
-  if (username !== APP_USERNAME || password !== APP_PASSWORD)
+  if (username !== VOCABULARY_USERNAME || password !== VOCABULARY_PASSWORD)
     throw new Error("Invalid credentials")
 
   const session = await getSession()
