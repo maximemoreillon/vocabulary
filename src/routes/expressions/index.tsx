@@ -7,12 +7,13 @@ import { getUserCache } from "~/api"
 
 const getExpressionsCache = cache(async () => {
   "use server"
-  // return await readExpressions()
-  return []
+
+  if (process.env.DB_URL) return await readExpressions()
+  else return []
 }, "getExpressions")
 
 export default function Home() {
-  const user = createAsync(async () => getUserCache(true))
+  createAsync(async () => getUserCache(true))
 
   const expressions = createAsync(async () => getExpressionsCache())
 
@@ -20,8 +21,9 @@ export default function Home() {
     <>
       <Title>My vocabulary list</Title>
       <h2 class="text-6xl">Vocabulary list</h2>
-      <div class="my-8">
+      <div class="my-8 flex gap-4">
         <Button href="/expressions/new">New expression</Button>
+        <Button href="/expressions/random">Quizz</Button>
       </div>
       <Show when={expressions()}>
         <table class="w-full text-center">
