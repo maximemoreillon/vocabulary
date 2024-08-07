@@ -24,7 +24,11 @@ export async function getSession() {
   const config: SessionConfig = { password: SESSION_SECRET }
   if (NODE_ENV === "development") config.cookie = { secure: false }
 
-  return useSession(config)
+  try {
+    return await useSession(config)
+  } catch (error) {
+    throw redirect("/login")
+  }
 }
 
 export async function getUser(redirectToLogin: boolean) {
