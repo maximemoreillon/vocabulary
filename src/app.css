@@ -3,3 +3,10 @@
 @tailwind utilities;
 
 /* TODO: dark and light mode BG */
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #111111;
+    color: #eeeeee;
+  }
+}

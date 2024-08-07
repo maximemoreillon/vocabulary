@@ -15,7 +15,6 @@ export default function App() {
           <Title>Vocabulary</Title>
           <Suspense>
             <Header />
-
             <main class="max-w-5xl mx-auto p-4">{props.children}</main>
           </Suspense>
         </MetaProvider>
