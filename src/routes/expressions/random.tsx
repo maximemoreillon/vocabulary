@@ -15,6 +15,7 @@ import {
 import { readRandomExpressions, updateExpression } from "~/api/expressions"
 import Button from "~/components/Button"
 import { getUserCache } from "~/api"
+import BackLink from "~/components/BackLink"
 
 const getRandomExpressionsCache = cache(async () => {
   "use server"
@@ -73,12 +74,7 @@ export default function Home() {
     <>
       <MetaProvider>
         <Title>Random expression</Title>
-
-        <div>
-          <A href="/expressions" class="text-primary-500 underline">
-            Return to my expressions
-          </A>
-        </div>
+        <BackLink />
 
         <Show when={randomExpressions()}>
           <div class="text-5xl my-4 text-center">
@@ -97,7 +93,7 @@ export default function Home() {
             </Button>
           </div>
 
-          <div class="flex flex-col gap-4">
+          <div class="flex flex-col gap-4 my-4">
             <For each={getEach()}>
               {(expression) => (
                 <Button onclick={() => handleButtonClicked(expression)}>

@@ -11,6 +11,7 @@ import Input from "~/components/Input"
 import Button from "~/components/Button"
 import { Show } from "solid-js"
 import { getUserCache } from "~/api"
+import BackLink from "~/components/BackLink"
 
 const postExpressionAction = action(async (formData: FormData) => {
   const reading = String(formData.get("reading"))
@@ -27,15 +28,9 @@ export default function NewExpression() {
   return (
     <>
       <Title>New expression</Title>
+      <BackLink />
 
-      <h2 class="text-3xl my-4">New expression</h2>
-
-      <div>
-        <A href="/expressions" class="text-primary-500 underline">
-          Return to my expressions
-        </A>
-      </div>
-
+      <h2 class="text-6xl my-4">New expression</h2>
       <form
         action={postExpressionAction}
         method="post"
@@ -49,7 +44,6 @@ export default function NewExpression() {
           <Button type="submit">Submit</Button>
         </div>
       </form>
-
       <Show when={submission.error}>{submission.error}</Show>
     </>
   )

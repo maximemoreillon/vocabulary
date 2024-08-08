@@ -8,11 +8,11 @@ import {
   useAction,
   useSubmission,
   redirect,
-  A,
 } from "@solidjs/router"
 import { deleteExpression, readExpression } from "~/api/expressions"
 import Button from "~/components/Button"
 import { getUserCache } from "~/api"
+import BackLink from "~/components/BackLink"
 
 const getExpression = cache(async (id: number) => {
   "use server"
@@ -36,12 +36,8 @@ export default function Home() {
   return (
     <>
       <Title>{expression()?.writing}</Title>
-      <h1 class="text-3xl my-4">{expression()?.writing}</h1>
-      <div class="my-4">
-        <A href="/expressions" class="text-primary-300">
-          Back to my expressions
-        </A>
-      </div>
+      <BackLink />
+      <h1 class="text-6xl my-4">{expression()?.writing}</h1>
       <Show when={expression()}>
         <div>Writing: {expression()?.writing}</div>
         <div>Reading: {expression()?.reading}</div>

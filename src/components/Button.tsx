@@ -8,7 +8,7 @@ type Props = {
   disabled?: boolean
 }
 
-const className = "rounded px-4 py-2 bg-primary-500 text-light shadow"
+const className = "rounded px-4 py-2 bg-primary-500 text-dark shadow"
 export default function Button(props: Props) {
   return (
     <>
