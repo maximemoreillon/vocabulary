@@ -17,6 +17,7 @@ const {
   VOCABULARY_SESSION_SECRET = "areallylongsecretthatyoushouldreplace",
   VOCABULARY_USERNAME = "user",
   VOCABULARY_PASSWORD = "password",
+  LOGIN_URL,
   NODE_ENV,
 } = process.env
 
@@ -40,14 +41,24 @@ export async function getUser(redirectToLogin: boolean) {
 
 export async function login(credentials: Credentials) {
   const { username, password } = credentials
+  if (LOGIN_URL) {
+    const options = {
+      method: "POST",
+      body: JSON.stringify({ username, password }),
+      headers: {
+        "content-type": "application/json",
+      },
+    }
 
-  if (username !== VOCABULARY_USERNAME || password !== VOCABULARY_PASSWORD)
-    throw new Error("Invalid credentials")
+    const { status } = await fetch(LOGIN_URL, options)
+    if (status !== 200) throw new Error("Login failed")
+  } else {
+    if (username !== VOCABULARY_USERNAME || password !== VOCABULARY_PASSWORD)
+      throw new Error("Invalid credentials")
+  }
 
   const session = await getSession()
   await session.update((d: UserSession) => (d.username = username))
-
-  throw redirect("/")
 }
 
 export async function logout() {

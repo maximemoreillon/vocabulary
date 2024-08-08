@@ -12,7 +12,11 @@ export default function Input(props: Props) {
       <Show when={props.label}>
         <label class="text-sm">{props.label}</label>
       </Show>
-      <input type={props.type} name={props.name} class="border p-2" />
+      <input
+        type={props.type}
+        name={props.name}
+        class="p-2 bg-dark-300 rounded"
+      />
     </div>
   )
 }

@@ -5,6 +5,7 @@ type Props = {
   onclick?: any
   children?: JSXElement
   type?: "submit" | "reset" | "button" | undefined
+  disabled?: boolean
 }
 
 const className = "rounded px-4 py-2 bg-primary-500 text-light shadow"
@@ -17,7 +18,12 @@ export default function Button(props: Props) {
         </a>
       </Show>
       <Show when={!props.href}>
-        <button onclick={props.onclick} type={props.type} class={className}>
+        <button
+          onclick={props.onclick}
+          type={props.type}
+          disabled={props.disabled}
+          class={className}
+        >
           {props.children}
         </button>
       </Show>
