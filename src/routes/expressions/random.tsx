@@ -60,7 +60,7 @@ const updateExpressionAction = action(async (id: number, newScore: number) => {
   await updateExpression(id, { score: newScore })
 }, "updateExpression")
 
-export default function Home() {
+export default function Quizz() {
   createAsync(async () => getUserCache())
   const [getReadingShown, setReadingShown] = createSignal(false)
   const [getAnswer, setAnswer] = createSignal(null)

@@ -12,7 +12,7 @@ const getExpressionsCache = cache(async () => {
   return await readExpressions()
 }, "getExpressions")
 
-export default function Home() {
+export default function ExpressionList() {
   createAsync(async () => getUserCache(true))
 
   const expressions = createAsync(async () => getExpressionsCache())

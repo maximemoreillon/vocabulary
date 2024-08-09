@@ -16,7 +16,7 @@ const loginAction = action(async (formData: FormData) => {
   }
 }, "login")
 
-export default function Home() {
+export default function Login() {
   const submission = useSubmission(loginAction)
 
   return (

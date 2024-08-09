@@ -2,7 +2,7 @@ import { A } from "@solidjs/router"
 
 import { FaSolidArrowLeft } from "solid-icons/fa"
 
-export default function LogoutButton() {
+export default function BackLink() {
   return (
     <A
       href="/expressions"

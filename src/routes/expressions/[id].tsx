@@ -25,7 +25,7 @@ const deleteExpressionAction = action(async (id: number) => {
   return redirect("expressions")
 }, "deleteExpression")
 
-export default function Home() {
+export default function Expression() {
   const params = useParams()
   const user = createAsync(async () => getUserCache())
   const expression = createAsync(async () => getExpression(Number(params.id)))
