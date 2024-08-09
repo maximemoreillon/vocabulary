@@ -1,13 +1,13 @@
-import { MetaProvider, Title } from "@solidjs/meta"
+import { Title } from "@solidjs/meta"
 import { For, Show } from "solid-js"
-import { createAsync, cache, RouteDefinition, redirect } from "@solidjs/router"
+import { createAsync, cache } from "@solidjs/router"
 import { readExpressions } from "~/api/expressions"
 import Button from "~/components/Button"
 import { getUserCache } from "~/api"
+import { FaSolidPlus, FaSolidQuestion } from "solid-icons/fa"
 
 const getExpressionsCache = cache(async () => {
   "use server"
-
   if (process.env.VOCABULARY_DB_URL) return await readExpressions()
   else return []
 }, "getExpressions")
@@ -22,8 +22,14 @@ export default function Home() {
       <Title>My vocabulary list</Title>
       <h2 class="text-6xl">Vocabulary list</h2>
       <div class="my-8 flex gap-4">
-        <Button href="/expressions/new">New expression</Button>
-        <Button href="/expressions/random">Quizz</Button>
+        <Button href="/expressions/new">
+          <FaSolidPlus />
+          <span>New expression</span>
+        </Button>
+        <Button href="/expressions/random">
+          <FaSolidQuestion />
+          <span>Quizz</span>
+        </Button>
       </div>
       <Show when={expressions()}>
         <table class="w-full text-center">
