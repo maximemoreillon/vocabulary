@@ -12,6 +12,7 @@ import Button from "~/components/Button"
 import { Show } from "solid-js"
 import { getUserCache } from "~/api"
 import BackLink from "~/components/BackLink"
+import { FaSolidPlus } from "solid-icons/fa"
 
 const postExpressionAction = action(async (formData: FormData) => {
   const reading = String(formData.get("reading"))
@@ -41,7 +42,10 @@ export default function NewExpression() {
         <Input label="Meaning" name="meaning" />
 
         <div class="text-center">
-          <Button type="submit">Submit</Button>
+          <Button type="submit" disabled={submission.pending}>
+            <FaSolidPlus />
+            <span>Submit</span>
+          </Button>
         </div>
       </form>
       <Show when={submission.error}>{submission.error}</Show>

@@ -3,6 +3,7 @@ import Input from "~/components/Input"
 import { action, redirect, useSubmission } from "@solidjs/router"
 import { login } from "~/api/auth"
 import { Show } from "solid-js"
+import { FaSolidRightToBracket } from "solid-icons/fa"
 
 const loginAction = action(async (formData: FormData) => {
   const username = String(formData.get("username"))
@@ -28,7 +29,10 @@ export default function Home() {
       <Input label="Username" name="username" />
       <Input label="Password" name="password" type="password" />
       <div class="text-center">
-        <Button type="submit">Login</Button>
+        <Button type="submit" disabled={submission.pending}>
+          <FaSolidRightToBracket />
+          <span>Login</span>
+        </Button>
       </div>
 
       <Show when={submission.result}>
