@@ -42,7 +42,7 @@ export default function NewExpression() {
         <Input label="Meaning" name="meaning" />
 
         <div class="text-center">
-          <Button type="submit" disabled={submission.pending}>
+          <Button type="submit" loading={submission.pending}>
             <FaSolidPlus />
             <span>Submit</span>
           </Button>

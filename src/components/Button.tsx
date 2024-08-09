@@ -1,3 +1,4 @@
+import { FaSolidCircleNotch } from "solid-icons/fa"
 import { JSXElement, Show } from "solid-js"
 
 type Props = {
@@ -6,6 +7,7 @@ type Props = {
   children?: JSXElement
   type?: "submit" | "reset" | "button" | undefined
   disabled?: boolean
+  loading?: boolean
 }
 
 const className =
@@ -22,10 +24,14 @@ export default function Button(props: Props) {
         <button
           onclick={props.onclick}
           type={props.type}
-          disabled={props.disabled}
+          disabled={props.disabled || props.loading}
           class={className}
         >
-          {props.children}
+          <Show when={props.loading}>
+            <FaSolidCircleNotch class="animate-spin" />
+          </Show>
+
+          <Show when={!props.loading}>{props.children}</Show>
         </button>
       </Show>
     </>

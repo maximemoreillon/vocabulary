@@ -29,7 +29,7 @@ export default function Home() {
       <Input label="Username" name="username" />
       <Input label="Password" name="password" type="password" />
       <div class="text-center">
-        <Button type="submit" disabled={submission.pending}>
+        <Button type="submit" loading={submission.pending}>
           <FaSolidRightToBracket />
           <span>Login</span>
         </Button>
