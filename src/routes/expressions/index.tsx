@@ -38,16 +38,19 @@ export default function ExpressionList() {
               <th>Writing</th>
               <th>Reading</th>
               <th>Meaning</th>
+              <th>Score</th>
               <th>Details</th>
             </tr>
           </thead>
           <tbody>
             <For each={expressions()}>
-              {({ meaning, writing, reading, id }) => (
+              {({ meaning, writing, reading, score, id }) => (
                 <tr>
                   <td>{writing}</td>
                   <td>{reading}</td>
                   <td>{meaning}</td>
+                  <td>{score}</td>
+
                   <td class="p-2">
                     <Button href={`/expressions/${id}`}>Details</Button>
                   </td>

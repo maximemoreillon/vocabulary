@@ -18,6 +18,13 @@ import { getUserCache } from "~/api"
 import BackLink from "~/components/BackLink"
 import { FaSolidEye, FaSolidEyeSlash } from "solid-icons/fa"
 
+// TODO: define typing centrally
+type Expression = {
+  id: number
+  score: number
+  meaning: string
+}
+
 const getRandomExpressionsCache = cache(async () => {
   "use server"
   if (!process.env.VOCABULARY_DB_URL)
@@ -61,31 +68,40 @@ const updateExpressionAction = action(async (id: number, newScore: number) => {
 }, "updateExpression")
 
 export default function Quizz() {
-  createAsync(async () => getUserCache())
+  createAsync(async () => getUserCache(true))
   const [getReadingShown, setReadingShown] = createSignal(false)
-  const [getAnswer, setAnswer] = createSignal(null)
+  const [getUserAnswer, setUserAnswer] = createSignal<
+    Expression | null | undefined
+  >(null)
+  const getCorrectAnswer = () => randomExpressions()?.at(0) as Expression
+
+  const getExpressionClass = (id: number) => {
+    if (getUserAnswer() && getCorrectAnswer()?.id === id) return "bg-success"
+    else if (getUserAnswer()?.id === id && getCorrectAnswer()?.id !== id)
+      return "bg-error"
+    else return ""
+  }
+
   const [randomExpressions, { refetch }] = createResource(
     async () => await getRandomExpressionsCache()
   )
 
-  // TODO: use actions properly
-  async function handleButtonClicked(selectedExpression: any) {
-    const expression = randomExpressions()?.at(0)
-    if (!expression) return
-    const { id, score } = expression
+  const updateExpressionUsedAction = useAction(updateExpressionAction)
+  const submission = useSubmission(updateExpressionAction)
+
+  async function handleButtonClicked(selectedExpression: Expression) {
+    setUserAnswer(selectedExpression)
+
+    if (!getCorrectAnswer()) return
+    const { id, score } = getCorrectAnswer()
+
     let newScore = score ?? 0
     if (selectedExpression.id === id) newScore++
     else newScore--
 
-    setAnswer(selectedExpression)
-
-    // Does this need to be an action?
+    // Does this need to be an action? an used action? or just a function?
     await updateExpression(id, { score: newScore })
-  }
-
-  function refresh() {
-    setAnswer(null)
-    refetch()
+    // await updateExpressionUsedAction(id, newScore)
   }
 
   function getEach() {
@@ -95,12 +111,13 @@ export default function Quizz() {
     return expressions
       .map((value) => ({ value, sort: Math.random() }))
       .sort((a, b) => a.sort - b.sort)
-      .map(({ value }) => value)
+      .map(({ value }) => value) as Expression[]
   }
 
   function getNextExpression() {
     setReadingShown(false)
-    refresh()
+    setUserAnswer(null)
+    refetch()
   }
 
   return (
@@ -135,15 +152,21 @@ export default function Quizz() {
           <div class="flex flex-col gap-4 my-4">
             <For each={getEach()}>
               {(expression) => (
-                <Button onclick={() => handleButtonClicked(expression)}>
+                <Button
+                  onclick={() => handleButtonClicked(expression)}
+                  loading={
+                    submission.pending && getUserAnswer()?.id === expression.id
+                  }
+                  disabled={!!getUserAnswer()}
+                  class={getExpressionClass(expression.id)}
+                >
                   {expression.meaning}
                 </Button>
               )}
             </For>
           </div>
         </Show>
-        <Show when={getAnswer()}>
-          <div>Answer was: {randomExpressions()?.at(0)?.meaning}</div>
+        <Show when={getUserAnswer()}>
           <div class="my-4">
             <Button onclick={getNextExpression}>Next expression</Button>
           </div>

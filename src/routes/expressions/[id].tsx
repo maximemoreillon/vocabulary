@@ -26,11 +26,11 @@ const deleteExpressionAction = action(async (id: number) => {
 }, "deleteExpression")
 
 export default function Expression() {
+  createAsync(async () => getUserCache(true))
   const params = useParams()
-  const user = createAsync(async () => getUserCache())
   const expression = createAsync(async () => getExpression(Number(params.id)))
 
-  const useDeleteExpression = useAction(deleteExpressionAction)
+  const usedDeleteExpressionAction = useAction(deleteExpressionAction)
   const deleting = useSubmission(deleteExpressionAction)
 
   return (
@@ -46,7 +46,7 @@ export default function Expression() {
         <div class="my-4">
           <Button
             onclick={() => {
-              useDeleteExpression(Number(params.id))
+              usedDeleteExpressionAction(Number(params.id))
             }}
           >
             Delete Expression
