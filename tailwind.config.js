@@ -21,7 +21,7 @@ export default {
       "dark-500": "#717171",
       "dark-600": "#8b8b8b",
       success: "#4CAF50",
-      error: "#F44336",
+      problem: "#F44336",
     },
   },
   plugins: [],

@@ -23,6 +23,7 @@ type Expression = {
   id: number
   score: number
   meaning: string
+  writing: string
 }
 
 const getRandomExpressionsCache = cache(async () => {
@@ -70,37 +71,32 @@ const updateExpressionAction = action(async (id: number, newScore: number) => {
 export default function Quizz() {
   createAsync(async () => getUserCache(true))
   const [getReadingShown, setReadingShown] = createSignal(false)
-  const [getUserAnswer, setUserAnswer] = createSignal<
-    Expression | null | undefined
+  const [getUserAnswerId, setUserAnswerId] = createSignal<
+    number | null | undefined
   >(null)
-  const getCorrectAnswer = () => randomExpressions()?.at(0) as Expression
-
-  const getExpressionClass = (id: number) => {
-    if (getUserAnswer() && getCorrectAnswer()?.id === id) return "bg-success"
-    else if (getUserAnswer()?.id === id && getCorrectAnswer()?.id !== id)
-      return "bg-error"
-    else return ""
-  }
 
   const [randomExpressions, { refetch }] = createResource(
     async () => await getRandomExpressionsCache()
   )
 
+  const getCorrectAnswer = () => randomExpressions()?.at(0) as Expression
+
   const updateExpressionUsedAction = useAction(updateExpressionAction)
   const submission = useSubmission(updateExpressionAction)
 
-  async function handleButtonClicked(selectedExpression: Expression) {
-    setUserAnswer(selectedExpression)
+  async function handleButtonClicked(selectionIndex: number) {
+    const selectionId = randomExpressions()?.at(selectionIndex)?.id
+    setUserAnswerId(selectionId)
 
     if (!getCorrectAnswer()) return
     const { id, score } = getCorrectAnswer()
 
     let newScore = score ?? 0
-    if (selectedExpression.id === id) newScore++
+    if (selectionId === id) newScore++
     else newScore--
 
     // Does this need to be an action? an used action? or just a function?
-    await updateExpression(id, { score: newScore })
+    // await updateExpression(id, { score: newScore })
     // await updateExpressionUsedAction(id, newScore)
   }
 
@@ -116,8 +112,17 @@ export default function Quizz() {
 
   function getNextExpression() {
     setReadingShown(false)
-    setUserAnswer(null)
+    setUserAnswerId(null)
     refetch()
+  }
+
+  const getExpressionClass = (selectionIndex: number) => {
+    const id = randomExpressions()?.at(selectionIndex)?.id
+
+    if (getUserAnswerId() && getCorrectAnswer()?.id === id) return "bg-success"
+    else if (getUserAnswerId() === id && getCorrectAnswer()?.id !== id)
+      return "bg-problem"
+    else return ""
   }
 
   return (
@@ -126,9 +131,9 @@ export default function Quizz() {
         <Title>Random expression</Title>
         <BackLink />
 
-        <Show when={randomExpressions()}>
+        <Show when={getCorrectAnswer()}>
           <div class="text-5xl my-4 text-center">
-            {randomExpressions()?.at(0)?.writing}
+            {getCorrectAnswer()?.writing}
           </div>
 
           <Show when={getReadingShown()}>
@@ -151,14 +156,14 @@ export default function Quizz() {
 
           <div class="flex flex-col gap-4 my-4">
             <For each={getEach()}>
-              {(expression) => (
+              {(expression, i) => (
                 <Button
-                  onclick={() => handleButtonClicked(expression)}
+                  onclick={() => handleButtonClicked(i())}
                   loading={
-                    submission.pending && getUserAnswer()?.id === expression.id
+                    submission.pending && getUserAnswerId() === expression.id
                   }
-                  disabled={!!getUserAnswer()}
-                  class={getExpressionClass(expression.id)}
+                  disabled={!!getUserAnswerId()}
+                  class={getExpressionClass(i())}
                 >
                   {expression.meaning}
                 </Button>
@@ -166,7 +171,7 @@ export default function Quizz() {
             </For>
           </div>
         </Show>
-        <Show when={getUserAnswer()}>
+        <Show when={getUserAnswerId()}>
           <div class="my-4">
             <Button onclick={getNextExpression}>Next expression</Button>
           </div>
