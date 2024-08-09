@@ -8,8 +8,8 @@ import { FaSolidPlus, FaSolidQuestion } from "solid-icons/fa"
 
 const getExpressionsCache = cache(async () => {
   "use server"
-  if (process.env.VOCABULARY_DB_URL) return await readExpressions()
-  else return []
+  if (!process.env.VOCABULARY_DB_URL) return []
+  return await readExpressions()
 }, "getExpressions")
 
 export default function Home() {

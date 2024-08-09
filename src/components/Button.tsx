@@ -11,7 +11,7 @@ type Props = {
 }
 
 const className =
-  "rounded px-4 py-2 bg-primary-500 text-dark shadow disabled:opacity-50 inline-flex items-center gap-2"
+  "rounded px-4 py-2 bg-primary-500 text-dark shadow disabled:opacity-50 inline-flex items-center gap-2 justify-center"
 export default function Button(props: Props) {
   return (
     <>

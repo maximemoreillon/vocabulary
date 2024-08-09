@@ -16,9 +16,42 @@ import { readRandomExpressions, updateExpression } from "~/api/expressions"
 import Button from "~/components/Button"
 import { getUserCache } from "~/api"
 import BackLink from "~/components/BackLink"
+import { FaSolidEye, FaSolidEyeSlash } from "solid-icons/fa"
 
 const getRandomExpressionsCache = cache(async () => {
   "use server"
+  if (!process.env.VOCABULARY_DB_URL)
+    return [
+      {
+        reading: "てすと",
+        meaning: "Test",
+        writing: "テスト",
+        id: 1,
+        score: 12,
+      },
+      {
+        reading: "てすと",
+        meaning: "Test",
+        writing: "テスト",
+        id: 1,
+        score: 12,
+      },
+      {
+        reading: "てすと",
+        meaning: "Test",
+        writing: "テスト",
+        id: 1,
+        score: 12,
+      },
+      {
+        reading: "てすと",
+        meaning: "Test",
+        writing: "テスト",
+        id: 1,
+        score: 12,
+      },
+    ]
+
   return await readRandomExpressions()
 }, "expression")
 
@@ -85,12 +118,18 @@ export default function Home() {
             <div class="text-center">{randomExpressions()?.at(0)?.reading}</div>
           </Show>
 
-          <div>Score: {randomExpressions()?.at(0)?.score} </div>
-
-          <div>
+          <div class="flex justify-between items-center">
             <Button onclick={() => setReadingShown(!getReadingShown())}>
-              Show / hide reading
+              <Show when={getReadingShown()}>
+                <FaSolidEyeSlash />
+                <span>Hide reading</span>
+              </Show>
+              <Show when={!getReadingShown()}>
+                <FaSolidEye />
+                <span>Show reading</span>
+              </Show>
             </Button>
+            <div>Score: {randomExpressions()?.at(0)?.score} </div>
           </div>
 
           <div class="flex flex-col gap-4 my-4">
