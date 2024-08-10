@@ -53,8 +53,6 @@ export default function Expression() {
           </Button>
         </div>
       </Show>
-
-      <p>{deleting.result}</p>
     </>
   )
 }

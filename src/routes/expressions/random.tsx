@@ -2,15 +2,10 @@ import { MetaProvider, Title } from "@solidjs/meta"
 import { For, Show, createResource, createSignal } from "solid-js"
 import {
   createAsync,
-  useParams,
   cache,
   action,
   useAction,
   useSubmission,
-  redirect,
-  Navigate,
-  useNavigate,
-  A,
 } from "@solidjs/router"
 import { readRandomExpressions, updateExpression } from "~/api/expressions"
 import Button from "~/components/Button"
@@ -50,8 +45,8 @@ export default function Quizz() {
 
   const getCorrectAnswer = () => randomExpressions()?.at(0) as Expression
 
-  // const updateExpressionUsedAction = useAction(updateExpressionAction)
-  // const submission = useSubmission(updateExpressionAction)
+  const updateExpressionUsedAction = useAction(updateExpressionAction)
+  const submission = useSubmission(updateExpressionAction)
 
   async function handleButtonClicked(selectionId: number) {
     setUserAnswerId(selectionId)
@@ -63,8 +58,9 @@ export default function Quizz() {
     else newScore--
 
     // Does this need to be an action? an used action? or just a function?
-    updateExpression(id, { score: newScore })
-    // await updateExpressionUsedAction(id, newScore)
+    // Using a submission allows to check for pending state
+    // updateExpression(id, { score: newScore })
+    await updateExpressionUsedAction(id, newScore)
   }
 
   function getEach() {
@@ -97,11 +93,13 @@ export default function Quizz() {
         <BackLink />
 
         <Show when={getCorrectAnswer()}>
-          <div class="text-5xl my-4 text-center">{getCorrectAnswer()?.writing}</div>
+          <div class="my-8 text-center">
+            <div class="text-5xl">{getCorrectAnswer()?.writing}</div>
 
-          <Show when={getReadingShown()}>
-            <div class="text-center">{getCorrectAnswer()?.reading}</div>
-          </Show>
+            <Show when={getReadingShown()}>
+              <div class="text-center">{getCorrectAnswer()?.reading}</div>
+            </Show>
+          </div>
 
           <div class="flex justify-between items-center">
             <Button onclick={() => setReadingShown(!getReadingShown())}>
@@ -133,7 +131,9 @@ export default function Quizz() {
         </Show>
         <Show when={getUserAnswerId()}>
           <div class="my-4">
-            <Button onclick={getNextExpression}>Next expression</Button>
+            <Button onclick={getNextExpression} loading={submission.pending}>
+              Next expression
+            </Button>
           </div>
         </Show>
       </MetaProvider>

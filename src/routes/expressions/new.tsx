@@ -1,18 +1,12 @@
 import { Title } from "@solidjs/meta"
-import {
-  action,
-  redirect,
-  useSubmission,
-  createAsync,
-  A,
-} from "@solidjs/router"
+import { action, redirect, useSubmission, createAsync } from "@solidjs/router"
 import { createExpression } from "~/api/expressions"
-import Input from "~/components/Input"
-import Button from "~/components/Button"
 import { Show } from "solid-js"
 import { getUserCache } from "~/api"
+import { FaSolidFloppyDisk } from "solid-icons/fa"
+import Input from "~/components/Input"
+import Button from "~/components/Button"
 import BackLink from "~/components/BackLink"
-import { FaSolidPlus } from "solid-icons/fa"
 
 const postExpressionAction = action(async (formData: FormData) => {
   const reading = String(formData.get("reading"))
@@ -23,7 +17,7 @@ const postExpressionAction = action(async (formData: FormData) => {
 }, "postExpression")
 
 export default function NewExpression() {
-  const user = createAsync(async () => getUserCache(true))
+  createAsync(async () => getUserCache(true))
   const submission = useSubmission(postExpressionAction)
 
   return (
@@ -43,8 +37,8 @@ export default function NewExpression() {
 
         <div class="text-center">
           <Button type="submit" loading={submission.pending}>
-            <FaSolidPlus />
-            <span>Submit</span>
+            <FaSolidFloppyDisk />
+            <span>Save</span>
           </Button>
         </div>
       </form>
