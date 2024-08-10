@@ -24,42 +24,11 @@ type Expression = {
   score: number
   meaning: string
   writing: string
+  reading: string
 }
 
 const getRandomExpressionsCache = cache(async () => {
   "use server"
-  if (!process.env.VOCABULARY_DB_URL)
-    return [
-      {
-        reading: "てすと",
-        meaning: "Test",
-        writing: "テスト",
-        id: 1,
-        score: 12,
-      },
-      {
-        reading: "てすと",
-        meaning: "Test",
-        writing: "テスト",
-        id: 1,
-        score: 12,
-      },
-      {
-        reading: "てすと",
-        meaning: "Test",
-        writing: "テスト",
-        id: 1,
-        score: 12,
-      },
-      {
-        reading: "てすと",
-        meaning: "Test",
-        writing: "テスト",
-        id: 1,
-        score: 12,
-      },
-    ]
-
   return await readRandomExpressions()
 }, "expression")
 
@@ -81,14 +50,12 @@ export default function Quizz() {
 
   const getCorrectAnswer = () => randomExpressions()?.at(0) as Expression
 
-  const updateExpressionUsedAction = useAction(updateExpressionAction)
-  const submission = useSubmission(updateExpressionAction)
+  // const updateExpressionUsedAction = useAction(updateExpressionAction)
+  // const submission = useSubmission(updateExpressionAction)
 
-  async function handleButtonClicked(selectionIndex: number) {
-    const selectionId = randomExpressions()?.at(selectionIndex)?.id
+  async function handleButtonClicked(selectionId: number) {
     setUserAnswerId(selectionId)
 
-    if (!getCorrectAnswer()) return
     const { id, score } = getCorrectAnswer()
 
     let newScore = score ?? 0
@@ -96,7 +63,7 @@ export default function Quizz() {
     else newScore--
 
     // Does this need to be an action? an used action? or just a function?
-    // await updateExpression(id, { score: newScore })
+    updateExpression(id, { score: newScore })
     // await updateExpressionUsedAction(id, newScore)
   }
 
@@ -116,9 +83,7 @@ export default function Quizz() {
     refetch()
   }
 
-  const getExpressionClass = (selectionIndex: number) => {
-    const id = randomExpressions()?.at(selectionIndex)?.id
-
+  const getExpressionClass = (id: number) => {
     if (getUserAnswerId() && getCorrectAnswer()?.id === id) return "bg-success"
     else if (getUserAnswerId() === id && getCorrectAnswer()?.id !== id)
       return "bg-problem"
@@ -132,12 +97,10 @@ export default function Quizz() {
         <BackLink />
 
         <Show when={getCorrectAnswer()}>
-          <div class="text-5xl my-4 text-center">
-            {getCorrectAnswer()?.writing}
-          </div>
+          <div class="text-5xl my-4 text-center">{getCorrectAnswer()?.id}</div>
 
           <Show when={getReadingShown()}>
-            <div class="text-center">{randomExpressions()?.at(0)?.reading}</div>
+            <div class="text-center">{getCorrectAnswer()?.reading}</div>
           </Show>
 
           <div class="flex justify-between items-center">
@@ -156,16 +119,13 @@ export default function Quizz() {
 
           <div class="flex flex-col gap-4 my-4">
             <For each={getEach()}>
-              {(expression, i) => (
+              {(expression) => (
                 <Button
-                  onclick={() => handleButtonClicked(i())}
-                  loading={
-                    submission.pending && getUserAnswerId() === expression.id
-                  }
+                  onclick={() => handleButtonClicked(expression.id)}
                   disabled={!!getUserAnswerId()}
-                  class={getExpressionClass(i())}
+                  class={getExpressionClass(expression.id)}
                 >
-                  {expression.meaning}
+                  {expression.id}
                 </Button>
               )}
             </For>
