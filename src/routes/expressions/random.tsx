@@ -97,7 +97,7 @@ export default function Quizz() {
         <BackLink />
 
         <Show when={getCorrectAnswer()}>
-          <div class="text-5xl my-4 text-center">{getCorrectAnswer()?.id}</div>
+          <div class="text-5xl my-4 text-center">{getCorrectAnswer()?.writing}</div>
 
           <Show when={getReadingShown()}>
             <div class="text-center">{getCorrectAnswer()?.reading}</div>
@@ -125,7 +125,7 @@ export default function Quizz() {
                   disabled={!!getUserAnswerId()}
                   class={getExpressionClass(expression.id)}
                 >
-                  {expression.id}
+                  {expression.meaning}
                 </Button>
               )}
             </For>
