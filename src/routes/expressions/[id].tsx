@@ -9,20 +9,33 @@ import {
   useSubmission,
   redirect,
 } from "@solidjs/router"
-import { deleteExpression, readExpression } from "~/api/expressions"
-import Button from "~/components/Button"
+import {
+  deleteExpression,
+  readExpression,
+  updateExpression,
+} from "~/api/expressions"
 import { getUserCache } from "~/api"
 import BackLink from "~/components/BackLink"
+import Button from "~/components/Button"
+import Input from "~/components/Input"
+import { FaSolidFloppyDisk } from "solid-icons/fa"
+import ExpressionDeleteButton from "~/components/ExpressionDeleteButton"
 
 const getExpression = cache(async (id: number) => {
   "use server"
   return readExpression(id)
 }, "getExpression")
 
-const deleteExpressionAction = action(async (id: number) => {
+const updateExpressionAction = action(async (formData: FormData) => {
   "use server"
-  await deleteExpression(id)
-  return redirect("expressions")
+  // const { id } = useParams()
+  const id = String(formData.get("id"))
+  const reading = String(formData.get("reading"))
+  const writing = String(formData.get("writing"))
+  const meaning = String(formData.get("meaning"))
+
+  await updateExpression(Number(id), { reading, meaning, writing })
+  return
 }, "deleteExpression")
 
 export default function Expression() {
@@ -30,28 +43,33 @@ export default function Expression() {
   const params = useParams()
   const expression = createAsync(async () => getExpression(Number(params.id)))
 
-  const usedDeleteExpressionAction = useAction(deleteExpressionAction)
-  const deleting = useSubmission(deleteExpressionAction)
+  const updateSubmission = useSubmission(updateExpressionAction)
 
   return (
     <>
       <Title>{expression()?.writing}</Title>
       <BackLink />
-      <h1 class="text-6xl my-4">{expression()?.writing}</h1>
       <Show when={expression()}>
-        <div>Writing: {expression()?.writing}</div>
-        <div>Reading: {expression()?.reading}</div>
-        <div>Meaning: {expression()?.meaning}</div>
+        <form
+          action={updateExpressionAction}
+          method="post"
+          class="my-8 flex flex-col gap-8"
+        >
+          <Input label="ID" name="id" value={expression()?.id} type="hidden" />
+          <Input label="Writing" name="writing" value={expression()?.writing} />
+          <Input label="Reading" name="reading" value={expression()?.reading} />
+          <Input label="Meaning" name="meaning" value={expression()?.meaning} />
 
-        <div class="my-4">
-          <Button
-            onclick={() => {
-              usedDeleteExpressionAction(Number(params.id))
-            }}
-          >
-            Delete Expression
-          </Button>
-        </div>
+          <div class="flex gap-4">
+            <Button type="submit" loading={updateSubmission.pending}>
+              <FaSolidFloppyDisk />
+              <span>Save</span>
+            </Button>
+            <ExpressionDeleteButton id={expression()?.id} />
+          </div>
+        </form>
+
+        <div class="my-4"></div>
       </Show>
     </>
   )

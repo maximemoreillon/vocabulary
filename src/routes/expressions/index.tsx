@@ -4,7 +4,7 @@ import { createAsync, cache } from "@solidjs/router"
 import { readExpressions } from "~/api/expressions"
 import Button from "~/components/Button"
 import { getUserCache } from "~/api"
-import { FaSolidPlus, FaSolidQuestion } from "solid-icons/fa"
+import { FaSolidPen, FaSolidPlus, FaSolidQuestion } from "solid-icons/fa"
 
 const getExpressionsCache = cache(async () => {
   "use server"
@@ -24,7 +24,7 @@ export default function ExpressionList() {
       <div class="my-8 flex gap-4">
         <Button href="/expressions/new">
           <FaSolidPlus />
-          <span>New expression</span>
+          <span>Add</span>
         </Button>
         <Button href="/expressions/random">
           <FaSolidQuestion />
@@ -39,7 +39,7 @@ export default function ExpressionList() {
               <th>Reading</th>
               <th>Meaning</th>
               <th>Score</th>
-              <th>Details</th>
+              <th>Edit</th>
             </tr>
           </thead>
           <tbody>
@@ -52,7 +52,9 @@ export default function ExpressionList() {
                   <td>{score}</td>
 
                   <td class="p-2">
-                    <Button href={`/expressions/${id}`}>Details</Button>
+                    <Button href={`/expressions/${id}`}>
+                      <FaSolidPen />
+                    </Button>
                   </td>
                 </tr>
               )}
