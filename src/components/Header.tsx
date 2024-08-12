@@ -1,6 +1,5 @@
-import { A, createAsync } from "@solidjs/router"
-// import { Suspense } from "solid-js"
-import { getUserCache } from "~/api"
+import { createAsync } from "@solidjs/router"
+import { getUserCache } from "~/api/auth"
 import LogoutButton from "./LogoutButton"
 export default function Header() {
   const user = createAsync(() => getUserCache())

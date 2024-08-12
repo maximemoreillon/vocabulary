@@ -2,9 +2,9 @@ import { Title } from "@solidjs/meta"
 import { For, Show } from "solid-js"
 import { createAsync, cache } from "@solidjs/router"
 import { readExpressions } from "~/api/expressions"
-import Button from "~/components/Button"
-import { getUserCache } from "~/api"
+import { getUserCache } from "~/api/auth"
 import { FaSolidPen, FaSolidPlus, FaSolidQuestion } from "solid-icons/fa"
+import Button from "~/components/Button"
 
 const getExpressionsCache = cache(async () => {
   "use server"

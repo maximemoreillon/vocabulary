@@ -9,7 +9,7 @@ import {
 } from "@solidjs/router"
 import { readRandomExpressions, updateExpression } from "~/api/expressions"
 import Button from "~/components/Button"
-import { getUserCache } from "~/api"
+import { getUserCache } from "~/api/auth"
 import BackLink from "~/components/BackLink"
 import { FaSolidEye, FaSolidEyeSlash } from "solid-icons/fa"
 

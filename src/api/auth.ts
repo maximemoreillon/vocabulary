@@ -1,7 +1,7 @@
 // NOTE: "use server is important here!"
 "use server"
 
-import { redirect } from "@solidjs/router"
+import { redirect, cache } from "@solidjs/router"
 import { SessionConfig, useSession } from "vinxi/http"
 
 type Credentials = {
@@ -38,6 +38,11 @@ export async function getUser(redirectToLogin: boolean) {
   if (!username && redirectToLogin) throw redirect("/login")
   return { username }
 }
+
+export const getUserCache = cache(
+  async (redirect: boolean = false) => getUser(redirect),
+  "getUser"
+)
 
 export async function login(credentials: Credentials) {
   const { username, password } = credentials

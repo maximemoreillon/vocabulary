@@ -5,20 +5,14 @@ import {
   useParams,
   cache,
   action,
-  useAction,
   useSubmission,
-  redirect,
 } from "@solidjs/router"
-import {
-  deleteExpression,
-  readExpression,
-  updateExpression,
-} from "~/api/expressions"
-import { getUserCache } from "~/api"
+import { FaSolidFloppyDisk } from "solid-icons/fa"
+import { readExpression, updateExpression } from "~/api/expressions"
+import { getUserCache } from "~/api/auth"
 import BackLink from "~/components/BackLink"
 import Button from "~/components/Button"
 import Input from "~/components/Input"
-import { FaSolidFloppyDisk } from "solid-icons/fa"
 import ExpressionDeleteButton from "~/components/ExpressionDeleteButton"
 
 const getExpression = cache(async (id: number) => {
