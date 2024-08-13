@@ -1,11 +1,16 @@
+import { For, Show, createResource } from "solid-js"
 import { Title, MetaProvider } from "@solidjs/meta"
-import { For, Show } from "solid-js"
-import { createAsync, cache, useSearchParams } from "@solidjs/router"
+import { createAsync, cache, useSearchParams, A } from "@solidjs/router"
+import {
+  FaSolidArrowLeft,
+  FaSolidArrowRight,
+  FaSolidPen,
+  FaSolidPlus,
+  FaSolidQuestion,
+} from "solid-icons/fa"
 import { readExpressions } from "~/api/expressions"
 import { getUserCache } from "~/api/auth"
-import { FaSolidPen, FaSolidPlus, FaSolidQuestion } from "solid-icons/fa"
 import Button from "~/components/Button"
-import { createResource } from "solid-js"
 
 const getExpressionsCache = cache(async (options) => {
   "use server"
@@ -13,35 +18,48 @@ const getExpressionsCache = cache(async (options) => {
 }, "getExpressions")
 
 export default function ExpressionList() {
+  const pageSize = 50
+
   createAsync(async () => getUserCache(true))
 
-  const [searchParams, setSearchParams] = useSearchParams()
+  const [searchParams] = useSearchParams()
 
-  const [queryResult, { refetch }] = createResource(async () => {
-    const { offset = "0", limit = "50" } = searchParams
-    return getExpressionsCache({ limit: Number(limit), offset: Number(offset) })
+  const getPaginationOptions = () => {
+    const { offset = "0", limit = pageSize } = searchParams
+    return {
+      limit: Number(limit),
+      offset: Number(offset),
+    }
+  }
+
+  // Calling refetch when source (getPaginationOptions) changes
+  const [queryResult] = createResource(getPaginationOptions, async () => {
+    const options = getPaginationOptions()
+    return getExpressionsCache(options)
   })
 
-  function changePage(pageOffset: number) {
-    const { offset = "0", limit = "50" } = searchParams
+  const pageLinkHref = (direction: number) => {
+    const { offset, limit } = getPaginationOptions()
 
-    if (pageOffset < 0 && Number(offset) <= 0) return
-    if (!queryResult()?.items.length) return
+    const currentPageItemCount = queryResult()?.items.length
 
-    // TODO: find way to not ignore
-    // @ts-ignore
-    if (pageOffset > 0 && queryResult()?.items.length < Number(limit)) return
+    if (direction < 0 && offset <= 0) return ""
+    if (!currentPageItemCount) return ""
+    if (direction > 0 && currentPageItemCount < limit) return ""
 
-    const newOffset = Number(offset) + Number(limit) * pageOffset
+    const newOffset = offset + limit * direction
 
-    setSearchParams({
-      ...searchParams,
-      offset: newOffset,
-    })
-
-    // TODO: DIRTY, improve
-    setTimeout(() => refetch(), 10)
+    return `/expressions?offset=${newOffset}`
   }
+
+  const getItemCount = () => queryResult()?.total || 0
+  const getPageCount = () =>
+    Math.ceil(getItemCount() / getPaginationOptions().limit)
+
+  const getCurrentPageNumber = () =>
+    Math.floor(
+      (getPageCount() * getPaginationOptions().offset) / getItemCount()
+    ) + 1
 
   return (
     <>
@@ -49,6 +67,7 @@ export default function ExpressionList() {
         <Title>My vocabulary list</Title>
       </MetaProvider>
       <h2 class="text-6xl">Vocabulary list</h2>
+
       <div class="my-8 flex gap-4">
         <Button href="/expressions/new">
           <FaSolidPlus />
@@ -90,9 +109,16 @@ export default function ExpressionList() {
           </tbody>
         </table>
 
-        <div class="my-6 flex justify-center gap-4">
-          <Button onclick={() => changePage(-1)}>Previous page</Button>
-          <Button onclick={() => changePage(1)}>Next page</Button>
+        <div class="my-6 flex justify-center gap-8 items-center">
+          <Button href={pageLinkHref(-1)}>
+            <FaSolidArrowLeft />
+          </Button>
+          <div>
+            {getCurrentPageNumber()}/{getPageCount()}
+          </div>
+          <Button href={pageLinkHref(1)}>
+            <FaSolidArrowRight />
+          </Button>
         </div>
       </Show>
     </>

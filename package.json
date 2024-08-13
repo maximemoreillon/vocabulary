@@ -9,6 +9,7 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@solid-primitives/pagination": "^0.3.0",
     "@solidjs/meta": "^0.29.4",
     "@solidjs/router": "^0.13.3",
     "@solidjs/start": "^1.0.0",
