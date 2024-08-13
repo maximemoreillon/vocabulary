@@ -2,8 +2,18 @@
 
 import { db } from "./db"
 import { expressions } from "~/api/schema"
-import { eq, sql } from "drizzle-orm"
+import { count, eq, sql } from "drizzle-orm"
 
+// TODO: infer from DB
+export type Expression = {
+  id: number
+  writing: string | null
+  reading: string | null
+  meaning: string | null
+  score: number | null
+}
+
+// TODO: find smarter way to go about this
 export type NewExpression = {
   writing: string
   reading: string
@@ -18,10 +28,14 @@ export async function createExpression(values: NewExpression) {
   return newExpression
 }
 
-export async function readExpressions() {
-  // TODO: pagination
-  const items = await db.select().from(expressions)
-  return items
+export async function readExpressions(options: any) {
+  const { limit = 3, offset = 0 } = options
+
+  const items = await db.select().from(expressions).limit(limit).offset(offset)
+  const [{ count: total }] = await db
+    .select({ count: count() })
+    .from(expressions)
+  return { total, items, offset, limit }
 }
 
 export async function readExpression(id: number) {
@@ -33,7 +47,6 @@ export async function readExpression(id: number) {
 }
 
 export async function updateExpression(id: number, properties: any) {
-  console.log("UPDATE")
   const [expression] = await db
     .update(expressions)
     .set(properties)
