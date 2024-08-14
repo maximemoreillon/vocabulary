@@ -30,26 +30,27 @@ export async function createExpression(values: NewExpression) {
 
 // TODO: typing
 type ReadExpressionsOptions = {
+  page?: number
   limit?: number
-  offset?: number
   search?: string
 }
 
 export async function readExpressions(options: ReadExpressionsOptions) {
-  const { limit = 10, offset = 0, search = "" } = options
+  const { limit = 10, page = 1, search = "" } = options
 
   const items = await db
     .select()
     .from(expressions)
     .limit(limit)
-    .offset(offset)
-    .where(sql`meaning LIKE ${search + "%"}`)
+    .offset(Math.ceil((page - 1) * limit))
+    .where(sql`LOWER(meaning) LIKE ${search.toLowerCase() + "%"}`)
 
   const [{ count: total }] = await db
     .select({ count: count() })
     .from(expressions)
+    .where(sql`LOWER(meaning) LIKE ${search.toLowerCase() + "%"}`)
 
-  return { total, items, offset, limit }
+  return { total, items, page, limit }
 }
 
 export async function readExpression(id: number) {

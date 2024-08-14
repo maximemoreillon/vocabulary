@@ -3,12 +3,13 @@ import { createSignal, JSXElement, Show } from "solid-js"
 
 type Props = {
   href?: string
-  onclick?: any
   children?: JSXElement
   type?: "submit" | "reset" | "button" | undefined
   disabled?: boolean
   loading?: boolean
   class?: string
+  // TODO: typing
+  onclick?: any
 }
 
 export default function Button(props: Props) {

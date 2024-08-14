@@ -1,16 +1,13 @@
 import { For, Show, createResource } from "solid-js"
 import { Title, MetaProvider } from "@solidjs/meta"
 import { createAsync, cache, useSearchParams, A } from "@solidjs/router"
-import {
-  FaSolidArrowLeft,
-  FaSolidArrowRight,
-  FaSolidPen,
-  FaSolidPlus,
-  FaSolidQuestion,
-} from "solid-icons/fa"
+import { FaSolidPen, FaSolidPlus, FaSolidQuestion } from "solid-icons/fa"
 import { readExpressions } from "~/api/expressions"
 import { getUserCache } from "~/api/auth"
 import Button from "~/components/Button"
+import Pagination from "~/components/Pagination"
+import SearchBar from "~/components/SearchBar"
+import { defaultPageSize } from "~/config"
 
 const getExpressionsCache = cache(async (options) => {
   "use server"
@@ -18,49 +15,24 @@ const getExpressionsCache = cache(async (options) => {
 }, "getExpressions")
 
 export default function ExpressionList() {
-  const pageSize = 50
-
   createAsync(async () => getUserCache(true))
 
-  const [searchParams] = useSearchParams()
-
-  const getPaginationOptions = () => {
-    const { offset = "0", limit = pageSize } = searchParams
+  // TODO: deduplicate
+  const getQueryOptions = () => {
+    const [searchParams] = useSearchParams()
+    const { page = "1", pageSize = defaultPageSize, search } = searchParams
     return {
-      limit: Number(limit),
-      offset: Number(offset),
+      page: Number(page),
+      pageSize: Number(pageSize),
+      search,
     }
   }
 
   // Calling refetch when source (getPaginationOptions) changes
-  const [queryResult] = createResource(getPaginationOptions, async () => {
-    const options = getPaginationOptions()
+  const [queryResult] = createResource(getQueryOptions, async () => {
+    const options = getQueryOptions()
     return getExpressionsCache(options)
   })
-
-  const pageLinkHref = (direction: number) => {
-    const { offset, limit } = getPaginationOptions()
-
-    const currentPageItemCount = queryResult()?.items.length
-
-    if (direction < 0 && offset <= 0) return ""
-    if (!currentPageItemCount) return ""
-    if (direction > 0 && currentPageItemCount < limit) return ""
-
-    const newOffset = offset + limit * direction
-
-    // TODO: Problem: will overwrite search
-    return `/expressions?offset=${newOffset}`
-  }
-
-  const getItemCount = () => queryResult()?.total || 0
-  const getPageCount = () =>
-    Math.ceil(getItemCount() / getPaginationOptions().limit)
-
-  const getCurrentPageNumber = () =>
-    Math.floor(
-      (getPageCount() * getPaginationOptions().offset) / getItemCount()
-    ) + 1
 
   return (
     <>
@@ -78,7 +50,12 @@ export default function ExpressionList() {
           <FaSolidQuestion />
           <span>Quizz</span>
         </Button>
+
+        <div class="grow" />
+
+        <SearchBar />
       </div>
+
       <Show when={queryResult()}>
         <table class="w-full text-center">
           <thead>
@@ -110,17 +87,7 @@ export default function ExpressionList() {
           </tbody>
         </table>
 
-        <div class="my-6 flex justify-center gap-8 items-center">
-          <Button href={pageLinkHref(-1)}>
-            <FaSolidArrowLeft />
-          </Button>
-          <div>
-            {getCurrentPageNumber()}/{getPageCount()}
-          </div>
-          <Button href={pageLinkHref(1)}>
-            <FaSolidArrowRight />
-          </Button>
-        </div>
+        <Pagination total={queryResult()?.total} />
       </Show>
     </>
   )

@@ -4,7 +4,9 @@ type Props = {
   type?: string
   name?: string
   label?: string
-  value?: string | number | undefined | null
+  value?: string | number | null
+  // TODO: typing
+  oninput?: any
 }
 
 export default function Input(props: Props) {
@@ -15,6 +17,7 @@ export default function Input(props: Props) {
           <label class="text-sm">{props.label}</label>
         </Show>
         <input
+          oninput={props.oninput}
           type={props.type}
           name={props.name}
           class="p-2 bg-dark-300 rounded"
