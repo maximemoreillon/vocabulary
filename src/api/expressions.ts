@@ -28,13 +28,27 @@ export async function createExpression(values: NewExpression) {
   return newExpression
 }
 
-export async function readExpressions(options: any) {
-  const { limit = 3, offset = 0 } = options
+// TODO: typing
+type ReadExpressionsOptions = {
+  limit?: number
+  offset?: number
+  search?: string
+}
 
-  const items = await db.select().from(expressions).limit(limit).offset(offset)
+export async function readExpressions(options: ReadExpressionsOptions) {
+  const { limit = 10, offset = 0, search = "" } = options
+
+  const items = await db
+    .select()
+    .from(expressions)
+    .limit(limit)
+    .offset(offset)
+    .where(sql`meaning LIKE ${search + "%"}`)
+
   const [{ count: total }] = await db
     .select({ count: count() })
     .from(expressions)
+
   return { total, items, offset, limit }
 }
 

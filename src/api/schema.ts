@@ -1,12 +1,5 @@
-import {
-  integer,
-  text,
-  pgEnum,
-  pgTable,
-  serial,
-  uniqueIndex,
-  varchar,
-} from "drizzle-orm/pg-core"
+import { sql } from "drizzle-orm"
+import { integer, text, pgTable, serial, index } from "drizzle-orm/pg-core"
 
 export const expressions = pgTable("expressions", {
   id: serial("id").primaryKey(),

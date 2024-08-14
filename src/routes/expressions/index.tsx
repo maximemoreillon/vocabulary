@@ -49,6 +49,7 @@ export default function ExpressionList() {
 
     const newOffset = offset + limit * direction
 
+    // TODO: Problem: will overwrite search
     return `/expressions?offset=${newOffset}`
   }
 
