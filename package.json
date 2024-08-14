@@ -18,7 +18,7 @@
     "postgres": "^3.4.4",
     "solid-icons": "^1.1.0",
     "solid-js": "^1.8.17",
-    "vinxi": "^0.3.11"
+    "vinxi": "^0.4.1"
   },
   "engines": {
     "node": ">=18"
