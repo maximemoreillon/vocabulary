@@ -17,7 +17,6 @@ const getExpressionsCache = cache(async (options) => {
 export default function ExpressionList() {
   createAsync(async () => getUserCache(true))
 
-  // TODO: deduplicate
   const getQueryOptions = () => {
     const [searchParams] = useSearchParams()
     const { page = "1", pageSize = defaultPageSize, search } = searchParams
