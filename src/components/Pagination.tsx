@@ -20,8 +20,8 @@ export default function Pagination(props: Props) {
   const getPageCount = () =>
     Math.ceil((props.total || 0) / getPaginationOptions().pageSize)
 
-  const canPrevious = () => getPaginationOptions().page <= 1
-  const canNext = () => getPaginationOptions().page <= 1
+  const canPrevious = () => getPaginationOptions().page > 1
+  const canNext = () => getPaginationOptions().page < getPageCount()
 
   function changePage(direction: number) {
     const { page } = getPaginationOptions()
@@ -31,13 +31,13 @@ export default function Pagination(props: Props) {
 
   return (
     <div class="my-6 flex justify-center gap-8 items-center">
-      <Button onclick={() => changePage(-1)} disabled={canPrevious()}>
+      <Button onclick={() => changePage(-1)} disabled={!canPrevious()}>
         <FaSolidArrowLeft />
       </Button>
       <div>
         {getPaginationOptions().page}/{getPageCount()}
       </div>
-      <Button onclick={() => changePage(1)} disabled={canNext()}>
+      <Button onclick={() => changePage(1)} disabled={!canNext()}>
         <FaSolidArrowRight />
       </Button>
     </div>

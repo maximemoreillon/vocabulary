@@ -3,6 +3,7 @@
 import { db } from "./db"
 import { expressions } from "~/api/schema"
 import { count, desc, eq, sql } from "drizzle-orm"
+import { defaultOrder, defaultPageSize, defaultSort } from "~/config"
 
 // TODO: infer from DB
 export type Expression = {
@@ -39,11 +40,11 @@ type ReadExpressionsOptions = {
 
 export async function readExpressions(options: ReadExpressionsOptions) {
   const {
-    limit = 10,
+    limit = defaultPageSize,
     page = 1,
     search = "",
-    sort = "score",
-    order = "asc",
+    sort = defaultSort,
+    order = defaultOrder,
   } = options
 
   const orderBy = order === "desc" ? desc(expressions[sort]) : expressions[sort]
@@ -53,7 +54,7 @@ export async function readExpressions(options: ReadExpressionsOptions) {
     .from(expressions)
     .orderBy(orderBy)
     .limit(limit)
-    .offset(Math.ceil((page - 1) * limit))
+    .offset((page - 1) * limit)
     .where(sql`LOWER(meaning) LIKE ${search.toLowerCase() + "%"}`)
 
   const [{ count: total }] = await db
