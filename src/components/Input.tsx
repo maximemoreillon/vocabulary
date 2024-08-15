@@ -1,12 +1,11 @@
-import { Show } from "solid-js"
+import { JSX, Show } from "solid-js"
 
 type Props = {
   type?: string
   name?: string
   label?: string
   value?: string | number | null
-  // TODO: typing
-  oninput?: any
+  oninput?: JSX.InputEventHandlerUnion<HTMLInputElement, InputEvent> | undefined
 }
 
 export default function Input(props: Props) {

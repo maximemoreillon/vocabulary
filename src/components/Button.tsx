@@ -1,5 +1,5 @@
 import { FaSolidCircleNotch } from "solid-icons/fa"
-import { createSignal, JSXElement, Show } from "solid-js"
+import { createSignal, JSX, JSXElement, Show } from "solid-js"
 
 type Props = {
   href?: string
@@ -8,8 +8,7 @@ type Props = {
   disabled?: boolean
   loading?: boolean
   class?: string
-  // TODO: typing
-  onclick?: any
+  onclick?: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent>
 }
 
 export default function Button(props: Props) {

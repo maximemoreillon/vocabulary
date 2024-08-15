@@ -21,21 +21,27 @@ export type NewExpression = {
   meaning: string
 }
 
-export async function createExpression(values: NewExpression) {
-  const [newExpression] = await db
-    .insert(expressions)
-    .values(values)
-    .returning()
-  return newExpression
+type ExpressionEdit = {
+  score?: number
+  writing?: string
+  reading?: string
+  meaning?: string
 }
 
-// TODO: typing
 type ReadExpressionsOptions = {
   page?: number
   limit?: number
   search?: string
   sort?: "writing" | "meaning" | "reading" | "score"
   order?: "asc" | "desc"
+}
+
+export async function createExpression(values: NewExpression) {
+  const [newExpression] = await db
+    .insert(expressions)
+    .values(values)
+    .returning()
+  return newExpression
 }
 
 export async function readExpressions(options: ReadExpressionsOptions) {
@@ -73,7 +79,7 @@ export async function readExpression(id: number) {
   return expression
 }
 
-export async function updateExpression(id: number, properties: any) {
+export async function updateExpression(id: number, properties: ExpressionEdit) {
   const [expression] = await db
     .update(expressions)
     .set(properties)

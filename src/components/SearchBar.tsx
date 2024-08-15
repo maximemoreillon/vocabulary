@@ -19,7 +19,7 @@ export default function SearchBar() {
       <Input
         name="search"
         value={getSearch()}
-        oninput={({ target }: any) => {
+        oninput={({ target }) => {
           setSearch(target.value)
         }}
       />

@@ -2,11 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* TODO: dark and light mode BG */
-
-@media (prefers-color-scheme: dark) {
-  body {
-    background-color: #121212;
-    color: #eeeeee;
-  }
+body {
+  background-color: #121212;
+  color: #eeeeee;
 }

@@ -7,20 +7,15 @@ import {
   useAction,
   useSubmission,
 } from "@solidjs/router"
-import { readRandomExpressions, updateExpression } from "~/api/expressions"
+import {
+  readRandomExpressions,
+  updateExpression,
+  Expression,
+} from "~/api/expressions"
 import Button from "~/components/Button"
 import { getUserCache } from "~/api/auth"
 import BackLink from "~/components/BackLink"
 import { FaSolidEye, FaSolidEyeSlash } from "solid-icons/fa"
-
-// TODO: define typing centrally
-type Expression = {
-  id: number
-  score: number
-  meaning: string
-  writing: string
-  reading: string
-}
 
 const getRandomExpressionsCache = cache(async () => {
   "use server"
