@@ -7,7 +7,8 @@ import { getUserCache } from "~/api/auth"
 import Button from "~/components/Button"
 import Pagination from "~/components/Pagination"
 import SearchBar from "~/components/SearchBar"
-import { defaultPageSize } from "~/config"
+import { defaultOrder, defaultPageSize, defaultSort } from "~/config"
+import TableHeader from "~/components/TableHeader"
 
 const getExpressionsCache = cache(async (options) => {
   "use server"
@@ -16,14 +17,22 @@ const getExpressionsCache = cache(async (options) => {
 
 export default function ExpressionList() {
   createAsync(async () => getUserCache(true))
+  const [searchParams] = useSearchParams()
 
   const getQueryOptions = () => {
-    const [searchParams] = useSearchParams()
-    const { page = "1", pageSize = defaultPageSize, search } = searchParams
+    const {
+      page = "1",
+      pageSize = defaultPageSize,
+      search,
+      sort = defaultSort,
+      order = defaultOrder,
+    } = searchParams
     return {
       page: Number(page),
       pageSize: Number(pageSize),
       search,
+      sort,
+      order,
     }
   }
 
@@ -59,10 +68,11 @@ export default function ExpressionList() {
         <table class="w-full text-center">
           <thead>
             <tr class="border-b border-secondary">
-              <th>Writing</th>
-              <th>Reading</th>
-              <th>Meaning</th>
-              <th>Score</th>
+              <TableHeader text="Writing" field="writing" />
+              <TableHeader text="Reading" field="reading" />
+              <TableHeader text="Meaning" field="meaning" />
+              <TableHeader text="Score" field="score" />
+
               <th>Edit</th>
             </tr>
           </thead>
