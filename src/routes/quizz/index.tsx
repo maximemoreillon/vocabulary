@@ -1,6 +1,12 @@
 import { MetaProvider, Title } from "@solidjs/meta"
 import { For, Show, createResource, createSignal } from "solid-js"
-import { cache, action, useAction, useSubmission } from "@solidjs/router"
+import {
+  cache,
+  action,
+  useAction,
+  useSubmission,
+  useSearchParams,
+} from "@solidjs/router"
 import {
   readRandomExpressions,
   updateExpression,
@@ -9,7 +15,8 @@ import {
 import Button from "~/components/Button"
 import { enforceAuth } from "~/api/auth"
 import BackLink from "~/components/BackLink"
-import { FaSolidEye, FaSolidEyeSlash } from "solid-icons/fa"
+import ModeToggle from "~/components/ModeToggle"
+import { FaSolidArrowRight, FaSolidEye, FaSolidEyeSlash } from "solid-icons/fa"
 
 const getRandomExpressionsCache = cache(async () => {
   "use server"
@@ -23,12 +30,19 @@ const updateExpressionAction = action(async (id: number, newScore: number) => {
 }, "updateExpression")
 
 export default function Quizz() {
+  const [searchParams] = useSearchParams()
+
+  const guessing = () => searchParams.guessing || "writing"
+  const guessingFrom = () => (guessing() === "meaning" ? "writing" : "meaning")
+
   const [getReadingShown, setReadingShown] = createSignal(false)
   const [getUserAnswerId, setUserAnswerId] = createSignal<
     number | null | undefined
   >(null)
 
   const [randomExpressions, { refetch }] = createResource(
+    // TODO: fix because refetch not working
+    // guessing,
     async () => await getRandomExpressionsCache()
   )
 
@@ -79,14 +93,20 @@ export default function Quizz() {
     <>
       <MetaProvider>
         <Title>Random expression</Title>
-        <BackLink />
+
+        <div class="flex justify-between items-center">
+          <BackLink />
+          <ModeToggle />
+        </div>
 
         <Show when={getCorrectAnswer()}>
           <div class="my-8 text-center">
-            <div class="text-5xl">{getCorrectAnswer()?.writing}</div>
+            <div class="text-5xl">
+              {getCorrectAnswer()[guessing() as "writing" | "meaning"]}
+            </div>
 
-            <Show when={getReadingShown()}>
-              <div class="text-center">{getCorrectAnswer()?.reading}</div>
+            <Show when={getReadingShown() && guessing() === "writing"}>
+              <div class="text-center">{getCorrectAnswer().reading}</div>
             </Show>
           </div>
 
@@ -104,7 +124,7 @@ export default function Quizz() {
             <div>Score: {randomExpressions()?.at(0)?.score} </div>
           </div>
 
-          <div class="flex flex-col gap-4 my-4">
+          <div class="flex flex-col gap-4 my-8">
             <For each={getEach()}>
               {(expression) => (
                 <Button
@@ -112,7 +132,10 @@ export default function Quizz() {
                   disabled={!!getUserAnswerId()}
                   class={getExpressionClass(expression.id)}
                 >
-                  {expression.meaning}
+                  {expression[guessingFrom()]}
+                  <Show when={getReadingShown() && guessing() === "meaning"}>
+                    <span>({expression.reading})</span>
+                  </Show>
                 </Button>
               )}
             </For>
@@ -121,7 +144,8 @@ export default function Quizz() {
         <Show when={getUserAnswerId()}>
           <div class="my-4">
             <Button onclick={getNextExpression} loading={submission.pending}>
-              Next expression
+              <FaSolidArrowRight />
+              <span>Next expression</span>
             </Button>
           </div>
         </Show>

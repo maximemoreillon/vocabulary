@@ -9,7 +9,7 @@ export default function BackLink() {
       class="text-primary-500 flex gap-2 items-center my-4"
     >
       <FaSolidArrowLeft />
-      <span>Return to my expressions</span>
+      <span>Return</span>
     </A>
   )
 }
