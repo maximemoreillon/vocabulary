@@ -101,7 +101,7 @@ export default function Quizz() {
 
         <Show when={getCorrectAnswer()}>
           <div class="my-8 text-center">
-            <div class="text-5xl">
+            <div class="text-6xl">
               {getCorrectAnswer()[guessing() as "writing" | "meaning"]}
             </div>
 

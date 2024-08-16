@@ -18,6 +18,7 @@ export default function SearchBar() {
     <form onsubmit={handleFormSubmit} class="flex gap-2 items-center">
       <Input
         name="search"
+        placeholder="Search"
         value={getSearch()}
         oninput={({ target }) => {
           setSearch(target.value)

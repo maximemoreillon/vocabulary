@@ -6,6 +6,7 @@ type Props = {
   label?: string
   value?: string | number | null
   oninput?: JSX.InputEventHandlerUnion<HTMLInputElement, InputEvent> | undefined
+  placeholder?: string
 }
 
 export default function Input(props: Props) {
@@ -21,6 +22,7 @@ export default function Input(props: Props) {
           name={props.name}
           class="p-2 bg-dark-300 rounded"
           value={(props.value || "") as string | number | string[] | undefined}
+          placeholder={props.placeholder}
         />
       </div>
     </Show>
