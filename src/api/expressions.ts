@@ -2,7 +2,7 @@
 
 import { db } from "./db"
 import { expressions } from "~/api/schema"
-import { count, desc, eq, sql } from "drizzle-orm"
+import { count, desc, eq, or, sql } from "drizzle-orm"
 import { defaultOrder, defaultPageSize, defaultSort } from "~/config"
 import { getUser } from "./auth"
 import { redirect } from "@solidjs/router"
@@ -56,18 +56,23 @@ export async function readExpressions(options: ReadExpressionsOptions) {
 
   const orderBy = order === "desc" ? desc(expressions[sort]) : expressions[sort]
 
+  const wehere = or(
+    sql`LOWER(meaning) LIKE ${search.toLowerCase() + "%"}`,
+    sql`LOWER(writing) LIKE ${search.toLowerCase() + "%"}`
+  )
+
   const items = await db
     .select()
     .from(expressions)
     .orderBy(orderBy)
     .limit(limit)
     .offset((page - 1) * limit)
-    .where(sql`LOWER(meaning) LIKE ${search.toLowerCase() + "%"}`)
+    .where(wehere)
 
   const [{ count: total }] = await db
     .select({ count: count() })
     .from(expressions)
-    .where(sql`LOWER(meaning) LIKE ${search.toLowerCase() + "%"}`)
+    .where(wehere)
 
   return { total, items, page, limit }
 }
