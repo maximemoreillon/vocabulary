@@ -2,13 +2,15 @@ import { Title } from "@solidjs/meta"
 import { action, redirect, useSubmission, createAsync } from "@solidjs/router"
 import { createExpression } from "~/api/expressions"
 import { Show } from "solid-js"
-import { getUserCache } from "~/api/auth"
 import { FaSolidFloppyDisk } from "solid-icons/fa"
 import Input from "~/components/Input"
 import Button from "~/components/Button"
 import BackLink from "~/components/BackLink"
+import { enforceAuth } from "~/api/auth"
 
 const postExpressionAction = action(async (formData: FormData) => {
+  "use server"
+  await enforceAuth()
   const reading = String(formData.get("reading"))
   const writing = String(formData.get("writing"))
   const meaning = String(formData.get("meaning"))
@@ -17,7 +19,6 @@ const postExpressionAction = action(async (formData: FormData) => {
 }, "postExpression")
 
 export default function NewExpression() {
-  createAsync(async () => getUserCache(true))
   const submission = useSubmission(postExpressionAction)
 
   return (

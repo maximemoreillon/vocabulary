@@ -13,12 +13,13 @@ import {
   Expression,
 } from "~/api/expressions"
 import Button from "~/components/Button"
-import { getUserCache } from "~/api/auth"
+import { enforceAuth, getUserCache } from "~/api/auth"
 import BackLink from "~/components/BackLink"
 import { FaSolidEye, FaSolidEyeSlash } from "solid-icons/fa"
 
 const getRandomExpressionsCache = cache(async () => {
   "use server"
+  await enforceAuth()
   return await readRandomExpressions()
 }, "expression")
 
@@ -28,7 +29,6 @@ const updateExpressionAction = action(async (id: number, newScore: number) => {
 }, "updateExpression")
 
 export default function Quizz() {
-  createAsync(async () => getUserCache(true))
   const [getReadingShown, setReadingShown] = createSignal(false)
   const [getUserAnswerId, setUserAnswerId] = createSignal<
     number | null | undefined

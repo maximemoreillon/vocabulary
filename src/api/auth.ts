@@ -32,17 +32,26 @@ export async function getSession() {
   }
 }
 
-export async function getUser(redirectToLogin: boolean) {
+export async function getUser() {
   const session = await getSession()
   const { username } = session.data
-  if (!username && redirectToLogin) throw redirect("/login")
+  if (!username) return null
   return { username }
 }
 
-export const getUserCache = cache(
-  async (redirect: boolean = false) => getUser(redirect),
-  "getUser"
-)
+export async function enforceAuth() {
+  const user = await getUser()
+  if (!user) throw redirect("/login")
+}
+
+// TODO: figure out if this needs to be a cache or action
+export const enforceAuthCache = cache(async () => {
+  await enforceAuth()
+}, "enforceAuth")
+
+export const getUserCache = cache(async () => {
+  return await getUser()
+}, "getUser")
 
 export async function login(credentials: Credentials) {
   const { username, password } = credentials

@@ -1,22 +1,23 @@
 import { For, Show, createResource } from "solid-js"
 import { Title, MetaProvider } from "@solidjs/meta"
-import { createAsync, cache, useSearchParams, A } from "@solidjs/router"
+import { cache, createAsync, redirect, useSearchParams } from "@solidjs/router"
 import { FaSolidPen, FaSolidPlus, FaSolidQuestion } from "solid-icons/fa"
 import { readExpressions } from "~/api/expressions"
-import { getUserCache } from "~/api/auth"
+
 import Button from "~/components/Button"
 import Pagination from "~/components/Pagination"
 import SearchBar from "~/components/SearchBar"
 import { defaultOrder, defaultPageSize, defaultSort } from "~/config"
 import TableHeader from "~/components/TableHeader"
+import { enforceAuth, enforceAuthCache } from "~/api/auth"
 
 const getExpressionsCache = cache(async (options) => {
   "use server"
+  await enforceAuth()
   return await readExpressions(options)
 }, "getExpressions")
 
 export default function ExpressionList() {
-  createAsync(async () => getUserCache(true))
   const [searchParams] = useSearchParams()
 
   const getQueryOptions = () => {
@@ -49,7 +50,7 @@ export default function ExpressionList() {
       </MetaProvider>
       <h2 class="text-6xl">Vocabulary list</h2>
 
-      <div class="my-8 flex gap-4">
+      <div class="my-8 flex gap-4 flex-wrap">
         <Button href="/expressions/new">
           <FaSolidPlus />
           <span>Add</span>

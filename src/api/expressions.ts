@@ -4,7 +4,8 @@ import { db } from "./db"
 import { expressions } from "~/api/schema"
 import { count, desc, eq, sql } from "drizzle-orm"
 import { defaultOrder, defaultPageSize, defaultSort } from "~/config"
-
+import { getUser } from "./auth"
+import { redirect } from "@solidjs/router"
 // TODO: infer from DB
 export type Expression = {
   id: number

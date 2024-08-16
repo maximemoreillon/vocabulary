@@ -9,7 +9,7 @@ import {
 } from "@solidjs/router"
 import { FaSolidFloppyDisk } from "solid-icons/fa"
 import { readExpression, updateExpression } from "~/api/expressions"
-import { getUserCache } from "~/api/auth"
+import { enforceAuth, getUserCache } from "~/api/auth"
 import BackLink from "~/components/BackLink"
 import Button from "~/components/Button"
 import Input from "~/components/Input"
@@ -17,11 +17,13 @@ import ExpressionDeleteButton from "~/components/ExpressionDeleteButton"
 
 const getExpression = cache(async (id: number) => {
   "use server"
+  await enforceAuth()
   return readExpression(id)
 }, "getExpression")
 
 const updateExpressionAction = action(async (formData: FormData) => {
   "use server"
+
   // const { id } = useParams()
   const id = String(formData.get("id"))
   const reading = String(formData.get("reading"))
@@ -33,7 +35,7 @@ const updateExpressionAction = action(async (formData: FormData) => {
 }, "deleteExpression")
 
 export default function Expression() {
-  createAsync(async () => getUserCache(true))
+  createAsync(async () => getUserCache())
   const params = useParams()
   const expression = createAsync(async () => getExpression(Number(params.id)))
 
