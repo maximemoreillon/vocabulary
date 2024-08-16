@@ -9,7 +9,7 @@ import Pagination from "~/components/Pagination"
 import SearchBar from "~/components/SearchBar"
 import { defaultOrder, defaultPageSize, defaultSort } from "~/config"
 import TableHeader from "~/components/TableHeader"
-import { enforceAuth, enforceAuthCache } from "~/api/auth"
+import { enforceAuth } from "~/api/auth"
 
 const getExpressionsCache = cache(async (options) => {
   "use server"
@@ -55,7 +55,7 @@ export default function ExpressionList() {
           <FaSolidPlus />
           <span>Add</span>
         </Button>
-        <Button href="/expressions/random">
+        <Button href="/quizz">
           <FaSolidQuestion />
           <span>Quizz</span>
         </Button>

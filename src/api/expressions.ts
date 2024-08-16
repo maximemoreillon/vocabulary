@@ -102,7 +102,7 @@ export async function deleteExpression(id: number) {
   return expression
 }
 
-export async function readRandomExpressions(count: number = 4) {
+export async function readRandomExpressions(count: number = 6) {
   return await db
     .select()
     .from(expressions)

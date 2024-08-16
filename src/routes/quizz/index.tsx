@@ -1,19 +1,13 @@
 import { MetaProvider, Title } from "@solidjs/meta"
 import { For, Show, createResource, createSignal } from "solid-js"
-import {
-  createAsync,
-  cache,
-  action,
-  useAction,
-  useSubmission,
-} from "@solidjs/router"
+import { cache, action, useAction, useSubmission } from "@solidjs/router"
 import {
   readRandomExpressions,
   updateExpression,
   Expression,
 } from "~/api/expressions"
 import Button from "~/components/Button"
-import { enforceAuth, getUserCache } from "~/api/auth"
+import { enforceAuth } from "~/api/auth"
 import BackLink from "~/components/BackLink"
 import { FaSolidEye, FaSolidEyeSlash } from "solid-icons/fa"
 
