@@ -45,7 +45,7 @@ export default function Expression() {
 
   return (
     <>
-      <Title>{expression()?.writing}</Title>
+      <Title>Vocabulary</Title>
       <BackLink />
       <Show when={expression()}>
         <form
