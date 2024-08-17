@@ -23,14 +23,16 @@ const getExpression = cache(async (id: number) => {
 
 const updateExpressionAction = action(async (formData: FormData) => {
   "use server"
+  await enforceAuth()
 
-  // const { id } = useParams()
-  const id = String(formData.get("id"))
+  const id = formData.get("id")
+
   const reading = String(formData.get("reading"))
   const writing = String(formData.get("writing"))
   const meaning = String(formData.get("meaning"))
 
   await updateExpression(Number(id), { reading, meaning, writing })
+
   return
 }, "deleteExpression")
 
@@ -51,7 +53,7 @@ export default function Expression() {
           method="post"
           class="my-8 flex flex-col gap-8"
         >
-          <Input label="ID" name="id" value={expression()?.id} type="hidden" />
+          <input name="id" value={expression()?.id} type="hidden" readonly />
           <Input label="Writing" name="writing" value={expression()?.writing} />
           <Input label="Reading" name="reading" value={expression()?.reading} />
           <Input label="Meaning" name="meaning" value={expression()?.meaning} />
