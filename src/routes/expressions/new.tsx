@@ -26,7 +26,7 @@ export default function NewExpression() {
       <Title>New expression</Title>
       <BackLink />
 
-      <h2 class="text-6xl my-4">New expression</h2>
+      <h2 class="text-5xl my-4">New expression</h2>
       <form
         action={postExpressionAction}
         method="post"
