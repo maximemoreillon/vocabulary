@@ -27,10 +27,10 @@ export default function ModeSelect() {
   }
 
   return (
-    <div class="flex gap-4 items-center">
+    <div class="flex gap-2 items-center">
       <For each={selects}>
         {(select) => (
-          <div class="flex gap-1 items-center">
+          <>
             <label>{select.label}</label>
             <select
               class="bg-primary-500 px-2 py-1 rounded"
@@ -47,7 +47,7 @@ export default function ModeSelect() {
                 )}
               </For>
             </select>
-          </div>
+          </>
         )}
       </For>
     </div>
