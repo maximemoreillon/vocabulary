@@ -17,6 +17,8 @@ import { enforceAuth } from "~/api/auth"
 import BackLink from "~/components/BackLink"
 import ModeToggle from "~/components/ModeToggle"
 import { FaSolidArrowRight, FaSolidEye, FaSolidEyeSlash } from "solid-icons/fa"
+import ModeSelect from "~/components/ModeSelect"
+import { Mode } from "~/components/ModeSelect"
 
 const getRandomExpressionsCache = cache(async () => {
   "use server"
@@ -32,8 +34,8 @@ const updateExpressionAction = action(async (id: number, newScore: number) => {
 export default function Quizz() {
   const [searchParams] = useSearchParams()
 
-  const guessing = () => searchParams.guessing || "writing"
-  const guessingFrom = () => (guessing() === "meaning" ? "writing" : "meaning")
+  const guess = () => (searchParams.guess as Mode) || "meaning"
+  const from = () => (searchParams.from as Mode) || "writing"
 
   const [getReadingShown, setReadingShown] = createSignal(false)
   const [getUserAnswerId, setUserAnswerId] = createSignal<
@@ -41,8 +43,6 @@ export default function Quizz() {
   >(null)
 
   const [randomExpressions, { refetch }] = createResource(
-    // TODO: fix because refetch not working
-    // guessing,
     async () => await getRandomExpressionsCache()
   )
 
@@ -96,16 +96,17 @@ export default function Quizz() {
 
         <div class="flex justify-between items-center">
           <BackLink />
-          <ModeToggle />
+          <ModeSelect />
+          {/* <ModeToggle /> */}
         </div>
 
         <Show when={getCorrectAnswer()}>
           <div class="my-8 text-center">
             <div class="text-6xl">
-              {getCorrectAnswer()[guessing() as "writing" | "meaning"]}
+              {getCorrectAnswer()[from() as "writing" | "meaning"]}
             </div>
 
-            <Show when={getReadingShown() && guessing() === "writing"}>
+            <Show when={getReadingShown() && from() === "writing"}>
               <div class="text-center">{getCorrectAnswer().reading}</div>
             </Show>
           </div>
@@ -132,8 +133,8 @@ export default function Quizz() {
                   disabled={!!getUserAnswerId()}
                   class={getExpressionClass(expression.id)}
                 >
-                  {expression[guessingFrom()]}
-                  <Show when={getReadingShown() && guessing() === "meaning"}>
+                  {expression[guess()]}
+                  <Show when={getReadingShown() && guess() === "writing"}>
                     <span>({expression.reading})</span>
                   </Show>
                 </Button>
