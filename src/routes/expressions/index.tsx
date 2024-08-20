@@ -45,9 +45,7 @@ export default function ExpressionList() {
 
   return (
     <>
-      <MetaProvider>
-        <Title>My vocabulary list</Title>
-      </MetaProvider>
+      <Title>My vocabulary list</Title>
       <h2 class="text-5xl">Vocabulary list</h2>
 
       <div class="my-8 flex gap-4 flex-wrap">
