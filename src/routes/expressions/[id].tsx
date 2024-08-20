@@ -27,9 +27,9 @@ const updateExpressionAction = action(async (formData: FormData) => {
 
   const id = formData.get("id")
 
-  const reading = String(formData.get("reading"))
-  const writing = String(formData.get("writing"))
-  const meaning = String(formData.get("meaning"))
+  const reading = formData.get("reading")?.toString()
+  const writing = formData.get("writing")?.toString()
+  const meaning = formData.get("meaning")?.toString()
 
   await updateExpression(Number(id), { reading, meaning, writing })
 

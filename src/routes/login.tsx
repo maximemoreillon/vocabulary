@@ -6,8 +6,12 @@ import { Show } from "solid-js"
 import { FaSolidRightToBracket } from "solid-icons/fa"
 
 const loginAction = action(async (formData: FormData) => {
-  const username = String(formData.get("username"))
-  const password = String(formData.get("password"))
+  const username = formData.get("username")?.toString()
+  const password = formData.get("password")?.toString()
+
+  if (!username) return new Error("Missing username")
+  if (!password) return new Error("Missing password")
+
   try {
     await login({ username, password })
     return redirect("/expressions")
