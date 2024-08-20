@@ -15,7 +15,6 @@ import {
 import Button from "~/components/Button"
 import { enforceAuth } from "~/api/auth"
 import BackLink from "~/components/BackLink"
-import ModeToggle from "~/components/ModeToggle"
 import { FaSolidArrowRight, FaSolidEye, FaSolidEyeSlash } from "solid-icons/fa"
 import ModeSelect from "~/components/ModeSelect"
 import { Mode } from "~/components/ModeSelect"
@@ -94,7 +93,7 @@ export default function Quizz() {
       <MetaProvider>
         <Title>Random expression</Title>
 
-        <div class="flex justify-between items-center">
+        <div class="flex justify-between items-center flex-wrap">
           <BackLink />
           <ModeSelect />
           {/* <ModeToggle /> */}

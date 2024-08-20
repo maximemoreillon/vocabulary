@@ -48,7 +48,7 @@ export default function ExpressionList() {
       <MetaProvider>
         <Title>My vocabulary list</Title>
       </MetaProvider>
-      <h2 class="text-6xl">Vocabulary list</h2>
+      <h2 class="text-5xl">Vocabulary list</h2>
 
       <div class="my-8 flex gap-4 flex-wrap">
         <Button href="/expressions/new">

@@ -33,7 +33,7 @@ export default function ModeSelect() {
           <>
             <label>{select.label}</label>
             <select
-              class="bg-primary-500 px-2 py-1 rounded text-dark"
+              class="bg-primary-500 px-4 py-2 rounded text-dark"
               onchange={(e) => handleChange(select.value, e)}
             >
               <For each={options}>
