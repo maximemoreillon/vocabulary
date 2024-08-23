@@ -1,6 +1,6 @@
 import { For, Show, createResource } from "solid-js"
-import { Title, MetaProvider } from "@solidjs/meta"
-import { cache, createAsync, redirect, useSearchParams } from "@solidjs/router"
+import { Title } from "@solidjs/meta"
+import { cache, useSearchParams } from "@solidjs/router"
 import { FaSolidPen, FaSolidPlus, FaSolidQuestion } from "solid-icons/fa"
 import { readExpressions } from "~/api/expressions"
 

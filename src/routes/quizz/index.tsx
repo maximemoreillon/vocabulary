@@ -12,10 +12,10 @@ import {
   updateExpression,
   Expression,
 } from "~/api/expressions"
-import Button from "~/components/Button"
 import { enforceAuth } from "~/api/auth"
-import BackLink from "~/components/BackLink"
 import { FaSolidArrowRight, FaSolidEye, FaSolidEyeSlash } from "solid-icons/fa"
+import Button from "~/components/Button"
+import BackLink from "~/components/BackLink"
 import ModeSelect from "~/components/ModeSelect"
 import { Mode } from "~/components/ModeSelect"
 
