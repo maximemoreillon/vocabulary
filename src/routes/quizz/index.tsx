@@ -96,7 +96,6 @@ export default function Quizz() {
         <div class="flex justify-between items-center flex-wrap">
           <BackLink />
           <ModeSelect />
-          {/* <ModeToggle /> */}
         </div>
 
         <Show when={getCorrectAnswer()}>
@@ -111,7 +110,10 @@ export default function Quizz() {
           </div>
 
           <div class="flex justify-between items-center">
-            <Button onclick={() => setReadingShown(!getReadingShown())}>
+            <Button
+              onclick={() => setReadingShown(!getReadingShown())}
+              size="sm"
+            >
               <Show when={getReadingShown()}>
                 <FaSolidEyeSlash />
                 <span>Hide reading</span>

@@ -9,14 +9,26 @@ type Props = {
   loading?: boolean
   class?: string
   onclick?: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent>
+  size?: string
+  variant?: string
 }
 
 export default function Button(props: Props) {
-  const [getBaseClass, setBaseClass] = createSignal(
-    "rounded px-4 py-2 bg-primary-500 text-dark shadow disabled:opacity-50 inline-flex items-center gap-2 justify-center"
-  )
+  const baseClass =
+    "rounded  bg-primary-500 text-dark shadow disabled:opacity-50 inline-flex items-center gap-2 justify-center"
 
-  const getClass = () => `${getBaseClass()} ${props.class}`
+  let sizeClasses = "px-4 py-2"
+
+  switch (props.size) {
+    case "sm":
+      sizeClasses = "px-2 py-1"
+      break
+
+    default:
+      break
+  }
+
+  const getClass = () => `${baseClass} ${sizeClasses} ${props.class}`
 
   return (
     <>
