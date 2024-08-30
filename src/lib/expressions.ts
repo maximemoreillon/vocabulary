@@ -1,7 +1,7 @@
 "use server"
 
 import { db } from "./db"
-import { expressions } from "~/api/schema"
+import { expressions } from "~/lib/schema"
 import { count, desc, eq, or, sql } from "drizzle-orm"
 import { defaultOrder, defaultPageSize, defaultSort } from "~/config"
 

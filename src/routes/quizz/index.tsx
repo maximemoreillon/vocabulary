@@ -11,8 +11,8 @@ import {
   readRandomExpressions,
   updateExpression,
   Expression,
-} from "~/api/expressions"
-import { enforceAuth } from "~/api/auth"
+} from "~/lib/expressions"
+import { enforceAuth } from "~/lib/auth"
 import { FaSolidArrowRight, FaSolidEye, FaSolidEyeSlash } from "solid-icons/fa"
 import Button from "~/components/Button"
 import BackLink from "~/components/BackLink"

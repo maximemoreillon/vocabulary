@@ -8,8 +8,8 @@ import {
   useSubmission,
 } from "@solidjs/router"
 import { FaSolidFloppyDisk } from "solid-icons/fa"
-import { readExpression, updateExpression } from "~/api/expressions"
-import { enforceAuth, getUserCache } from "~/api/auth"
+import { readExpression, updateExpression } from "~/lib/expressions"
+import { enforceAuth, getUserCache } from "~/lib/auth"
 import BackLink from "~/components/BackLink"
 import Button from "~/components/Button"
 import Input from "~/components/Input"

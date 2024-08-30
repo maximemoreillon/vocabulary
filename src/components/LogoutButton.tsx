@@ -1,6 +1,6 @@
 import Button from "~/components/Button"
 import { action, useAction } from "@solidjs/router"
-import { logout } from "~/api/auth"
+import { logout } from "~/lib/auth"
 import { FaSolidRightFromBracket } from "solid-icons/fa"
 
 const logoutAction = action(logout, "logout")

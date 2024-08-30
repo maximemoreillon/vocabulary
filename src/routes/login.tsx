@@ -1,7 +1,7 @@
 import Button from "~/components/Button"
 import Input from "~/components/Input"
 import { action, redirect, useSubmission } from "@solidjs/router"
-import { login } from "~/api/auth"
+import { login } from "~/lib/auth"
 import { Show } from "solid-js"
 import { FaSolidRightToBracket } from "solid-icons/fa"
 

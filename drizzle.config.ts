@@ -1,5 +1,5 @@
 import { defineConfig } from "drizzle-kit"
-import { VOCABULARY_DB_URL } from "~/api/db"
+import { VOCABULARY_DB_URL } from "~/lib/db"
 
 export default defineConfig({
   schema: "./src/api/schema.ts",

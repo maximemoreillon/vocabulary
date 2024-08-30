@@ -2,14 +2,14 @@ import { For, Show, createResource } from "solid-js"
 import { Title } from "@solidjs/meta"
 import { cache, useSearchParams } from "@solidjs/router"
 import { FaSolidPen, FaSolidPlus, FaSolidQuestion } from "solid-icons/fa"
-import { readExpressions } from "~/api/expressions"
+import { readExpressions } from "~/lib/expressions"
 
 import Button from "~/components/Button"
 import Pagination from "~/components/Pagination"
 import SearchBar from "~/components/SearchBar"
 import { defaultOrder, defaultPageSize, defaultSort } from "~/config"
 import TableHeader from "~/components/TableHeader"
-import { enforceAuth } from "~/api/auth"
+import { enforceAuth } from "~/lib/auth"
 
 const getExpressionsCache = cache(async (options) => {
   "use server"

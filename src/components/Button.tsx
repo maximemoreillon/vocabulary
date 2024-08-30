@@ -15,7 +15,7 @@ type Props = {
 
 export default function Button(props: Props) {
   const baseClass =
-    "rounded  bg-primary-500 text-dark shadow disabled:opacity-50 inline-flex items-center gap-2 justify-center"
+    "rounded bg-primary-500 text-dark shadow disabled:opacity-50 inline-flex items-center gap-2 justify-center"
 
   let sizeClasses = "px-4 py-2"
 

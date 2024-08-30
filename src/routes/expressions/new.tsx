@@ -1,12 +1,12 @@
 import { Title } from "@solidjs/meta"
 import { action, redirect, useSubmission } from "@solidjs/router"
-import { createExpression } from "~/api/expressions"
+import { createExpression } from "~/lib/expressions"
 import { Show } from "solid-js"
 import { FaSolidFloppyDisk } from "solid-icons/fa"
 import Input from "~/components/Input"
 import Button from "~/components/Button"
 import BackLink from "~/components/BackLink"
-import { enforceAuth } from "~/api/auth"
+import { enforceAuth } from "~/lib/auth"
 
 const postExpressionAction = action(async (formData: FormData) => {
   "use server"

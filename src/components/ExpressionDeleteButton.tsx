@@ -1,6 +1,6 @@
 import { action, useAction, useSubmission, redirect } from "@solidjs/router"
 import { FaSolidTrash } from "solid-icons/fa"
-import { deleteExpression } from "~/api/expressions"
+import { deleteExpression } from "~/lib/expressions"
 import Button from "~/components/Button"
 
 type Props = {
