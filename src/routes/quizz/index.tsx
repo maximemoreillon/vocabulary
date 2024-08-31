@@ -25,12 +25,15 @@ const getRandomExpressionsCache = cache(async () => {
   return await readRandomExpressions()
 }, "expression")
 
-const updateExpressionAction = action(async (id: number, newScore: number) => {
-  "use server"
-  await updateExpression(id, { score: newScore })
-}, "updateExpression")
+const updateExpressionScoreAction = action(
+  async (id: number, newScore: number) => {
+    "use server"
+    await updateExpression(id, { score: newScore })
+  },
+  "updateExpression"
+)
 
-export default function Quizz() {
+export default function QuizzPage() {
   const [searchParams] = useSearchParams()
 
   const guess = () => (searchParams.guess as Mode) || "meaning"
@@ -47,22 +50,29 @@ export default function Quizz() {
 
   const getCorrectAnswer = () => randomExpressions()?.at(0) as Expression
 
-  const updateExpressionUsedAction = useAction(updateExpressionAction)
-  const submission = useSubmission(updateExpressionAction)
+  const updateExpressionUsedAction = useAction(updateExpressionScoreAction)
+  const submission = useSubmission(updateExpressionScoreAction)
 
-  async function handleButtonClicked(selectionId: number) {
+  async function handleButtonClicked(selection: Expression) {
+    const { id: selectionId, score: selectionScore } = selection
+
+    const { id: correctAnswerId, score: correctAnswerScore = 0 } =
+      getCorrectAnswer()
+
     setUserAnswerId(selectionId)
 
-    const { id, score } = getCorrectAnswer()
-
-    let newScore = score ?? 0
-    if (selectionId === id) newScore++
-    else newScore--
-
-    // Does this need to be an action? an used action? or just a function?
-    // Using a submission allows to check for pending state
-    // updateExpression(id, { score: newScore })
-    await updateExpressionUsedAction(id, newScore)
+    if (selectionId === correctAnswerId) {
+      await updateExpressionUsedAction(
+        correctAnswerId,
+        (correctAnswerScore ?? 0) + 1
+      )
+    } else {
+      await updateExpressionUsedAction(
+        correctAnswerId,
+        (correctAnswerScore ?? 0) - 1
+      )
+      await updateExpressionUsedAction(selectionId, (selectionScore ?? 0) - 1)
+    }
   }
 
   function getEach() {
@@ -130,7 +140,7 @@ export default function Quizz() {
             <For each={getEach()}>
               {(expression) => (
                 <Button
-                  onclick={() => handleButtonClicked(expression.id)}
+                  onclick={() => handleButtonClicked(expression)}
                   disabled={!!getUserAnswerId()}
                   class={getExpressionClass(expression.id)}
                 >
