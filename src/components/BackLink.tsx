@@ -6,7 +6,7 @@ export default function BackLink() {
   return (
     <A
       href="/expressions"
-      class="text-primary-500 flex gap-2 items-center my-4"
+      class="text-primary-200 flex gap-2 items-center my-4"
     >
       <FaSolidArrowLeft />
       <span>Return</span>
