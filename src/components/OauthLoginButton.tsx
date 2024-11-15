@@ -3,7 +3,7 @@ import { action, redirect } from "@solidjs/router"
 import { oAuthLogin } from "~/lib/oidc"
 
 const oAuthLoginAction = action(async () => {
-  const redirectUrl = await oAuthLogin()
+  const redirectUrl = await oAuthLogin(window.location.origin)
   throw redirect(redirectUrl.toString())
 }, "oauthLogin")
 

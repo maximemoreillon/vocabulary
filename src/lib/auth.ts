@@ -3,6 +3,7 @@
 
 import { redirect, cache } from "@solidjs/router"
 import { SessionConfig, useSession } from "vinxi/http"
+import { getUserFromToken } from "./oidc"
 
 type Credentials = {
   username: string
@@ -39,9 +40,13 @@ export async function getSession() {
 
 export async function getUser() {
   const session = await getSession()
-  const { username } = session.data
-  if (!username) return null
-  return { username }
+  const { username, access_token } = session.data
+  if (access_token) {
+    // TODO: get user from Token
+    const userFromToken = await getUserFromToken(access_token)
+    return userFromToken
+  } else if (username) return { username }
+  else return null
 }
 
 export async function getAccessToken() {
@@ -79,16 +84,17 @@ export async function login(credentials: Credentials) {
     const { status } = await fetch(LOGIN_URL, options)
     if (status !== 200) throw new Error("Login failed")
   } else {
+    // Local auth
     if (username !== VOCABULARY_USERNAME || password !== VOCABULARY_PASSWORD)
       throw new Error("Invalid credentials")
   }
 
   const session = await getSession()
-  await session.update((d: SessionContent) => (d.username = username))
+  await session.update((d) => (d.username = username))
 }
 
 export async function logout() {
   const session = await getSession()
-  await session.update((d: SessionContent) => (d.username = undefined))
+  await session.update((d) => (d.username = undefined))
   throw redirect("/login")
 }

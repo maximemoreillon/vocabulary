@@ -4,8 +4,11 @@
 
 import * as client from "openid-client"
 import { SessionContent, getSession } from "./auth"
+import createJwksClient from "jwks-rsa"
+import jwt from "jsonwebtoken"
 
-const { VITE_OIDC_AUTHORITY, VITE_OIDC_CLIENT_ID } = import.meta.env
+const { VITE_OIDC_AUTHORITY, VITE_OIDC_CLIENT_ID, VITE_OIDC_JWKS_URI } =
+  import.meta.env
 const { OIDC_CLIENT_SECRET } = process.env
 
 let config: client.Configuration
@@ -20,10 +23,17 @@ export async function getConfig() {
   return config
 }
 
-export async function oAuthLogin() {
+// TODO: use only oidc-client
+const jwksClient = createJwksClient({
+  jwksUri: VITE_OIDC_JWKS_URI, // TODO: get from oidc-client
+  cache: true,
+  rateLimit: true,
+})
+
+export async function oAuthLogin(windowLocationOrigin: string) {
   const config = await getConfig()
 
-  let redirect_uri = "http://localhost:3000/api/oauth/callback"
+  let redirect_uri = `${windowLocationOrigin}/api/oauth/callback`
   let scope = "openid"
   /**
    * PKCE: The following MUST be generated for every redirect to the
@@ -38,15 +48,6 @@ export async function oAuthLogin() {
 
   // TODO: figure out what to do with this
   let state!: string
-
-  // CUSTOM ADDITION
-  const session = await getSession()
-  await session.update((s: SessionContent) => {
-    s.code_verifier = code_verifier
-    s.code_challenge = code_challenge
-    s.state = state
-  })
-  // END OF CUSTOM ADDITION
 
   let parameters: Record<string, string> = {
     redirect_uri,
@@ -66,5 +67,55 @@ export async function oAuthLogin() {
     parameters.state = state
   }
 
+  // CUSTOM ADDITION
+  const session = await getSession()
+  await session.update((d: SessionContent) => {
+    d.code_verifier = code_verifier
+    d.code_challenge = code_challenge
+    d.state = state
+  })
+  // END OF CUSTOM ADDITION
+
   return client.buildAuthorizationUrl(config, parameters)
+}
+
+export async function getUserFromToken(token: string) {
+  // TODO: use oidc-client instead
+
+  const decoded = jwt.decode(token, { complete: true })
+  if (!decoded) return null //throw new Error(`Decoded token is null`)
+
+  const kid = decoded.header?.kid
+  if (!kid) throw new Error("Missing token kid")
+
+  const key = await jwksClient.getSigningKey(kid)
+
+  const user = jwt.verify(token, key.getPublicKey())
+  return user
+}
+
+export async function oAuthCallback(url: string) {
+  const config = await getConfig()
+
+  const session = await getSession()
+
+  const { code_verifier } = session.data
+
+  try {
+    const { access_token, id_token } = await client.authorizationCodeGrant(
+      config,
+      new URL(url),
+      {
+        pkceCodeVerifier: code_verifier,
+      }
+    )
+
+    await session.update((data) => {
+      // TODO: enable usage of access_token by providing audience
+      // data.access_token = access_token
+      data.access_token = id_token // for testing
+    })
+  } catch (error) {
+    console.log(error)
+  }
 }
