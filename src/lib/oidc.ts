@@ -37,29 +37,29 @@ const jwksClient = createJwksClient({
 export async function oAuthLogin(windowLocationOrigin: string) {
   const config = await getConfig()
 
-  let redirect_uri = `${windowLocationOrigin}/api/oauth/callback`
-  let scope = "openid email profile"
+  const redirect_uri = `${windowLocationOrigin}/api/oauth/callback`
+  const scope = "openid email profile offline_access"
   /**
    * PKCE: The following MUST be generated for every redirect to the
    * authorization_endpoint. You must store the code_verifier and state in the
    * end-user session such that it can be recovered as the user gets redirected
    * from the authorization server back to your application.
    */
-  let code_verifier: string = client.randomPKCECodeVerifier()
-  let code_challenge: string = await client.calculatePKCECodeChallenge(
+  const code_verifier: string = client.randomPKCECodeVerifier()
+  const code_challenge: string = await client.calculatePKCECodeChallenge(
     code_verifier
   )
 
-  // TODO: figure out what to do with this
-  let state!: string
-
-  let parameters: Record<string, string> = {
+  const parameters: Record<string, string> = {
     redirect_uri,
     scope,
     code_challenge,
     code_challenge_method: "S256",
     audience: VITE_OIDC_AUDIENCE,
   }
+
+  // TODO: figure out what to do with this
+  let state!: string
 
   if (!config.serverMetadata().supportsPKCE()) {
     /**
@@ -72,14 +72,12 @@ export async function oAuthLogin(windowLocationOrigin: string) {
     parameters.state = state
   }
 
-  // CUSTOM ADDITION
   const session = await getSession()
   await session.update((d: SessionContent) => {
     d.code_verifier = code_verifier
     d.code_challenge = code_challenge
     d.state = state
   })
-  // END OF CUSTOM ADDITION
 
   return client.buildAuthorizationUrl(config, parameters)
 }
@@ -110,18 +108,13 @@ export async function oAuthCallback(url: string) {
   const { code_verifier } = session.data
 
   try {
-    const { access_token } = await client.authorizationCodeGrant(
-      config,
-      new URL(url),
-      {
-        pkceCodeVerifier: code_verifier,
-      }
-    )
+    const result = await client.authorizationCodeGrant(config, new URL(url), {
+      pkceCodeVerifier: code_verifier,
+    })
 
-    console.log({ access_token })
+    const { access_token } = result
 
     await session.update((data) => {
-      // TODO: enable usage of access_token by providing audience
       data.access_token = access_token
     })
   } catch (error) {
