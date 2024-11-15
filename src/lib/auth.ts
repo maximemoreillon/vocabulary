@@ -9,8 +9,11 @@ type Credentials = {
   password: string
 }
 
-type UserSession = {
+export type SessionContent = {
   username?: string
+  code_verifier?: string
+  code_challenge?: string
+  state?: string
 }
 
 const {
@@ -72,11 +75,11 @@ export async function login(credentials: Credentials) {
   }
 
   const session = await getSession()
-  await session.update((d: UserSession) => (d.username = username))
+  await session.update((d: SessionContent) => (d.username = username))
 }
 
 export async function logout() {
   const session = await getSession()
-  await session.update((d: UserSession) => (d.username = undefined))
+  await session.update((d: SessionContent) => (d.username = undefined))
   throw redirect("/login")
 }
