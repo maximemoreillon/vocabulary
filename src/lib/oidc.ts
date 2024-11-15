@@ -112,10 +112,11 @@ export async function oAuthCallback(url: string) {
       pkceCodeVerifier: code_verifier,
     })
 
-    const { access_token } = result
+    const { access_token, refresh_token } = result
 
     await session.update((data) => {
       data.access_token = access_token
+      data.refresh_token = refresh_token
     })
   } catch (error) {
     console.log(error)

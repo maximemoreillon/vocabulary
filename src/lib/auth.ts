@@ -17,6 +17,7 @@ export type SessionContent = {
   code_challenge?: string
   state?: string
   access_token?: string
+  refresh_token: string
 }
 
 const {
