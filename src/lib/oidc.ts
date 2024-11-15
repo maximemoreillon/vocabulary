@@ -7,8 +7,12 @@ import { SessionContent, getSession } from "./auth"
 import createJwksClient from "jwks-rsa"
 import jwt from "jsonwebtoken"
 
-const { VITE_OIDC_AUTHORITY, VITE_OIDC_CLIENT_ID, VITE_OIDC_JWKS_URI } =
-  import.meta.env
+const {
+  VITE_OIDC_AUTHORITY,
+  VITE_OIDC_CLIENT_ID,
+  VITE_OIDC_JWKS_URI,
+  VITE_OIDC_AUDIENCE,
+} = import.meta.env
 const { OIDC_CLIENT_SECRET } = process.env
 
 let config: client.Configuration
@@ -34,7 +38,7 @@ export async function oAuthLogin(windowLocationOrigin: string) {
   const config = await getConfig()
 
   let redirect_uri = `${windowLocationOrigin}/api/oauth/callback`
-  let scope = "openid"
+  let scope = "openid email profile"
   /**
    * PKCE: The following MUST be generated for every redirect to the
    * authorization_endpoint. You must store the code_verifier and state in the
@@ -54,6 +58,7 @@ export async function oAuthLogin(windowLocationOrigin: string) {
     scope,
     code_challenge,
     code_challenge_method: "S256",
+    audience: VITE_OIDC_AUDIENCE,
   }
 
   if (!config.serverMetadata().supportsPKCE()) {
@@ -89,9 +94,12 @@ export async function getUserFromToken(token: string) {
   if (!kid) throw new Error("Missing token kid")
 
   const key = await jwksClient.getSigningKey(kid)
-
-  const user = jwt.verify(token, key.getPublicKey())
-  return user
+  try {
+    const user = jwt.verify(token, key.getPublicKey())
+    return user
+  } catch (error) {
+    return null
+  }
 }
 
 export async function oAuthCallback(url: string) {
@@ -102,7 +110,7 @@ export async function oAuthCallback(url: string) {
   const { code_verifier } = session.data
 
   try {
-    const { access_token, id_token } = await client.authorizationCodeGrant(
+    const { access_token } = await client.authorizationCodeGrant(
       config,
       new URL(url),
       {
@@ -110,10 +118,11 @@ export async function oAuthCallback(url: string) {
       }
     )
 
+    console.log({ access_token })
+
     await session.update((data) => {
       // TODO: enable usage of access_token by providing audience
-      // data.access_token = access_token
-      data.access_token = id_token // for testing
+      data.access_token = access_token
     })
   } catch (error) {
     console.log(error)
