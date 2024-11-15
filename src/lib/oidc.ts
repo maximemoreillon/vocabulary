@@ -1,5 +1,7 @@
 "use server"
 
+// Following https://github.com/panva/openid-client
+
 import * as client from "openid-client"
 import { SessionContent, getSession } from "./auth"
 
@@ -33,6 +35,8 @@ export async function oAuthLogin() {
   let code_challenge: string = await client.calculatePKCECodeChallenge(
     code_verifier
   )
+
+  // TODO: figure out what to do with this
   let state!: string
 
   // CUSTOM ADDITION

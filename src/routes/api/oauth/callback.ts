@@ -14,9 +14,11 @@ export async function GET(event: APIEvent) {
 
   const { code_verifier } = session.data
 
-  const token = await client.authorizationCodeGrant(config, url, {
+  const result = await client.authorizationCodeGrant(config, url, {
     pkceCodeVerifier: code_verifier,
   })
 
-  return { token }
+  await session.update((s) => (s.access_token = result.access_token))
+
+  return result
 }

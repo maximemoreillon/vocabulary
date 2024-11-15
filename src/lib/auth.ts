@@ -11,9 +11,11 @@ type Credentials = {
 
 export type SessionContent = {
   username?: string
+  // OIDC
   code_verifier?: string
   code_challenge?: string
   state?: string
+  access_token?: string
 }
 
 const {
@@ -40,6 +42,13 @@ export async function getUser() {
   const { username } = session.data
   if (!username) return null
   return { username }
+}
+
+export async function getAccessToken() {
+  const session = await getSession()
+  const { accewss_token } = session.data
+  if (!accewss_token) return null
+  return { accewss_token }
 }
 
 export async function enforceAuth() {
