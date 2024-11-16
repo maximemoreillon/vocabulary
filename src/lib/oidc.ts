@@ -7,12 +7,7 @@ import { SessionContent, getSession } from "./auth"
 import createJwksClient from "jwks-rsa"
 import jwt from "jsonwebtoken"
 
-const {
-  VITE_OIDC_AUTHORITY,
-  VITE_OIDC_CLIENT_ID,
-  VITE_OIDC_JWKS_URI,
-  VITE_OIDC_AUDIENCE,
-} = import.meta.env
+const { OIDC_AUTHORITY = "", OIDC_CLIENT_ID = "", OIDC_AUDIENCE } = process.env
 
 // const { OIDC_CLIENT_SECRET } = process.env
 
@@ -22,8 +17,8 @@ let jwksClient: createJwksClient.JwksClient
 export async function getConfig() {
   if (!config)
     config = await client.discovery(
-      new URL(VITE_OIDC_AUTHORITY),
-      VITE_OIDC_CLIENT_ID
+      new URL(OIDC_AUTHORITY),
+      OIDC_CLIENT_ID
       // OIDC_CLIENT_SECRET
     )
 
@@ -58,12 +53,12 @@ export async function oAuthLogin(windowLocationOrigin: string) {
     code_verifier
   )
 
-  const parameters: Record<string, string> = {
+  const parameters = {
     redirect_uri,
     scope,
     code_challenge,
     code_challenge_method: "S256",
-    audience: VITE_OIDC_AUDIENCE,
+    audience: OIDC_AUDIENCE,
   }
 
   // TODO: figure out what to do with this
