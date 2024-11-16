@@ -6,7 +6,7 @@ import { Show } from "solid-js"
 import { FaSolidRightToBracket } from "solid-icons/fa"
 import OauthLoginButton from "~/components/OauthLoginButton"
 
-const { VITE_OIDC_AUTHORITY, LOGIN_URL } = process.env
+const { VITE_OIDC_AUTHORITY } = process.env
 
 const loginAction = action(async (formData: FormData) => {
   const username = formData.get("username")?.toString()
@@ -36,7 +36,7 @@ export default function Login() {
         </div>
       </Show>
 
-      <Show when={LOGIN_URL}>
+      <Show when={!VITE_OIDC_AUTHORITY}>
         <form action={loginAction} method="post" class="flex flex-col gap-8 ">
           <Input label="Username" name="username" />
           <Input label="Password" name="password" type="password" />
