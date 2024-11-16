@@ -1,12 +1,17 @@
 import Button from "~/components/Button"
 import Input from "~/components/Input"
-import { action, redirect, useSubmission } from "@solidjs/router"
+import { action, query, redirect, useSubmission } from "@solidjs/router"
 import { login } from "~/lib/auth"
 import { Show } from "solid-js"
 import { FaSolidRightToBracket } from "solid-icons/fa"
 import OauthLoginButton from "~/components/OauthLoginButton"
+import { isOidcAvailable } from "~/lib/oidc"
 
-const { VITE_OIDC_AUTHORITY } = process.env
+const isOidcAvailableQuery = query(
+  async () => await isOidcAvailable(),
+
+  "isOidcAvailable"
+)
 
 const loginAction = action(async (formData: FormData) => {
   const username = formData.get("username")?.toString()
@@ -26,17 +31,19 @@ const loginAction = action(async (formData: FormData) => {
 export default function Login() {
   const submission = useSubmission(loginAction)
 
+  const oidcAvailable = isOidcAvailableQuery()
+
   return (
     <div class="mx-auto max-w-sm ">
       <h1 class="text-6xl my-8 ">Login</h1>
 
-      <Show when={VITE_OIDC_AUTHORITY}>
+      <Show when={oidcAvailable}>
         <div class="text-center">
           <OauthLoginButton />
         </div>
       </Show>
 
-      <Show when={!VITE_OIDC_AUTHORITY}>
+      <Show when={!oidcAvailable}>
         <form action={loginAction} method="post" class="flex flex-col gap-8 ">
           <Input label="Username" name="username" />
           <Input label="Password" name="password" type="password" />

@@ -9,10 +9,12 @@ import jwt from "jsonwebtoken"
 
 const { OIDC_AUTHORITY = "", OIDC_CLIENT_ID = "", OIDC_AUDIENCE } = process.env
 
-// const { OIDC_CLIENT_SECRET } = process.env
-
 let config: client.Configuration
 let jwksClient: createJwksClient.JwksClient
+
+export async function isOidcAvailable() {
+  return !!OIDC_AUTHORITY
+}
 
 export async function getConfig() {
   if (!config)
@@ -34,8 +36,6 @@ export async function getConfig() {
 
   return config
 }
-
-// TODO: use only oidc-client
 
 export async function oAuthLogin(windowLocationOrigin: string) {
   const config = await getConfig()
@@ -86,6 +86,7 @@ export async function oAuthLogin(windowLocationOrigin: string) {
   return client.buildAuthorizationUrl(config, parameters)
 }
 
+// TODO: use only oidc-client
 export async function getUserFromToken(token: string) {
   // TODO: use oidc-client instead if possible
 
