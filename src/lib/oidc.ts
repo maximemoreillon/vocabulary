@@ -13,32 +13,40 @@ const {
   VITE_OIDC_JWKS_URI,
   VITE_OIDC_AUDIENCE,
 } = import.meta.env
-const { OIDC_CLIENT_SECRET } = process.env
+
+// const { OIDC_CLIENT_SECRET } = process.env
 
 let config: client.Configuration
+let jwksClient: createJwksClient.JwksClient
 
 export async function getConfig() {
   if (!config)
     config = await client.discovery(
       new URL(VITE_OIDC_AUTHORITY),
-      VITE_OIDC_CLIENT_ID,
-      OIDC_CLIENT_SECRET
+      VITE_OIDC_CLIENT_ID
+      // OIDC_CLIENT_SECRET
     )
+
+  const jwksUri = config.serverMetadata().jwks_uri
+
+  if (jwksUri) {
+    jwksClient = createJwksClient({
+      jwksUri,
+      cache: true,
+      rateLimit: true,
+    })
+  }
+
   return config
 }
 
 // TODO: use only oidc-client
-const jwksClient = createJwksClient({
-  jwksUri: VITE_OIDC_JWKS_URI, // TODO: get from oidc-client
-  cache: true,
-  rateLimit: true,
-})
 
 export async function oAuthLogin(windowLocationOrigin: string) {
   const config = await getConfig()
 
   const redirect_uri = `${windowLocationOrigin}/api/oauth/callback`
-  const scope = "openid email profile offline_access"
+  const scope = "openid email profile"
   /**
    * PKCE: The following MUST be generated for every redirect to the
    * authorization_endpoint. You must store the code_verifier and state in the
@@ -83,7 +91,11 @@ export async function oAuthLogin(windowLocationOrigin: string) {
 }
 
 export async function getUserFromToken(token: string) {
-  // TODO: use oidc-client instead
+  // TODO: use oidc-client instead if possible
+
+  // Used to create jwksClient
+  // TODO: improve syntax
+  await getConfig()
 
   const decoded = jwt.decode(token, { complete: true })
   if (!decoded) return null //throw new Error(`Decoded token is null`)
@@ -93,8 +105,7 @@ export async function getUserFromToken(token: string) {
 
   const key = await jwksClient.getSigningKey(kid)
   try {
-    const user = jwt.verify(token, key.getPublicKey())
-    return user
+    return jwt.verify(token, key.getPublicKey())
   } catch (error) {
     return null
   }
