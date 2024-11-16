@@ -16,6 +16,9 @@ build:
   stage: build
   tags:
     - dind
+  only:
+    - master
+    - main
   before_script:
     - echo "${DOCKER_HUB_PASSWORD}" | docker login --username ${DOCKER_HUB_USERNAME} --password-stdin
   script:
@@ -27,6 +30,7 @@ build:
 deploy:
   only:
     - master
+    - main
   stage: deploy
   tags:
     - dind
