@@ -53,13 +53,14 @@ export async function oAuthLogin(windowLocationOrigin: string) {
     code_verifier
   )
 
-  const parameters = {
+  const parameters: Record<string, string> = {
     redirect_uri,
     scope,
     code_challenge,
     code_challenge_method: "S256",
-    audience: OIDC_AUDIENCE,
   }
+
+  if (OIDC_AUDIENCE) parameters.audience = OIDC_AUDIENCE
 
   // TODO: figure out what to do with this
   let state!: string
