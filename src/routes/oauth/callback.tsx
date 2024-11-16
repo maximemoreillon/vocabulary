@@ -2,14 +2,8 @@
 import { query, redirect, useLocation } from "@solidjs/router"
 import { oAuthCallback } from "~/lib/oidc"
 
-// const callbackAction = action(async (pathName: string) => {
-
-// }, "callbackAction")
-
 const oAuthCallbackQuery = query(async (search: string) => {
   await oAuthCallback(`http://localhost:3000/oauth/callback${search}`)
-
-  // return "test"
 }, "oAuthCallback")
 
 export default function OauthCallback() {
