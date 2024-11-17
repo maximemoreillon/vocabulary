@@ -1,10 +1,11 @@
 import Button from "~/components/Button"
 import { action, redirect } from "@solidjs/router"
-import { oAuthLogin } from "~/lib/oidc"
+import { getAuthorizationUrl } from "~/lib/oidc"
 
 const oAuthLoginAction = action(async () => {
-  const redirectUrl = await oAuthLogin(window.location.origin)
-  throw redirect(redirectUrl.toString())
+  const authorizationUrl = await getAuthorizationUrl()
+  if (!authorizationUrl) return
+  throw redirect(authorizationUrl)
 }, "oauthLogin")
 
 export default function OauthLoginButton() {

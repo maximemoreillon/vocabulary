@@ -6,6 +6,7 @@ import * as client from "openid-client"
 import { SessionContent, getSession } from "./auth"
 import createJwksClient from "jwks-rsa"
 import jwt from "jsonwebtoken"
+import { getRequestEvent } from "solid-js/web"
 
 const { OIDC_AUTHORITY = "", OIDC_CLIENT_ID = "", OIDC_AUDIENCE } = process.env
 
@@ -37,11 +38,19 @@ export async function getConfig() {
   return config
 }
 
-export async function oAuthLogin(windowLocationOrigin: string) {
+// Works as action, but not as query
+export async function getAuthorizationUrl() {
+  const event = getRequestEvent()
+
+  if (!event?.request) return null
+
+  const { origin } = new URL(event?.request.url)
+
   const config = await getConfig()
 
-  const redirect_uri = `${windowLocationOrigin}/api/oauth/callback`
+  const redirect_uri = `${origin}/api/oauth/callback`
   const scope = "openid email profile"
+
   /**
    * PKCE: The following MUST be generated for every redirect to the
    * authorization_endpoint. You must store the code_verifier and state in the
@@ -62,7 +71,6 @@ export async function oAuthLogin(windowLocationOrigin: string) {
 
   if (OIDC_AUDIENCE) parameters.audience = OIDC_AUDIENCE
 
-  // TODO: figure out what to do with this
   let state!: string
 
   if (!config.serverMetadata().supportsPKCE()) {
@@ -83,7 +91,9 @@ export async function oAuthLogin(windowLocationOrigin: string) {
     d.state = state
   })
 
-  return client.buildAuthorizationUrl(config, parameters)
+  const authurl = client.buildAuthorizationUrl(config, parameters)
+
+  return authurl.toString()
 }
 
 // TODO: use only oidc-client
