@@ -25,7 +25,9 @@ export default function SearchBar() {
         }}
       />
       <Button type="submit">
-        <FaSolidMagnifyingGlass />
+        <span class="p-1">
+          <FaSolidMagnifyingGlass />
+        </span>
       </Button>
     </form>
   )
