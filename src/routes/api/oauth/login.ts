@@ -1,10 +1,12 @@
 // Currently used because cannot seem to be able to set sessions data unless action
 import { redirect } from "@solidjs/router"
 import type { APIEvent } from "@solidjs/start/server"
-import { oAuthCallback } from "~/lib/oidc"
+import { getAuthorizationUrl } from "~/lib/oidc"
 
 export async function GET(event: APIEvent) {
   const { url } = event.request
-  await oAuthCallback(url)
-  return redirect("/")
+  const { origin } = new URL(url)
+  const authUrl = await getAuthorizationUrl(origin)
+  return redirect(authUrl)
+  // return origin
 }

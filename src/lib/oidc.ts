@@ -13,10 +13,6 @@ const { OIDC_AUTHORITY = "", OIDC_CLIENT_ID = "", OIDC_AUDIENCE } = process.env
 let config: client.Configuration
 let jwksClient: createJwksClient.JwksClient
 
-export async function isOidcAvailable() {
-  return !!OIDC_AUTHORITY
-}
-
 export async function getConfig() {
   if (!config)
     config = await client.discovery(
@@ -39,13 +35,7 @@ export async function getConfig() {
 }
 
 // Works as action, but not as query
-export async function getAuthorizationUrl() {
-  const event = getRequestEvent()
-
-  if (!event?.request) return null
-
-  const { origin } = new URL(event?.request.url)
-
+export async function getAuthorizationUrl(origin: string) {
   const config = await getConfig()
 
   const redirect_uri = `${origin}/api/oauth/callback`
@@ -135,6 +125,8 @@ export async function oAuthCallback(url: string) {
     await session.update((data) => {
       data.access_token = access_token
       data.refresh_token = refresh_token
+      data.code_verifier = undefined
+      data.code_challenge = undefined
     })
   } catch (error) {
     console.log(error)

@@ -3,6 +3,7 @@ import Input from "~/components/Input"
 import {
   action,
   createAsync,
+  Navigate,
   query,
   redirect,
   useSubmission,
@@ -10,12 +11,11 @@ import {
 import { login } from "~/lib/auth"
 import { Show } from "solid-js"
 import { FaSolidRightToBracket } from "solid-icons/fa"
-import { getAuthorizationUrl, isOidcAvailable } from "~/lib/oidc"
-import OauthLoginButton from "~/components/OauthLoginButton"
-// const getAuthorizationUrlQuery = query(
-//   () => getAuthorizationUrl(),
-//   "getAuthorizationUrl"
-// )
+
+const isOidcAvailable = query(async () => {
+  "use server"
+  return !!process.env.OIDC_AUTHORITY
+}, "isOidcAvailable")
 
 const loginAction = action(async (formData: FormData) => {
   const username = formData.get("username")?.toString()
@@ -34,9 +34,7 @@ const loginAction = action(async (formData: FormData) => {
 
 export default function Login() {
   const submission = useSubmission(loginAction)
-
-  const oidcAvailable = createAsync(() => isOidcAvailable())
-  // const authorizationUrl = createAsync(async () => await getAuthorizationUrl())
+  const oidcAvailable = createAsync(async () => isOidcAvailable())
 
   return (
     <div class="mx-auto max-w-sm ">
@@ -44,8 +42,7 @@ export default function Login() {
 
       <Show when={oidcAvailable}>
         <div class="text-center">
-          <OauthLoginButton />
-          {/* Redirecting to {authorizationUrl} */}
+          <Navigate href="/api/oauth/login" />
         </div>
       </Show>
 

@@ -33,6 +33,7 @@ export async function getSession() {
   if (NODE_ENV === "development") config.cookie = { secure: false }
 
   try {
+    // TODO: await might not be needed here
     return await useSession(config)
   } catch (error) {
     throw redirect("/login")
