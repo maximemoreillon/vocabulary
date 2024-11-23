@@ -1,6 +1,6 @@
 # Vocabulary
 
-An application originally built to learn vocabulary, ended up being built to learn aboutr SolidStart
+An application originally built to learn vocabulary, ended up being built to learn about SolidStart
 
 ## Developing
 

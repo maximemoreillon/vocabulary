@@ -1,7 +1,7 @@
 // NOTE: "use server is important here!"
 "use server"
 
-import { redirect, cache } from "@solidjs/router"
+import { redirect, cache, query } from "@solidjs/router"
 import { SessionConfig, useSession } from "vinxi/http"
 import { getUserFromToken } from "./oidc"
 
@@ -40,14 +40,12 @@ export async function getSession() {
   }
 }
 
-export async function getUser() {
+// TODO: typing for user
+export async function getUser(): Promise<any> {
   const session = await getSession()
   const { username, access_token } = session.data
-  if (access_token) {
-    // TODO: get user from Token
-    const userFromToken = await getUserFromToken(access_token)
-    return userFromToken
-  } else if (username) return { username }
+  if (username) return { username }
+  else if (access_token) return await getUserFromToken(access_token)
   else return null
 }
 
@@ -63,12 +61,11 @@ export async function enforceAuth() {
   if (!user) throw redirect("/login")
 }
 
-// TODO: figure out if this needs to be a cache or action
-export const enforceAuthCache = cache(async () => {
+export const enforceAuthCache = query(async () => {
   await enforceAuth()
 }, "enforceAuth")
 
-export const getUserCache = cache(async () => {
+export const getUserCache = query(async () => {
   return await getUser()
 }, "getUser")
 

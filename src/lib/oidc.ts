@@ -6,7 +6,6 @@ import * as client from "openid-client"
 import { SessionContent, getSession } from "./auth"
 import createJwksClient from "jwks-rsa"
 import jwt from "jsonwebtoken"
-import { getRequestEvent } from "solid-js/web"
 
 const { OIDC_AUTHORITY = "", OIDC_CLIENT_ID = "", OIDC_AUDIENCE } = process.env
 
@@ -15,11 +14,7 @@ let jwksClient: createJwksClient.JwksClient
 
 export async function getConfig() {
   if (!config)
-    config = await client.discovery(
-      new URL(OIDC_AUTHORITY),
-      OIDC_CLIENT_ID
-      // OIDC_CLIENT_SECRET
-    )
+    config = await client.discovery(new URL(OIDC_AUTHORITY), OIDC_CLIENT_ID)
 
   const jwksUri = config.serverMetadata().jwks_uri
 
@@ -32,6 +27,24 @@ export async function getConfig() {
   }
 
   return config
+}
+
+export async function getJwksClient() {
+  // If client already exists, just return it
+  if (jwksClient) return jwksClient
+
+  const config = await getConfig()
+  const jwksUri = config.serverMetadata().jwks_uri
+
+  if (jwksUri) {
+    jwksClient = createJwksClient({
+      jwksUri,
+      cache: true,
+      rateLimit: true,
+    })
+  }
+
+  return jwksClient
 }
 
 // Works as action, but not as query
@@ -90,12 +103,10 @@ export async function getAuthorizationUrl(origin: string) {
 export async function getUserFromToken(token: string) {
   // TODO: use oidc-client instead if possible
 
-  // Used to create jwksClient
-  // TODO: improve syntax
-  await getConfig()
+  const jwksClient = await getJwksClient()
 
   const decoded = jwt.decode(token, { complete: true })
-  if (!decoded) return null //throw new Error(`Decoded token is null`)
+  if (!decoded) throw new Error(`Decoded token is null`)
 
   const kid = decoded.header?.kid
   if (!kid) throw new Error("Missing token kid")
