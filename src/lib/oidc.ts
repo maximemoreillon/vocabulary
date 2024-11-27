@@ -90,7 +90,6 @@ export async function getAuthorizationUrl(origin: string) {
   const session = await getSession()
   await session.update((d: SessionContent) => {
     d.code_verifier = code_verifier
-    d.code_challenge = code_challenge
     d.state = state
   })
 
@@ -133,13 +132,24 @@ export async function oAuthCallback(url: string) {
 
     const { access_token, refresh_token } = result
 
+    // const user = await fetchUserInfo(access_token)
     await session.update((data) => {
       data.access_token = access_token
       data.refresh_token = refresh_token
       data.code_verifier = undefined
-      data.code_challenge = undefined
     })
   } catch (error) {
     console.log(error)
   }
+}
+
+export async function fetchUserInfo(access_token: string) {
+  const config = await getConfig()
+
+  const decoded = jwt.decode(access_token, { complete: true })
+  if (!decoded) throw new Error(`Decoded token is null`)
+  const sub = decoded.payload.sub as string
+  if (!sub) throw new Error("Missing token sub")
+
+  return await client.fetchUserInfo(config, access_token, sub)
 }
