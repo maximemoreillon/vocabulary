@@ -14,8 +14,8 @@ services:
 
 build:
   stage: build
-  tags:
-    - dind
+  # tags:
+  #   - dind
   only:
     - master
     - main
@@ -32,8 +32,8 @@ deploy:
     - master
     - main
   stage: deploy
-  tags:
-    - dind
+  # tags:
+  #   - dind
   before_script:
     - kubectl config use-context moreillon_ci/moreillon_k8s_home/kubernetes-agent:home-talos
   script:
