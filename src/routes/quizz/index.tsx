@@ -1,102 +1,100 @@
-import { MetaProvider, Title } from "@solidjs/meta"
-import { For, Show, createResource, createSignal } from "solid-js"
+import { MetaProvider, Title } from "@solidjs/meta";
+import { For, Show, createResource, createSignal } from "solid-js";
 import {
   cache,
   action,
   useAction,
   useSubmission,
   useSearchParams,
-} from "@solidjs/router"
+} from "@solidjs/router";
 import {
   readRandomExpressions,
   updateExpression,
   Expression,
-} from "~/lib/expressions"
-import { enforceAuth } from "~/lib/auth"
-import { FaSolidArrowRight, FaSolidEye, FaSolidEyeSlash } from "solid-icons/fa"
-import Button from "~/components/Button"
-import BackLink from "~/components/BackLink"
-import ModeSelect from "~/components/ModeSelect"
-import { Mode } from "~/components/ModeSelect"
+} from "~/lib/expressions";
+import { FaSolidArrowRight, FaSolidEye, FaSolidEyeSlash } from "solid-icons/fa";
+import Button from "~/components/Button";
+import BackLink from "~/components/BackLink";
+import ModeSelect from "~/components/ModeSelect";
+import { Mode } from "~/components/ModeSelect";
 
 const getRandomExpressionsCache = cache(async () => {
-  "use server"
-  await enforceAuth()
-  return await readRandomExpressions()
-}, "expression")
+  "use server";
+  return await readRandomExpressions();
+}, "expression");
 
 const updateExpressionScoreAction = action(
   async (id: number, newScore: number) => {
-    "use server"
-    await updateExpression(id, { score: newScore })
+    "use server";
+    await updateExpression(id, { score: newScore });
   },
   "updateExpression"
-)
+);
 
 export default function QuizzPage() {
-  const [searchParams] = useSearchParams()
+  const [searchParams] = useSearchParams();
 
-  const guess = () => (searchParams.guess as Mode) || "meaning"
-  const from = () => (searchParams.from as Mode) || "writing"
+  const guess = () => (searchParams.guess as Mode) || "meaning";
+  const from = () => (searchParams.from as Mode) || "writing";
 
-  const [getReadingShown, setReadingShown] = createSignal(false)
+  const [getReadingShown, setReadingShown] = createSignal(false);
   const [getUserAnswerId, setUserAnswerId] = createSignal<
     number | null | undefined
-  >(null)
+  >(null);
 
   const [randomExpressions, { refetch }] = createResource(
     async () => await getRandomExpressionsCache()
-  )
+  );
 
-  const getCorrectAnswer = () => randomExpressions()?.at(0) as Expression
+  const getCorrectAnswer = () => randomExpressions()?.at(0) as Expression;
 
-  const updateExpressionUsedAction = useAction(updateExpressionScoreAction)
-  const submission = useSubmission(updateExpressionScoreAction)
+  const updateExpressionUsedAction = useAction(updateExpressionScoreAction);
+  const submission = useSubmission(updateExpressionScoreAction);
 
   async function handleButtonClicked(selection: Expression) {
-    const { id: selectionId, score: selectionScore } = selection
+    const { id: selectionId, score: selectionScore } = selection;
 
     const { id: correctAnswerId, score: correctAnswerScore = 0 } =
-      getCorrectAnswer()
+      getCorrectAnswer();
 
-    setUserAnswerId(selectionId)
+    setUserAnswerId(selectionId);
 
     if (selectionId === correctAnswerId) {
       await updateExpressionUsedAction(
         correctAnswerId,
         (correctAnswerScore ?? 0) + 1
-      )
+      );
     } else {
       await updateExpressionUsedAction(
         correctAnswerId,
         (correctAnswerScore ?? 0) - 1
-      )
-      await updateExpressionUsedAction(selectionId, (selectionScore ?? 0) - 1)
+      );
+      await updateExpressionUsedAction(selectionId, (selectionScore ?? 0) - 1);
     }
   }
 
   function getEach() {
-    const expressions = randomExpressions()
-    if (!expressions) return []
+    const expressions = randomExpressions();
+    if (!expressions) return [];
 
     return expressions
       .map((value) => ({ value, sort: Math.random() }))
       .sort((a, b) => a.sort - b.sort)
-      .map(({ value }) => value) as Expression[]
+      .map(({ value }) => value) as Expression[];
   }
 
   function getNextExpression() {
-    setReadingShown(false)
-    setUserAnswerId(null)
-    refetch()
+    setReadingShown(false);
+    setUserAnswerId(null);
+    refetch();
   }
 
   const getExpressionClass = (id: number) => {
-    if (getUserAnswerId() && getCorrectAnswer()?.id === id) return "bg-success"
+    if (getUserAnswerId() && getCorrectAnswer()?.id === id) return "bg-success";
     else if (getUserAnswerId() === id && getCorrectAnswer()?.id !== id)
-      return "bg-problem"
-    else return ""
-  }
+      return "bg-problem";
+    else return "";
+  };
 
   return (
     <>
@@ -163,5 +161,5 @@ export default function QuizzPage() {
         </Show>
       </MetaProvider>
     </>
-  )
+  );
 }

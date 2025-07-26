@@ -1,47 +1,45 @@
-import { Title } from "@solidjs/meta"
-import { Show } from "solid-js"
+import { Title } from "@solidjs/meta";
+import { Show } from "solid-js";
 import {
   createAsync,
   useParams,
   cache,
   action,
   useSubmission,
-} from "@solidjs/router"
-import { FaSolidFloppyDisk } from "solid-icons/fa"
-import { readExpression, updateExpression } from "~/lib/expressions"
-import { enforceAuth, getUserCache } from "~/lib/auth"
-import BackLink from "~/components/BackLink"
-import Button from "~/components/Button"
-import Input from "~/components/Input"
-import ExpressionDeleteButton from "~/components/ExpressionDeleteButton"
+} from "@solidjs/router";
+import { FaSolidFloppyDisk } from "solid-icons/fa";
+import { readExpression, updateExpression } from "~/lib/expressions";
+import { getUserCache } from "~/lib/auth";
+import BackLink from "~/components/BackLink";
+import Button from "~/components/Button";
+import Input from "~/components/Input";
+import ExpressionDeleteButton from "~/components/ExpressionDeleteButton";
 
 const getExpression = cache(async (id: number) => {
-  "use server"
-  await enforceAuth()
-  return readExpression(id)
-}, "getExpression")
+  "use server";
+  return readExpression(id);
+}, "getExpression");
 
 const updateExpressionAction = action(async (formData: FormData) => {
-  "use server"
-  await enforceAuth()
+  "use server";
 
-  const id = formData.get("id")
+  const id = formData.get("id");
 
-  const reading = formData.get("reading")?.toString()
-  const writing = formData.get("writing")?.toString()
-  const meaning = formData.get("meaning")?.toString()
+  const reading = formData.get("reading")?.toString();
+  const writing = formData.get("writing")?.toString();
+  const meaning = formData.get("meaning")?.toString();
 
-  await updateExpression(Number(id), { reading, meaning, writing })
+  await updateExpression(Number(id), { reading, meaning, writing });
 
-  return
-}, "deleteExpression")
+  return;
+}, "deleteExpression");
 
 export default function Expression() {
-  createAsync(async () => getUserCache())
-  const params = useParams()
-  const expression = createAsync(async () => getExpression(Number(params.id)))
+  createAsync(async () => getUserCache());
+  const params = useParams();
+  const expression = createAsync(async () => getExpression(Number(params.id)));
 
-  const updateSubmission = useSubmission(updateExpressionAction)
+  const updateSubmission = useSubmission(updateExpressionAction);
 
   return (
     <>
@@ -70,5 +68,5 @@ export default function Expression() {
         <div class="my-4"></div>
       </Show>
     </>
-  )
+  );
 }
