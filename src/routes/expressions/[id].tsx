@@ -9,7 +9,7 @@ import {
 } from "@solidjs/router";
 import { FaSolidFloppyDisk } from "solid-icons/fa";
 import { readExpression, updateExpression } from "~/lib/expressions";
-import { getUserCache } from "~/lib/auth";
+// import { getUserCache } from "~/lib/auth";
 import BackLink from "~/components/BackLink";
 import Button from "~/components/Button";
 import Input from "~/components/Input";
@@ -35,7 +35,7 @@ const updateExpressionAction = action(async (formData: FormData) => {
 }, "deleteExpression");
 
 export default function Expression() {
-  createAsync(async () => getUserCache());
+  // createAsync(async () => getUserCache());
   const params = useParams();
   const expression = createAsync(async () => getExpression(Number(params.id)));
 
@@ -64,8 +64,6 @@ export default function Expression() {
             <ExpressionDeleteButton id={expression()?.id} />
           </div>
         </form>
-
-        <div class="my-4"></div>
       </Show>
     </>
   );

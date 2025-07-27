@@ -9,6 +9,7 @@ export async function getUser() {
   return session.data.user;
 }
 
+// Currently unused
 export const getUserCache = query(async () => {
   return await getUser();
 }, "getUser");

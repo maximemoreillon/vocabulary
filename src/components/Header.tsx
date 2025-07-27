@@ -1,5 +1,5 @@
 import { createAsync } from "@solidjs/router";
-import { getUserCache } from "~/lib/auth";
+// import { getUserCache } from "~/lib/auth";
 import LogoutButton from "./LogoutButton";
 import Spacer from "./Spacer";
 export default function Header() {
