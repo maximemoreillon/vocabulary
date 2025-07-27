@@ -5,9 +5,8 @@ import { useUserSession } from "@moreillon/solidstart-oidc";
 import { redirect, cache, query } from "@solidjs/router";
 
 export async function getUser() {
-  // const session = await useUserSession();
-  // return session.data.user;
-  return {};
+  const session = await useUserSession();
+  return session.data.user;
 }
 
 export const getUserCache = query(async () => {

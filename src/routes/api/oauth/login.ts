@@ -1,2 +1,8 @@
 import { loginHandler } from "@moreillon/solidstart-oidc";
-export const GET = loginHandler;
+import { redirect } from "@solidjs/router";
+import type { APIEvent } from "@solidjs/start/server";
+
+export async function GET(event: APIEvent) {
+  const href = await loginHandler(event);
+  return redirect(href);
+}
