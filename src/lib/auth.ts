@@ -2,7 +2,9 @@
 "use server";
 
 import { useUserSession } from "@moreillon/solidstart-oidc";
-import { redirect, cache, query } from "@solidjs/router";
+import { query } from "@solidjs/router";
+
+const { OIDC_USER_ID_FIELD = "sub" } = process.env;
 
 export async function getUser() {
   const session = await useUserSession();
@@ -13,3 +15,8 @@ export async function getUser() {
 export const getUserCache = query(async () => {
   return await getUser();
 }, "getUser");
+
+export async function getUserId() {
+  const user = await getUser();
+  return user[OIDC_USER_ID_FIELD];
+}

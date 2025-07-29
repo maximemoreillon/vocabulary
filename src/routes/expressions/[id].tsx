@@ -35,7 +35,6 @@ const updateExpressionAction = action(async (formData: FormData) => {
 }, "deleteExpression");
 
 export default function Expression() {
-  // createAsync(async () => getUserCache());
   const params = useParams();
   const expression = createAsync(async () => getExpression(Number(params.id)));
 
