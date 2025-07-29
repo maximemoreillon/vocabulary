@@ -1,47 +1,48 @@
-"use server"
+"use server";
 
-import { db } from "./db"
-import { expressions } from "~/lib/schema"
-import { count, desc, eq, or, sql } from "drizzle-orm"
-import { defaultOrder, defaultPageSize, defaultSort } from "~/config"
+import { db } from "./db";
+import { expressions } from "~/lib/schema";
+import { count, desc, eq, or, sql } from "drizzle-orm";
+import { defaultOrder, defaultPageSize, defaultSort } from "~/config";
+import { getUser } from "./auth";
 
 // TODO: infer from DB
 export type Expression = {
-  id: number
-  writing: string | null
-  reading: string | null
-  meaning: string | null
-  score: number | null
-}
+  id: number;
+  writing: string | null;
+  reading: string | null;
+  meaning: string | null;
+  score: number | null;
+};
 
 // TODO: find smarter way to go about this
 export type NewExpression = {
-  writing: string
-  reading: string
-  meaning: string
-}
+  writing: string;
+  reading: string;
+  meaning: string;
+};
 
 type ExpressionEdit = {
-  score?: number
-  writing?: string
-  reading?: string
-  meaning?: string
-}
+  score?: number;
+  writing?: string;
+  reading?: string;
+  meaning?: string;
+};
 
 type ReadExpressionsOptions = {
-  page?: number
-  limit?: number
-  search?: string
-  sort?: "writing" | "meaning" | "reading" | "score"
-  order?: "asc" | "desc"
-}
+  page?: number;
+  limit?: number;
+  search?: string;
+  sort?: "writing" | "meaning" | "reading" | "score";
+  order?: "asc" | "desc";
+};
 
 export async function createExpression(values: NewExpression) {
   const [newExpression] = await db
     .insert(expressions)
     .values(values)
-    .returning()
-  return newExpression
+    .returning();
+  return newExpression;
 }
 
 export async function readExpressions(options: ReadExpressionsOptions) {
@@ -51,14 +52,15 @@ export async function readExpressions(options: ReadExpressionsOptions) {
     search = "",
     sort = defaultSort,
     order = defaultOrder,
-  } = options
+  } = options;
 
-  const orderBy = order === "desc" ? desc(expressions[sort]) : expressions[sort]
+  const orderBy =
+    order === "desc" ? desc(expressions[sort]) : expressions[sort];
 
   const wehere = or(
     sql`LOWER(meaning) LIKE ${search.toLowerCase() + "%"}`,
     sql`LOWER(writing) LIKE ${search.toLowerCase() + "%"}`
-  )
+  );
 
   const items = await db
     .select()
@@ -66,22 +68,22 @@ export async function readExpressions(options: ReadExpressionsOptions) {
     .orderBy(orderBy)
     .limit(limit)
     .offset((page - 1) * limit)
-    .where(wehere)
+    .where(wehere);
 
   const [{ count: total }] = await db
     .select({ count: count() })
     .from(expressions)
-    .where(wehere)
+    .where(wehere);
 
-  return { total, items, page, limit }
+  return { total, items, page, limit };
 }
 
 export async function readExpression(id: number) {
   const [expression] = await db
     .select()
     .from(expressions)
-    .where(eq(expressions.id, id))
-  return expression
+    .where(eq(expressions.id, id));
+  return expression;
 }
 
 export async function updateExpression(id: number, properties: ExpressionEdit) {
@@ -89,16 +91,16 @@ export async function updateExpression(id: number, properties: ExpressionEdit) {
     .update(expressions)
     .set(properties)
     .where(eq(expressions.id, id))
-    .returning()
-  return expression
+    .returning();
+  return expression;
 }
 
 export async function deleteExpression(id: number) {
   const [expression] = await db
     .delete(expressions)
     .where(eq(expressions.id, id))
-    .returning()
-  return expression
+    .returning();
+  return expression;
 }
 
 export async function readRandomExpressions(count: number = 6) {
@@ -106,5 +108,5 @@ export async function readRandomExpressions(count: number = 6) {
     .select()
     .from(expressions)
     .orderBy(sql`RANDOM()`)
-    .limit(count)
+    .limit(count);
 }

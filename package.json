@@ -9,26 +9,21 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@moreillon/solidstart-oidc": "0.0.21",
     "@solid-primitives/pagination": "^0.3.0",
     "@solidjs/meta": "^0.29.4",
-    "@solidjs/router": "^0.15.1",
-    "@solidjs/start": "^1.0.10",
-    "auth0-js": "^9.28.0",
+    "@solidjs/router": "^0.15.3",
+    "@solidjs/start": "^1.1.0",
     "drizzle-orm": "^0.29.5",
-    "jsonwebtoken": "^9.0.2",
-    "jwks-rsa": "^3.1.0",
-    "oidc-client-ts": "^3.1.0",
-    "openid-client": "^6.1.3",
     "postgres": "^3.4.4",
     "solid-icons": "^1.1.0",
-    "solid-js": "^1.8.17",
-    "vinxi": "^0.4.3"
+    "solid-js": "^1.9.5",
+    "vinxi": "^0.5.7"
   },
   "engines": {
     "node": ">=18"
   },
   "devDependencies": {
-    "@types/auth0-js": "^9.21.6",
     "autoprefixer": "^10.4.19",
     "drizzle-kit": "^0.21.0",
     "postcss": "^8.4.38",

@@ -1,24 +1,22 @@
-import { For, Show, createResource } from "solid-js"
-import { Title } from "@solidjs/meta"
-import { cache, useSearchParams } from "@solidjs/router"
-import { FaSolidPen, FaSolidPlus, FaSolidQuestion } from "solid-icons/fa"
-import { readExpressions } from "~/lib/expressions"
+import { For, Show, createResource } from "solid-js";
+import { Title } from "@solidjs/meta";
+import { cache, useSearchParams } from "@solidjs/router";
+import { FaSolidPen, FaSolidPlus, FaSolidQuestion } from "solid-icons/fa";
+import { readExpressions } from "~/lib/expressions";
 
-import Button from "~/components/Button"
-import Pagination from "~/components/Pagination"
-import SearchBar from "~/components/SearchBar"
-import { defaultOrder, defaultPageSize, defaultSort } from "~/config"
-import TableHeader from "~/components/TableHeader"
-import { enforceAuth } from "~/lib/auth"
+import Button from "~/components/Button";
+import Pagination from "~/components/Pagination";
+import SearchBar from "~/components/SearchBar";
+import { defaultOrder, defaultPageSize, defaultSort } from "~/config";
+import TableHeader from "~/components/TableHeader";
 
 const getExpressionsCache = cache(async (options) => {
-  "use server"
-  await enforceAuth()
-  return await readExpressions(options)
-}, "getExpressions")
+  "use server";
+  return await readExpressions(options);
+}, "getExpressions");
 
 export default function ExpressionList() {
-  const [searchParams] = useSearchParams()
+  const [searchParams] = useSearchParams();
 
   const getQueryOptions = () => {
     const {
@@ -27,21 +25,21 @@ export default function ExpressionList() {
       search,
       sort = defaultSort,
       order = defaultOrder,
-    } = searchParams
+    } = searchParams;
     return {
       page: Number(page),
       pageSize: Number(pageSize),
       search,
       sort,
       order,
-    }
-  }
+    };
+  };
 
   // Calling refetch when source (getPaginationOptions) changes
   const [queryResult] = createResource(getQueryOptions, async () => {
-    const options = getQueryOptions()
-    return getExpressionsCache(options)
-  })
+    const options = getQueryOptions();
+    return getExpressionsCache(options);
+  });
 
   return (
     <>
@@ -98,5 +96,5 @@ export default function ExpressionList() {
         <Pagination total={queryResult()?.total} />
       </Show>
     </>
-  )
+  );
 }

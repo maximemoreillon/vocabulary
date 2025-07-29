@@ -1,4 +1,4 @@
-import { integer, text, pgTable, serial, timestamp } from "drizzle-orm/pg-core"
+import { integer, text, pgTable, serial, timestamp } from "drizzle-orm/pg-core";
 
 export const expressions = pgTable("expressions", {
   id: serial("id").primaryKey(),
@@ -7,4 +7,5 @@ export const expressions = pgTable("expressions", {
   meaning: text("meaning"),
   score: integer("score").default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-})
+  // TODO: user_id
+});
