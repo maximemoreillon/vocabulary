@@ -7,16 +7,13 @@ import {
   useSubmission,
   useSearchParams,
 } from "@solidjs/router";
-import {
-  readRandomExpressions,
-  updateExpression,
-  Expression,
-} from "~/lib/expressions";
+import { readRandomExpressions, updateExpression } from "~/lib/expressions";
 import { FaSolidArrowRight, FaSolidEye, FaSolidEyeSlash } from "solid-icons/fa";
 import Button from "~/components/Button";
 import BackLink from "~/components/BackLink";
 import ModeSelect from "~/components/ModeSelect";
 import { Mode } from "~/components/ModeSelect";
+import { expressions } from "~/lib/db/schema";
 
 const getRandomExpressionsCache = cache(async () => {
   "use server";
@@ -46,12 +43,15 @@ export default function QuizzPage() {
     async () => await getRandomExpressionsCache()
   );
 
-  const getCorrectAnswer = () => randomExpressions()?.at(0) as Expression;
+  const getCorrectAnswer = () =>
+    randomExpressions()?.at(0) as typeof expressions.$inferSelect;
 
   const updateExpressionUsedAction = useAction(updateExpressionScoreAction);
   const submission = useSubmission(updateExpressionScoreAction);
 
-  async function handleButtonClicked(selection: Expression) {
+  async function handleButtonClicked(
+    selection: typeof expressions.$inferSelect
+  ) {
     const { id: selectionId, score: selectionScore } = selection;
 
     const { id: correctAnswerId, score: correctAnswerScore = 0 } =
@@ -74,13 +74,13 @@ export default function QuizzPage() {
   }
 
   function getEach() {
-    const expressions = randomExpressions();
-    if (!expressions) return [];
+    const randExp = randomExpressions();
+    if (!randExp) return [];
 
-    return expressions
+    return randExp
       .map((value) => ({ value, sort: Math.random() }))
       .sort((a, b) => a.sort - b.sort)
-      .map(({ value }) => value) as Expression[];
+      .map(({ value }) => value) as (typeof expressions.$inferSelect)[];
   }
 
   function getNextExpression() {
