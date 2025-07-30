@@ -1,33 +1,10 @@
 "use server";
 
 import { db } from "./db";
-import { expressions } from "~/lib/schema";
-import { count, desc, eq, or, sql } from "drizzle-orm";
+import { expressions } from "~/lib/db/schema";
+import { and, count, desc, eq, or, sql } from "drizzle-orm";
 import { defaultOrder, defaultPageSize, defaultSort } from "~/config";
-import { getUser } from "./auth";
-
-// TODO: infer from DB
-export type Expression = {
-  id: number;
-  writing: string | null;
-  reading: string | null;
-  meaning: string | null;
-  score: number | null;
-};
-
-// TODO: find smarter way to go about this
-export type NewExpression = {
-  writing: string;
-  reading: string;
-  meaning: string;
-};
-
-type ExpressionEdit = {
-  score?: number;
-  writing?: string;
-  reading?: string;
-  meaning?: string;
-};
+import { getUserId } from "./auth";
 
 type ReadExpressionsOptions = {
   page?: number;
@@ -37,7 +14,12 @@ type ReadExpressionsOptions = {
   order?: "asc" | "desc";
 };
 
-export async function createExpression(values: NewExpression) {
+export async function createExpression(
+  properties: typeof expressions.$inferInsert
+) {
+  const userId = await getUserId();
+  const values = { ...properties, userId };
+
   const [newExpression] = await db
     .insert(expressions)
     .values(values)
@@ -54,12 +36,17 @@ export async function readExpressions(options: ReadExpressionsOptions) {
     order = defaultOrder,
   } = options;
 
+  const userId = await getUserId();
+
   const orderBy =
     order === "desc" ? desc(expressions[sort]) : expressions[sort];
 
-  const wehere = or(
-    sql`LOWER(meaning) LIKE ${search.toLowerCase() + "%"}`,
-    sql`LOWER(writing) LIKE ${search.toLowerCase() + "%"}`
+  const where = and(
+    eq(expressions.userId, userId),
+    or(
+      sql`LOWER(meaning) LIKE ${search.toLowerCase() + "%"}`,
+      sql`LOWER(writing) LIKE ${search.toLowerCase() + "%"}`
+    )
   );
 
   const items = await db
@@ -68,45 +55,55 @@ export async function readExpressions(options: ReadExpressionsOptions) {
     .orderBy(orderBy)
     .limit(limit)
     .offset((page - 1) * limit)
-    .where(wehere);
+    .where(where);
 
   const [{ count: total }] = await db
     .select({ count: count() })
     .from(expressions)
-    .where(wehere);
+    .where(where);
 
   return { total, items, page, limit };
 }
 
 export async function readExpression(id: number) {
-  const [expression] = await db
-    .select()
-    .from(expressions)
-    .where(eq(expressions.id, id));
+  const userId = await getUserId();
+  const where = and(eq(expressions.userId, userId), eq(expressions.id, id));
+  const [expression] = await db.select().from(expressions).where(where);
   return expression;
 }
 
-export async function updateExpression(id: number, properties: ExpressionEdit) {
-  const [expression] = await db
+export async function updateExpression(
+  id: number,
+  properties: typeof expressions.$inferInsert
+) {
+  const userId = await getUserId();
+  const where = and(eq(expressions.userId, userId), eq(expressions.id, id));
+
+  const [updatedExpression] = await db
     .update(expressions)
     .set(properties)
-    .where(eq(expressions.id, id))
+    .where(where)
     .returning();
-  return expression;
+  return updatedExpression;
 }
 
 export async function deleteExpression(id: number) {
-  const [expression] = await db
-    .delete(expressions)
-    .where(eq(expressions.id, id))
-    .returning();
+  const userId = await getUserId();
+  const where = and(eq(expressions.userId, userId), eq(expressions.id, id));
+
+  const [expression] = await db.delete(expressions).where(where).returning();
   return expression;
 }
 
 export async function readRandomExpressions(count: number = 6) {
+  // TODO: find way to prioritize query of items with low score
+  const userId = await getUserId();
+  const where = eq(expressions.userId, userId);
+
   return await db
     .select()
     .from(expressions)
+    .where(where)
     .orderBy(sql`RANDOM()`)
     .limit(count);
 }
