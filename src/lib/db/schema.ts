@@ -1,6 +1,6 @@
 import { integer, text, pgTable, serial, timestamp } from "drizzle-orm/pg-core";
 
-export const expressions = pgTable(
+export const expressionsTable = pgTable(
   "expressions",
   {
     id: serial("id").primaryKey(),

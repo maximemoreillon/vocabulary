@@ -1,8 +1,8 @@
 "use server";
 
 import { db } from "./db";
-import { expressions } from "~/lib/db/schema";
-import { and, count, desc, eq, or, sql } from "drizzle-orm";
+import { expressionsTable } from "~/lib/db/schema";
+import { and, count, desc, eq, not, or, sql } from "drizzle-orm";
 import { defaultOrder, defaultPageSize, defaultSort } from "~/config";
 import { getUserId } from "./auth";
 
@@ -15,13 +15,13 @@ type ReadExpressionsOptions = {
 };
 
 export async function createExpression(
-  properties: typeof expressions.$inferInsert
+  properties: typeof expressionsTable.$inferInsert
 ) {
   const userId = await getUserId();
   const values = { ...properties, userId };
 
   const [newExpression] = await db
-    .insert(expressions)
+    .insert(expressionsTable)
     .values(values)
     .returning();
   return newExpression;
@@ -39,10 +39,10 @@ export async function readExpressions(options: ReadExpressionsOptions) {
   const userId = await getUserId();
 
   const orderBy =
-    order === "desc" ? desc(expressions[sort]) : expressions[sort];
+    order === "desc" ? desc(expressionsTable[sort]) : expressionsTable[sort];
 
   const where = and(
-    eq(expressions.userId, userId),
+    eq(expressionsTable.userId, userId),
     or(
       sql`LOWER(meaning) LIKE ${search.toLowerCase() + "%"}`,
       sql`LOWER(writing) LIKE ${search.toLowerCase() + "%"}`
@@ -51,7 +51,7 @@ export async function readExpressions(options: ReadExpressionsOptions) {
 
   const items = await db
     .select()
-    .from(expressions)
+    .from(expressionsTable)
     .orderBy(orderBy)
     .limit(limit)
     .offset((page - 1) * limit)
@@ -59,7 +59,7 @@ export async function readExpressions(options: ReadExpressionsOptions) {
 
   const [{ count: total }] = await db
     .select({ count: count() })
-    .from(expressions)
+    .from(expressionsTable)
     .where(where);
 
   return { total, items, page, limit };
@@ -67,20 +67,26 @@ export async function readExpressions(options: ReadExpressionsOptions) {
 
 export async function readExpression(id: number) {
   const userId = await getUserId();
-  const where = and(eq(expressions.userId, userId), eq(expressions.id, id));
-  const [expression] = await db.select().from(expressions).where(where);
+  const where = and(
+    eq(expressionsTable.userId, userId),
+    eq(expressionsTable.id, id)
+  );
+  const [expression] = await db.select().from(expressionsTable).where(where);
   return expression;
 }
 
 export async function updateExpression(
   id: number,
-  properties: typeof expressions.$inferInsert
+  properties: typeof expressionsTable.$inferInsert
 ) {
   const userId = await getUserId();
-  const where = and(eq(expressions.userId, userId), eq(expressions.id, id));
+  const where = and(
+    eq(expressionsTable.userId, userId),
+    eq(expressionsTable.id, id)
+  );
 
   const [updatedExpression] = await db
-    .update(expressions)
+    .update(expressionsTable)
     .set(properties)
     .where(where)
     .returning();
@@ -89,21 +95,36 @@ export async function updateExpression(
 
 export async function deleteExpression(id: number) {
   const userId = await getUserId();
-  const where = and(eq(expressions.userId, userId), eq(expressions.id, id));
+  const where = and(
+    eq(expressionsTable.userId, userId),
+    eq(expressionsTable.id, id)
+  );
 
-  const [expression] = await db.delete(expressions).where(where).returning();
+  const [expression] = await db
+    .delete(expressionsTable)
+    .where(where)
+    .returning();
   return expression;
 }
 
-export async function readRandomExpressions(count: number = 6) {
-  // TODO: find way to prioritize query of items with low score
+export async function readExpressionsForQuizz(count: number = 6) {
   const userId = await getUserId();
-  const where = eq(expressions.userId, userId);
+  const where = eq(expressionsTable.userId, userId);
 
-  return await db
+  const [expression] = await db
     .select()
-    .from(expressions)
+    .from(expressionsTable)
     .where(where)
-    .orderBy(sql`RANDOM()`)
-    .limit(count);
+    .orderBy(sql`RANDOM() * EXP(score)`) // prioritizes those that are not well known
+    .limit(1);
+
+  const candidates = await db
+    .select()
+    .from(expressionsTable)
+    .where(and(where, not(eq(expressionsTable.id, expression.id))))
+    .orderBy(sql`RANDOM()`) // Pure random
+    .limit(count - 1);
+
+  // Correct answer is Array's first item
+  return [expression, ...candidates];
 }

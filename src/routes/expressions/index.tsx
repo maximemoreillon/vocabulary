@@ -36,7 +36,7 @@ export default function ExpressionList() {
   };
 
   // Calling refetch when source (getPaginationOptions) changes
-  const [queryResult] = createResource(getQueryOptions, async () => {
+  const [getQueryResult] = createResource(getQueryOptions, async () => {
     const options = getQueryOptions();
     return getExpressionsCache(options);
   });
@@ -61,7 +61,7 @@ export default function ExpressionList() {
         <SearchBar />
       </div>
 
-      <Show when={queryResult()}>
+      <Show when={getQueryResult()}>
         <table class="w-full text-center">
           <thead>
             <tr class="border-b border-secondary">
@@ -74,7 +74,7 @@ export default function ExpressionList() {
             </tr>
           </thead>
           <tbody>
-            <For each={queryResult()?.items}>
+            <For each={getQueryResult()?.items}>
               {({ meaning, writing, reading, score, id }) => (
                 <tr>
                   <td>{writing}</td>
@@ -93,7 +93,7 @@ export default function ExpressionList() {
           </tbody>
         </table>
 
-        <Pagination total={queryResult()?.total} />
+        <Pagination total={getQueryResult()?.total} />
       </Show>
     </>
   );

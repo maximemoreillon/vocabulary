@@ -7,18 +7,18 @@ import {
   useSubmission,
   useSearchParams,
 } from "@solidjs/router";
-import { readRandomExpressions, updateExpression } from "~/lib/expressions";
+import { readExpressionsForQuizz, updateExpression } from "~/lib/expressions";
 import { FaSolidArrowRight, FaSolidEye, FaSolidEyeSlash } from "solid-icons/fa";
 import Button from "~/components/Button";
 import BackLink from "~/components/BackLink";
 import ModeSelect from "~/components/ModeSelect";
 import { Mode } from "~/components/ModeSelect";
-import { expressions } from "~/lib/db/schema";
+import { expressionsTable } from "~/lib/db/schema";
 
-const getRandomExpressionsCache = cache(async () => {
+const getExpressionsCache = cache(async () => {
   "use server";
-  return await readRandomExpressions();
-}, "expression");
+  return await readExpressionsForQuizz();
+}, "expressions");
 
 const updateExpressionScoreAction = action(
   async (id: number, newScore: number) => {
@@ -39,19 +39,21 @@ export default function QuizzPage() {
     number | null | undefined
   >(null);
 
-  const [randomExpressions, { refetch }] = createResource(
-    async () => await getRandomExpressionsCache()
+  const [getExpressions, { refetch }] = createResource(
+    async () => await getExpressionsCache()
   );
 
   const getCorrectAnswer = () =>
-    randomExpressions()?.at(0) as typeof expressions.$inferSelect;
+    getExpressions()?.at(0) as typeof expressionsTable.$inferSelect;
 
   const updateExpressionUsedAction = useAction(updateExpressionScoreAction);
   const submission = useSubmission(updateExpressionScoreAction);
 
   async function handleButtonClicked(
-    selection: typeof expressions.$inferSelect
+    selection?: typeof expressionsTable.$inferSelect
   ) {
+    if (!selection) throw new Error("No selection");
+
     const { id: selectionId, score: selectionScore } = selection;
 
     const { id: correctAnswerId, score: correctAnswerScore = 0 } =
@@ -74,13 +76,12 @@ export default function QuizzPage() {
   }
 
   function getEach() {
-    const randExp = randomExpressions();
+    const randExp = getExpressions();
     if (!randExp) return [];
 
     return randExp
-      .map((value) => ({ value, sort: Math.random() }))
-      .sort((a, b) => a.sort - b.sort)
-      .map(({ value }) => value) as (typeof expressions.$inferSelect)[];
+      .map((value) => ({ ...value, sort: Math.random() }))
+      .toSorted((a, b) => a.sort - b.sort);
   }
 
   function getNextExpression() {
@@ -131,12 +132,13 @@ export default function QuizzPage() {
                 <span>Show reading</span>
               </Show>
             </Button>
-            <div>Score: {randomExpressions()?.at(0)?.score} </div>
+            <div>Score: {getCorrectAnswer().score} </div>
           </div>
 
           <div class="flex flex-col gap-4 my-8">
             <For each={getEach()}>
               {(expression) => (
+                /* PROBLEM: when refreshing, handleButtonClicked might get the wrong expression as argument*/
                 <Button
                   onclick={() => handleButtonClicked(expression)}
                   disabled={!!getUserAnswerId()}
