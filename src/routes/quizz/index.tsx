@@ -6,6 +6,7 @@ import {
   useAction,
   useSubmission,
   useSearchParams,
+  query,
 } from "@solidjs/router";
 import { readExpressionsForQuizz, updateExpression } from "~/lib/expressions";
 import { FaSolidArrowRight, FaSolidEye, FaSolidEyeSlash } from "solid-icons/fa";
@@ -15,7 +16,7 @@ import ModeSelect from "~/components/ModeSelect";
 import { Mode } from "~/components/ModeSelect";
 import { expressionsTable } from "~/lib/db/schema";
 
-const getExpressionsCache = cache(async () => {
+const getExpressionsQuery = query(async () => {
   "use server";
   return await readExpressionsForQuizz();
 }, "expressions");
@@ -28,6 +29,8 @@ const updateExpressionScoreAction = action(
   "updateExpression"
 );
 
+type Expression = typeof expressionsTable.$inferSelect;
+
 export default function QuizzPage() {
   const [searchParams] = useSearchParams();
 
@@ -39,49 +42,29 @@ export default function QuizzPage() {
     number | null | undefined
   >(null);
 
-  const [getExpressions, { refetch }] = createResource(
-    async () => await getExpressionsCache()
+  const [getQuizzData, { refetch }] = createResource(
+    async () => await getExpressionsQuery()
   );
-
-  const getCorrectAnswer = () =>
-    getExpressions()?.at(0) as typeof expressionsTable.$inferSelect;
 
   const updateExpressionUsedAction = useAction(updateExpressionScoreAction);
   const submission = useSubmission(updateExpressionScoreAction);
 
-  async function handleButtonClicked(
-    selection?: typeof expressionsTable.$inferSelect
-  ) {
-    if (!selection) throw new Error("No selection");
+  async function handleButtonClicked(selection: Expression) {
+    // Dirty
+    const correctAnswer = getQuizzData()?.correctAnswer;
+    if (!correctAnswer) throw new Error("Missing quizz data");
 
     const { id: selectionId, score: selectionScore } = selection;
-
-    const { id: correctAnswerId, score: correctAnswerScore = 0 } =
-      getCorrectAnswer();
+    const { id: correctAnswerId, score: correctAnswerScore } = correctAnswer;
 
     setUserAnswerId(selectionId);
 
     if (selectionId === correctAnswerId) {
-      await updateExpressionUsedAction(
-        correctAnswerId,
-        (correctAnswerScore ?? 0) + 1
-      );
+      await updateExpressionUsedAction(correctAnswerId, correctAnswerScore + 1);
     } else {
-      await updateExpressionUsedAction(
-        correctAnswerId,
-        (correctAnswerScore ?? 0) - 1
-      );
-      await updateExpressionUsedAction(selectionId, (selectionScore ?? 0) - 1);
+      await updateExpressionUsedAction(correctAnswerId, correctAnswerScore - 1);
+      await updateExpressionUsedAction(selectionId, selectionScore - 1);
     }
-  }
-
-  function getEach() {
-    const randExp = getExpressions();
-    if (!randExp) return [];
-
-    return randExp
-      .map((value) => ({ ...value, sort: Math.random() }))
-      .toSorted((a, b) => a.sort - b.sort);
   }
 
   function getNextExpression() {
@@ -91,8 +74,12 @@ export default function QuizzPage() {
   }
 
   const getExpressionClass = (id: number) => {
-    if (getUserAnswerId() && getCorrectAnswer()?.id === id) return "bg-success";
-    else if (getUserAnswerId() === id && getCorrectAnswer()?.id !== id)
+    if (getUserAnswerId() && getQuizzData()?.correctAnswer.id === id)
+      return "bg-success";
+    else if (
+      getUserAnswerId() === id &&
+      getQuizzData()?.correctAnswer.id !== id
+    )
       return "bg-problem";
     else return "";
   };
@@ -100,21 +87,23 @@ export default function QuizzPage() {
   return (
     <>
       <MetaProvider>
-        <Title>Random expression</Title>
+        <Title>Quizz</Title>
 
         <div class="flex justify-between items-center flex-wrap">
           <BackLink />
           <ModeSelect />
         </div>
 
-        <Show when={getCorrectAnswer()}>
+        <Show when={getQuizzData()}>
           <div class="my-8 text-center">
             <div class="text-6xl">
-              {getCorrectAnswer()[from() as "writing" | "meaning"]}
+              {getQuizzData()?.correctAnswer[from() as "writing" | "meaning"]}
             </div>
 
             <Show when={getReadingShown() && from() === "writing"}>
-              <div class="text-center">{getCorrectAnswer().reading}</div>
+              <div class="text-center">
+                {getQuizzData()?.correctAnswer.reading}
+              </div>
             </Show>
           </div>
 
@@ -132,13 +121,12 @@ export default function QuizzPage() {
                 <span>Show reading</span>
               </Show>
             </Button>
-            <div>Score: {getCorrectAnswer().score} </div>
+            <div>Score: {getQuizzData()?.correctAnswer.score} </div>
           </div>
 
           <div class="flex flex-col gap-4 my-8">
-            <For each={getEach()}>
+            <For each={getQuizzData()?.candidates}>
               {(expression) => (
-                /* PROBLEM: when refreshing, handleButtonClicked might get the wrong expression as argument*/
                 <Button
                   onclick={() => handleButtonClicked(expression)}
                   disabled={!!getUserAnswerId()}

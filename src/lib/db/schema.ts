@@ -1,4 +1,11 @@
-import { integer, text, pgTable, serial, timestamp } from "drizzle-orm/pg-core";
+import {
+  integer,
+  text,
+  pgTable,
+  serial,
+  timestamp,
+  unique,
+} from "drizzle-orm/pg-core";
 
 export const expressionsTable = pgTable(
   "expressions",
@@ -7,9 +14,9 @@ export const expressionsTable = pgTable(
     writing: text("writing"), //  NOTE: Removed unique
     reading: text("reading"),
     meaning: text("meaning"),
-    score: integer("score").default(0),
+    score: integer("score").notNull().default(0),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     userId: text("userId"),
-  }
-  // TODO: add unique on user_id + writing
+  },
+  (t) => [unique().on(t.writing, t.userId)]
 );

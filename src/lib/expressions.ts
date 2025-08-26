@@ -118,13 +118,18 @@ export async function readExpressionsForQuizz(count: number = 6) {
     .orderBy(sql`RANDOM() * EXP(score)`) // prioritizes those that are not well known
     .limit(1);
 
-  const candidates = await db
+  const wrongCandidates = await db
     .select()
     .from(expressionsTable)
     .where(and(where, not(eq(expressionsTable.id, expression.id))))
     .orderBy(sql`RANDOM()`) // Pure random
     .limit(count - 1);
 
-  // Correct answer is Array's first item
-  return [expression, ...candidates];
+  return {
+    correctAnswer: expression,
+    candidates: [expression, ...wrongCandidates]
+      .map((value) => ({ value, sort: Math.random() }))
+      .toSorted((a, b) => a.sort - b.sort)
+      .map(({ value }) => value),
+  };
 }
