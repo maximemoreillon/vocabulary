@@ -16,10 +16,11 @@ import ModeSelect from "~/components/ModeSelect";
 import { Mode } from "~/components/ModeSelect";
 import { expressionsTable } from "~/lib/db/schema";
 
-const getExpressionsQuery = query(async () => {
-  "use server";
-  return await readExpressionsForQuizz();
-}, "expressions");
+// Not used because cache undesired
+// const getExpressionsQuery = query(async () => {
+//   "use server";
+//   return await readExpressionsForQuizz();
+// }, "expressions");
 
 const updateExpressionScoreAction = action(
   async (id: number, newScore: number) => {
@@ -43,7 +44,7 @@ export default function QuizzPage() {
   >(null);
 
   const [getQuizzData, { refetch }] = createResource(
-    async () => await getExpressionsQuery()
+    async () => await readExpressionsForQuizz()
   );
 
   const updateExpressionUsedAction = useAction(updateExpressionScoreAction);
@@ -141,7 +142,7 @@ export default function QuizzPage() {
             </For>
           </div>
         </Show>
-        <Show when={getUserAnswerId()}>
+        <Show when={getUserAnswerId() || true}>
           <div class="my-4">
             <Button onclick={getNextExpression} loading={submission.pending}>
               <FaSolidArrowRight />
