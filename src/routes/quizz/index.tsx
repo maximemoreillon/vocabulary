@@ -9,7 +9,12 @@ import {
   query,
 } from "@solidjs/router";
 import { readExpressionsForQuizz, updateExpression } from "~/lib/expressions";
-import { FaSolidArrowRight, FaSolidEye, FaSolidEyeSlash } from "solid-icons/fa";
+import {
+  FaSolidArrowRight,
+  FaSolidEye,
+  FaSolidEyeSlash,
+  FaSolidQuestion,
+} from "solid-icons/fa";
 import Button from "~/components/Button";
 import BackLink from "~/components/BackLink";
 import ModeSelect from "~/components/ModeSelect";
@@ -66,6 +71,17 @@ export default function QuizzPage() {
       await updateExpressionUsedAction(correctAnswerId, correctAnswerScore - 1);
       await updateExpressionUsedAction(selectionId, selectionScore - 1);
     }
+  }
+
+  async function iDontKnow() {
+    // Dirty
+    const correctAnswer = getQuizzData()?.correctAnswer;
+    if (!correctAnswer) throw new Error("Missing quizz data");
+    const { id: correctAnswerId, score: correctAnswerScore } = correctAnswer;
+
+    await updateExpressionUsedAction(correctAnswerId, correctAnswerScore - 1);
+
+    getNextExpression();
   }
 
   function getNextExpression() {
@@ -142,11 +158,19 @@ export default function QuizzPage() {
             </For>
           </div>
         </Show>
-        <Show when={getUserAnswerId() || true}>
+        <Show when={getUserAnswerId()}>
           <div class="my-4">
             <Button onclick={getNextExpression} loading={submission.pending}>
               <FaSolidArrowRight />
               <span>Next expression</span>
+            </Button>
+          </div>
+        </Show>
+        <Show when={!getUserAnswerId()}>
+          <div class="my-4">
+            <Button onclick={iDontKnow} loading={submission.pending}>
+              <FaSolidQuestion />
+              <span>I don't know</span>
             </Button>
           </div>
         </Show>
