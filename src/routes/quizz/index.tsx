@@ -74,14 +74,14 @@ export default function QuizzPage() {
   }
 
   async function iDontKnow() {
+    setUserAnswerId(-1);
+
     // Dirty
     const correctAnswer = getQuizzData()?.correctAnswer;
     if (!correctAnswer) throw new Error("Missing quizz data");
     const { id: correctAnswerId, score: correctAnswerScore } = correctAnswer;
 
     await updateExpressionUsedAction(correctAnswerId, correctAnswerScore - 1);
-
-    getNextExpression();
   }
 
   function getNextExpression() {
