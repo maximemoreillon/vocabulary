@@ -1,6 +1,6 @@
 import { For, Show, createResource } from "solid-js";
 import { Title } from "@solidjs/meta";
-import { cache, useSearchParams } from "@solidjs/router";
+import { query, useSearchParams } from "@solidjs/router";
 import { FaSolidPen, FaSolidPlus, FaSolidQuestion } from "solid-icons/fa";
 import { readExpressions } from "~/lib/expressions";
 
@@ -10,7 +10,7 @@ import SearchBar from "~/components/SearchBar";
 import { defaultOrder, defaultPageSize, defaultSort } from "~/config";
 import TableHeader from "~/components/TableHeader";
 
-const getExpressionsCache = cache(async (options) => {
+const getExpressionsQuery = query(async (options) => {
   "use server";
   return await readExpressions(options);
 }, "getExpressions");
@@ -38,7 +38,7 @@ export default function ExpressionList() {
   // Calling refetch when source (getPaginationOptions) changes
   const [getQueryResult] = createResource(getQueryOptions, async () => {
     const options = getQueryOptions();
-    return getExpressionsCache(options);
+    return getExpressionsQuery(options);
   });
 
   return (

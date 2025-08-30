@@ -3,7 +3,7 @@ import { Show } from "solid-js";
 import {
   createAsync,
   useParams,
-  cache,
+  query,
   action,
   useSubmission,
 } from "@solidjs/router";
@@ -15,7 +15,7 @@ import Button from "~/components/Button";
 import Input from "~/components/Input";
 import ExpressionDeleteButton from "~/components/ExpressionDeleteButton";
 
-const getExpression = cache(async (id: number) => {
+const getExpressionQuery = query(async (id: number) => {
   "use server";
   return readExpression(id);
 }, "getExpression");
@@ -36,7 +36,9 @@ const updateExpressionAction = action(async (formData: FormData) => {
 
 export default function Expression() {
   const params = useParams();
-  const expression = createAsync(async () => getExpression(Number(params.id)));
+  const expression = createAsync(async () =>
+    getExpressionQuery(Number(params.id))
+  );
 
   const updateSubmission = useSubmission(updateExpressionAction);
 

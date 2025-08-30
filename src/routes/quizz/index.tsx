@@ -1,12 +1,11 @@
 import { MetaProvider, Title } from "@solidjs/meta";
 import { For, Show, createResource, createSignal } from "solid-js";
 import {
-  cache,
   action,
   useAction,
   useSubmission,
   useSearchParams,
-  query,
+  // query,
 } from "@solidjs/router";
 import { readExpressionsForQuizz, updateExpression } from "~/lib/expressions";
 import {
