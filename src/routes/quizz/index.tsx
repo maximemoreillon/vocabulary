@@ -111,16 +111,16 @@ export default function QuizzPage() {
         </div>
 
         <Show when={getQuizzData()}>
-          <div class="my-8 text-center">
-            <div class="text-6xl">
+          <div class="my-2 text-center">
+            <ruby class="text-6xl">
               {getQuizzData()?.correctAnswer[from() as "writing" | "meaning"]}
-            </div>
 
-            <Show when={getReadingShown() && from() === "writing"}>
-              <div class="text-center">
-                {getQuizzData()?.correctAnswer.reading}
-              </div>
-            </Show>
+              <rt class="text-2xl">
+                <Show when={getReadingShown() && from() === "writing"}>
+                  {getQuizzData()?.correctAnswer.reading}
+                </Show>
+              </rt>
+            </ruby>
           </div>
 
           <div class="flex justify-between items-center">
