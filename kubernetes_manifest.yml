@@ -17,9 +17,13 @@ spec:
           image: ${CONTAINER_IMAGE_TAGGED}
           envFrom:
             - secretRef:
-                name: vocabulary-env
-            - secretRef:
-                name: auth0-env
+                name: vocabulary-env-from-vault
+
+            # - secretRef:
+            #     name: vocabulary-env
+            # - secretRef:
+            #     name: auth0-env
+
           resources: {}
 
 ---
@@ -61,3 +65,19 @@ spec:
                 name: ${APPLICATION_NAME}
                 port:
                   number: 3000
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: vocabulary-env
+spec:
+  refreshInterval: 5m0s
+  secretStoreRef:
+    name: vault
+    kind: ClusterSecretStore
+  target:
+    name: vocabulary-env-from-vault
+    creationPolicy: Orphan
+  dataFrom:
+    - extract:
+        key: vocabulary
