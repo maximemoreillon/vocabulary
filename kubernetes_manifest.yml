@@ -82,3 +82,12 @@ spec:
   dataFrom:
     - extract:
         key: vocabulary
+  data:
+    - secretKey: OIDC_CLIENT_ID
+      remoteRef:
+        key: keycloak-main-client
+        property: CLIENT_ID
+    - secretKey: OIDC_AUTHORITY
+      remoteRef:
+        key: keycloak-main-client
+        property: ISSUER
