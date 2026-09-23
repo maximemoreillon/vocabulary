@@ -17,9 +17,7 @@ spec:
       containers:
         - name: ${APPLICATION_NAME}
           image: ${CONTAINER_IMAGE_TAGGED}
-          env:
-            - name: OIDC_USER_ID_FIELD
-              value: auth0_sub
+          env: []
           envFrom:
             - secretRef:
                 name: vocabulary-env-from-vault
