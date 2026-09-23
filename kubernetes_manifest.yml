@@ -41,34 +41,6 @@ spec:
   ports:
     - port: 3000
 ---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: ${APPLICATION_NAME}
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt
-
-    gethomepage.dev/enabled: "true"
-    gethomepage.dev/name: Vocabulary
-    gethomepage.dev/icon: mdi-book-alphabet
-    gethomepage.dev/group: 1P
-spec:
-  tls:
-    - hosts:
-        - ${K8S_INGRESS_HOST}
-      secretName: ${APPLICATION_NAME}
-  rules:
-    - host: ${K8S_INGRESS_HOST}
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: ${APPLICATION_NAME}
-                port:
-                  number: 3000
----
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
